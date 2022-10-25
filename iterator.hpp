@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/10/25 18:52:06 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/10/25 20:15:25 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,11 @@ namespace ft
 
 	//Overloads
 	template <class InputIterator>
-	InputIterator&	operator++();
+	InputIterator&	operator++(void);
 
 	//Operations
 	template <class InputIterator, class Distance>
 	void	advance(InputIterator & it, Distance n);
-
 
 	//Reverse Iterator
 	template <class Iterator>
