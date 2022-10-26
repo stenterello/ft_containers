@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/10/25 20:15:25 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/10/26 17:38:46 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ namespace ft
 	};
 
 	//Overloads
-	template <class InputIterator>
-	InputIterator&	operator++(void);
 
 	//Operations
 	template <class InputIterator, class Distance>
@@ -71,7 +69,7 @@ namespace ft
 		protected:
 			Iterator	current;
 		public:
-			typedef Iterator				iterator;
+			typedef Iterator											iterator;
 			typedef typename iterator_traits<Iterator>::difference_type	difference_type;
 			typedef typename iterator_traits<Iterator>::reference		reference;
 			typedef typename iterator_traits<Iterator>::pointer			pointer;
