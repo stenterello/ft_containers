@@ -70,6 +70,7 @@
 		"*.tpp": "cpp",
 		"list": "cpp",
 		"__tree": "cpp",
-		"map": "cpp"
+		"map": "cpp",
+		"memory_resource": "cpp"
 	}
 }
