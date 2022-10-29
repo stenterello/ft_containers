@@ -1,29 +1,25 @@
 
 ══════════════════════════════════════════════════════════════
-Vectors attributes : 
-STL : 
-Empty       : false
-Size        : 5
-Max size    : 2305843009213693951
-Capacity    : 5
-Content     : [45, 87846, 12, 965, 5]
-
-FT : 
-Empty    [✔]: false
-Size     [✔]: 5
-Max size [✔]: 2305843009213693951
-Capacity [✘]: 8
-Content  [✔]: [45, 87846, 12, 965, 5]
+Value from :
+STL    : 8
+FT  [✘]: 0
 ══════════════════════════════════════════════════════════════
 
 Code executed:
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-int range_array[] = { 45, 87846, 12, 965, 5 };
-ft::vector<int>::iterator ft_iterator(&(range_array[0]));
+int range_array[] = { 8, -5615, 412, 89, 475};
+ft::vector<int>::const_iterator ft_iterator(&(range_array[0]));
 ft::vector<int> ft_range_vector(ft_iterator, ft_iterator + 5);
-
+std::vector<int>::const_reverse_iterator stl_const_it = stl_range_vector.rend() - 1;
+int from_ft = *(ft_const_it);
+    ^^^^^^^
+    Compared value
 Compared with:
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-int range_array[] = { 45, 87846, 12, 965, 5 };
-std::vector<int>::iterator stl_iterator(&(range_array[0]));
+int range_array[] = { 8, -5615, 412, 89, 475};
+std::vector<int>::const_iterator stl_iterator(&(range_array[0]));
 std::vector<int> stl_range_vector(stl_iterator, stl_iterator + 5);
+ft::vector<int>::const_reverse_iterator ft_const_it = ft_range_vector.rend() - 1;
+int from_stl = *(stl_const_it);
+    ^^^^^^^^
+    Compared value

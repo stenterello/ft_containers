@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/10/29 22:13:08 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/10/30 01:43:43 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,8 @@ namespace ft
 			random_access_iterator(pointer p) : _pointed(p) {};
 			reference				operator*() const { return (*_pointed); }
 			pointer					operator->() { return &(this->operator*()); }
-			random_access_iterator	operator+(difference_type n) const { return (_pointed + n); }
-			random_access_iterator	operator-(difference_type n) const { return (_pointed - n); }
+			random_access_iterator	operator+(difference_type n) const { return random_access_iterator(_pointed + n); }
+			random_access_iterator	operator-(difference_type n) const { return random_access_iterator(_pointed - n); }
 			random_access_iterator	operator++() { _pointed++; return (*this); }
 			random_access_iterator	operator++(int) { random_access_iterator ret(*this); _pointed++; return (ret); }
 			random_access_iterator	operator--() { _pointed--; return (*this); }

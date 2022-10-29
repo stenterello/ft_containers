@@ -3,27 +3,27 @@
 Vectors attributes : 
 STL : 
 Empty       : false
-Size        : 5
+Size        : 1
 Max size    : 2305843009213693951
-Capacity    : 5
-Content     : [45, 87846, 12, 965, 5]
+Capacity    : 100
+Content     : [42]
 
 FT : 
 Empty    [✔]: false
-Size     [✔]: 5
+Size     [✔]: 1
 Max size [✔]: 2305843009213693951
-Capacity [✘]: 8
-Content  [✔]: [45, 87846, 12, 965, 5]
+Capacity [✘]: 128
+Content  [✘]: [0]
 ══════════════════════════════════════════════════════════════
 
 Code executed:
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-int range_array[] = { 45, 87846, 12, 965, 5 };
-ft::vector<int>::iterator ft_iterator(&(range_array[0]));
-ft::vector<int> ft_range_vector(ft_iterator, ft_iterator + 5);
+ft::vector<int> ft_base;
+ft_base.reserve(100);
+ft_base.push_back(42);
 
 Compared with:
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-int range_array[] = { 45, 87846, 12, 965, 5 };
-std::vector<int>::iterator stl_iterator(&(range_array[0]));
-std::vector<int> stl_range_vector(stl_iterator, stl_iterator + 5);
+std::vector<int> stl_base;
+stl_base.reserve(100);
+stl_base.push_back(42);

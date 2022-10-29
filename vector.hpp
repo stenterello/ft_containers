@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/10/29 22:16:26 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/10/30 01:51:01 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,10 @@ namespace ft
 
 			vector& operator=(const vector& other)
 			{
-				_size = other._size;
-				_capacity = other._capacity;
-				_alloc = other._alloc;
-				assign(other._begin, other._begin + _size);
+				_size = other.size();
+				_capacity = other.capacity();
+				_alloc = other.get_allocator();
+				assign(other.begin(), other.begin() + _size);
 				return (*this);
 			}
 
@@ -85,15 +85,17 @@ namespace ft
 				if (!is_valid)
 					throw ft::InvalidIteratorException<typename ft::iterator_is_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>();
 				difference_type n = ft::distance(first, last);
+				_size = n;
 				_capacity = 1;
 				while (_capacity < n)
 					_capacity *= 2;
 				_begin = _alloc.allocate(_capacity);
-				_end = _begin + n;
+				_end = _begin;
 				while (n--)
 				{
-					_alloc.construct(_end, *first++);
+					_alloc.construct(_end, *first);
 					_end++;
+					first++;
 				}
 			}
 
@@ -103,6 +105,7 @@ namespace ft
 				_capacity = x.capacity();
 				_begin = _alloc.allocate(x.capacity());
 				assign(x.begin(), x.end());
+				_end = _begin + _size;
 			}
 
 			~vector()

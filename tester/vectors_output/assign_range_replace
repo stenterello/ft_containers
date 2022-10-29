@@ -5,25 +5,27 @@ STL :
 Empty       : false
 Size        : 5
 Max size    : 2305843009213693951
-Capacity    : 5
-Content     : [45, 87846, 12, 965, 5]
+Capacity    : 42
+Content     : [547, 98, -6, 0, 47]
 
 FT : 
 Empty    [✔]: false
-Size     [✔]: 5
+Size     [✘]: 42
 Max size [✔]: 2305843009213693951
-Capacity [✘]: 8
-Content  [✔]: [45, 87846, 12, 965, 5]
+Capacity [✘]: 64
+Content  [✘]: [547, 98, -6, 0, 47, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ══════════════════════════════════════════════════════════════
 
 Code executed:
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-int range_array[] = { 45, 87846, 12, 965, 5 };
-ft::vector<int>::iterator ft_iterator(&(range_array[0]));
-ft::vector<int> ft_range_vector(ft_iterator, ft_iterator + 5);
+int range_array[] = {547, 98, -6, 0, 47};
+ft::vector<int>::iterator ft_iterator_beg(&(range_array[0]));
+ft::vector<int> ft_assign;
+ft_assign.assign(ft_iterator_beg, ft_iterator_beg + 5);
 
 Compared with:
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-int range_array[] = { 45, 87846, 12, 965, 5 };
-std::vector<int>::iterator stl_iterator(&(range_array[0]));
-std::vector<int> stl_range_vector(stl_iterator, stl_iterator + 5);
+int range_array[] = {547, 98, -6, 0, 47};
+std::vector<int>::iterator stl_iterator_beg(&(range_array[0]));
+std::vector<int> stl_assign;
+stl_assign.assign(stl_iterator_beg, stl_iterator_beg + 5);
