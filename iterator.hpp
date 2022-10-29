@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/10/28 17:46:01 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/10/29 22:13:08 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,13 +91,27 @@ namespace ft
 	};
 
 	template <class T>
-	struct random_access_iterator : ft::iterator<ft::random_access_iterator_tag, T>
+	class random_access_iterator : ft::iterator<ft::random_access_iterator_tag, T>
 	{
-		typedef typename	ft::iterator<ft::random_access_iterator_tag, T>::iterator_category	iterator_category;
-		typedef typename	ft::iterator<ft::random_access_iterator_tag, T>::difference_type	difference_type;
-		typedef typename	ft::iterator<ft::random_access_iterator_tag, T>::value_type			value_type;
-		typedef typename	ft::iterator<ft::random_access_iterator_tag, T>::pointer			pointer;
-		typedef typename	ft::iterator<ft::random_access_iterator_tag, T>::reference			reference;
+		public:
+			typedef typename	ft::iterator<ft::random_access_iterator_tag, T>::iterator_category	iterator_category;
+			typedef typename	ft::iterator<ft::random_access_iterator_tag, T>::difference_type	difference_type;
+			typedef typename	ft::iterator<ft::random_access_iterator_tag, T>::value_type			value_type;
+			typedef typename	ft::iterator<ft::random_access_iterator_tag, T>::pointer			pointer;
+			typedef typename	ft::iterator<ft::random_access_iterator_tag, T>::reference			reference;
+			random_access_iterator() {};
+			random_access_iterator(pointer p) : _pointed(p) {};
+			reference				operator*() const { return (*_pointed); }
+			pointer					operator->() { return &(this->operator*()); }
+			random_access_iterator	operator+(difference_type n) const { return (_pointed + n); }
+			random_access_iterator	operator-(difference_type n) const { return (_pointed - n); }
+			random_access_iterator	operator++() { _pointed++; return (*this); }
+			random_access_iterator	operator++(int) { random_access_iterator ret(*this); _pointed++; return (ret); }
+			random_access_iterator	operator--() { _pointed--; return (*this); }
+			random_access_iterator	operator--(int) { random_access_iterator ret(*this); _pointed--; return (ret); }
+			operator				random_access_iterator<const T> () const { return (random_access_iterator<const T>(this->_pointed)); }
+		private:
+			pointer	_pointed;
 	};
 
 	template <class T>
@@ -113,37 +127,64 @@ namespace ft
 	template <class Iterator>
 	class reverse_iterator
 	{
-		typedef Iterator													iterator_type;
-		typedef typename ft::iterator_traits<Iterator>::difference_type		difference_type;
-		typedef typename ft::iterator_traits<Iterator>::value_type			value_type;
-		typedef typename ft::iterator_traits<Iterator>::pointer				pointer;
-		typedef typename ft::iterator_traits<Iterator>::reference			reference;
-		typedef typename ft::iterator_traits<Iterator>::iterator_category	iterator_category;
-		iterator_type														iter_type;
-		reverse_iterator() : iter_type() {};
-		explicit reverse_iterator(iterator_type iter) : iter_type(iter) {};
-		template <class ReverseIterator>
-		reverse_iterator(const reverse_iterator<ReverseIterator>& rev_it) : iter_type(rev_it.base()) {};
-		virtual ~reverse_iterator() {};
-		iterator_type		base() const;
-		reference			operator*() const;
-		reverse_iterator	operator+(difference_type n) const;
-		reverse_iterator&	operator++();
-		reverse_iterator&	operator++(int);
-		reverse_iterator	operator-(difference_type n) const;
-		reverse_iterator&	operator--();
-		reverse_iterator&	operator--(int);
-		reverse_iterator&	operator+=(difference_type n);
-		reverse_iterator&	operator-=(difference_type n);
-		pointer				operator->() const;
-		reference			operator[] (difference_type n) const;
+		public:
+			typedef Iterator													iterator_type;
+			typedef typename ft::iterator_traits<Iterator>::difference_type		difference_type;
+			typedef typename ft::iterator_traits<Iterator>::value_type			value_type;
+			typedef typename ft::iterator_traits<Iterator>::pointer				pointer;
+			typedef typename ft::iterator_traits<Iterator>::reference			reference;
+			typedef typename ft::iterator_traits<Iterator>::iterator_category	iterator_category;
+			reverse_iterator() : _elem() {};
+			explicit reverse_iterator(iterator_type iter) : _elem(iter) {};
+			template <class ReverseIterator>
+			reverse_iterator(const reverse_iterator<ReverseIterator>& rev_it) : _elem(rev_it.base()) {};
+			reverse_iterator(pointer p) : _pointed(p) {};
+			virtual ~reverse_iterator() {};
+			iterator_type		base() const { return (_pointed); };
+			reference			operator*() const { return (*_pointed); };
+			reverse_iterator	operator+(difference_type n) const { return (_pointed + n); };
+			reverse_iterator&	operator++() { _pointed++; return (*this); };
+			reverse_iterator&	operator++(int) { reverse_iterator ret = *this; this->_pointed++; return (ret); };
+			reverse_iterator	operator-(difference_type n) const { return (_pointed - n); };
+			reverse_iterator&	operator--() { _pointed--; return (*this); };
+			reverse_iterator&	operator--(int) { reverse_iterator ret; this->_pointed--; return (ret); };
+			reverse_iterator&	operator+=(difference_type n) { _pointed + n; return (*this); };
+			reverse_iterator&	operator-=(difference_type n) { _pointed - n; return (*this); };
+			pointer				operator->() const { return &(*_pointed); };
+			reference			operator[] (difference_type n) const { return (*(_pointed + n)); };
+		private:
+			iterator_type	_elem;
+			pointer			_pointed;
 	};
 
 
 	
 	//Overloads
+	template <class InputIterator1, class InputIterator2>
+	bool	operator==(InputIterator1 x, InputIterator2 y)
+	{
+		if (&(*x) == &(*y)) return true;
+		return false;
+	}
+
+	template <class InputIterator1, class InputIterator2>
+	bool	operator!=(InputIterator1 x, InputIterator2 y)
+	{
+		return (!(x == y));
+	}
 
 	//Operations
 	template <class InputIterator, class Distance>
 	void	advance(InputIterator & it, Distance n);
+
+	template <class InputIterator>
+	typename ft::iterator_traits<InputIterator>::difference_type
+		distance(InputIterator first, InputIterator last)
+	{
+		typename ft::iterator_traits<InputIterator>::difference_type	ret = 0;
+		
+		while (first++ != last)
+			ret++;
+		return (ret);
+	}
 }

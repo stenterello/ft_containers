@@ -4,7 +4,7 @@
             "type": "cppbuild",
             "label": "C/C++: gcc compila il file attivo",
             "command": "/usr/bin/c++",
-            "args": ["-g", "test.cpp"],
+            "args": ["-g", "tester/tester.cpp", "tester/main.cpp", "tester/tester_vector.cpp"],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
