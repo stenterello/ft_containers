@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/10/30 01:43:43 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/02 13:40:05 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,8 @@ namespace ft
 			random_access_iterator	operator++(int) { random_access_iterator ret(*this); _pointed++; return (ret); }
 			random_access_iterator	operator--() { _pointed--; return (*this); }
 			random_access_iterator	operator--(int) { random_access_iterator ret(*this); _pointed--; return (ret); }
+			random_access_iterator&	operator+=(difference_type n) { _pointed += n; return (*this); }
+			random_access_iterator&	operator-=(difference_type n) { _pointed += n; return (*this); }
 			operator				random_access_iterator<const T> () const { return (random_access_iterator<const T>(this->_pointed)); }
 		private:
 			pointer	_pointed;
@@ -160,6 +162,7 @@ namespace ft
 
 	
 	//Overloads
+
 	template <class InputIterator1, class InputIterator2>
 	bool	operator==(InputIterator1 x, InputIterator2 y)
 	{

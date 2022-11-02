@@ -6,13 +6,14 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/10/30 01:51:01 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/02 14:34:01 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <memory>
+#include <stdexcept>
 #include "iterator.hpp"
 #include "enable_if.hpp"
 #include "lexicographical_compare.hpp"
@@ -78,16 +79,16 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL):
+			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
 				_alloc(alloc)
 			{
-				bool	is_valid = ft::iterator_is_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value;
+				bool	is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value;
 				if (!is_valid)
-					throw ft::InvalidIteratorException<typename ft::iterator_is_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>();
+					throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>();
 				difference_type n = ft::distance(first, last);
 				_size = n;
 				_capacity = 1;
-				while (_capacity < n)
+				while (_capacity < static_cast<unsigned long>(n))
 					_capacity *= 2;
 				_begin = _alloc.allocate(_capacity);
 				_end = _begin;
@@ -133,26 +134,27 @@ namespace ft
 
 			template <class InputIterator>
 			void assign(InputIterator first, InputIterator last,
-				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0)
 			{
 				bool	is_valid;
 
-				is_valid = ft::iterator_is_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value;
+				is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value;
 				if (!is_valid)
-					throw ft::InvalidIteratorException<typename ft::iterator_is_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>();
-				if (distance(first, last) > _capacity)
-					this->reserve(distance(first, last));
+					throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>();
+				if (ft::distance(first, last) > static_cast<long>(_capacity))
+					this->reserve(ft::distance(first, last));
 				iterator	iter = this->begin();
-				while (&(*first) != &(*last))
+				while (first != last)
 				{
-					_alloc.construct(&(*iter), *first++);
+					_alloc.construct(&(*iter), *first);
 					iter++;
 				}
 			};
 
 			// void assign( std::initializer_list<T> ilist );
 
-			void			reserve(size_type n) {
+			void			reserve(size_type n)
+			{
 				pointer		prev_begin = _begin;
 				pointer		prev_end = _end;
 				size_type	prev_capacity = _capacity;
@@ -243,8 +245,6 @@ namespace ft
 					iter2++;
 				*position = val;
 				insert(++position, iter2, tmp.end());
-				_end++;
-				_size++;
 				return (iter3);
 			}
 
@@ -267,19 +267,19 @@ namespace ft
 
 			template <class InputIterator>
 			void		insert(iterator position, InputIterator first, InputIterator last,
-				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL)
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0)
 			{
-				bool	is_valid = ft::iterator_is_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value;
+				bool	is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value;
 				if (!is_valid)
-					throw ft::InvalidIteratorException<typename ft::iterator_is_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>();
+					throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>();
 				if (this->size() + distance(first, last) > this->max_size())
 					throw std::length_error("vector::insert");
 				if (this->capacity() < this->size() + distance(first, last))
 					this->reserve(this->size() + distance(first, last));
+				_end += ft::distance(first, last);
+				_size += ft::distance(first, last);
 				while (first != last)
 					*position++ = *first++;
-				_end += distance(first, last);
-				_size += distance(first, last);
 			}
 
 			iterator	erase(iterator position)
@@ -298,7 +298,7 @@ namespace ft
 
 			iterator	erase(iterator first, iterator last)
 			{
-				ft:vector<T>	tmp;
+				vector<T>	tmp;
 				iterator		iter = tmp.begin();
 				iterator		tmp_iter = first;
 				while (&(*iter) - &(*tmp.begin()) != &(*last) - &(*this->begin()))
@@ -306,9 +306,9 @@ namespace ft
 				while (first != last)
 					_alloc.destroy(&(*first++));
 				insert(tmp_iter, iter, tmp.end());
-				_size -= distance(first, last);
-				_end -= distance(first, last);
-				return (tmp_iter + distance(iter, tmp.end()));
+				_size -= ft::distance(first, last);
+				_end -= ft::distance(first, last);
+				return (tmp_iter + ft::distance(iter, tmp.end()));
 			}
 
 			void	swap(vector& x)
@@ -441,13 +441,13 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator>(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
 	{
-		return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+		return (rhs < lhs);
 	}
 
 	template <class T, class Alloc>
 	bool	operator>=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
 	{
-		return (!(lhs < rhs));
+		return (!(rhs < lhs));
 	}
 
 	template <class T, class Alloc>
