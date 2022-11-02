@@ -6,51 +6,56 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:50:37 by gimartin          #+#    #+#             */
-/*   Updated: 2022/10/29 14:59:06 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/02 19:06:39 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "iterator.hpp"
 #include "vector.hpp"
 #include <vector>
-// #include <iterator>
+#include <iterator>
 
 int	main()
 {
-	ft::vector<int>	hello(5, 5);
-	std::cout << hello.size() << std::endl;
-	std::cout << hello.empty() << std::endl;
-	std::cout << hello.capacity() << std::endl;
+	ft::vector<int>		hello(5, 5);
 	hello.reserve(10);
-	std::cout << hello.capacity() << std::endl;
 	hello.assign(2, 3);
-	ft::vector<int>::iterator	it;
-	it = hello.begin();
-	std::cout << hello.capacity() << std::endl;
-	std::cout << hello.at(0) << std::endl;
-	// std::vector<int>	prova(3, 5);
+	hello.push_back(5);
+	ft::vector<int>		hello2(hello);
+	
+	std::vector<int>	ciao(5, 5);
+	ciao.reserve(10);
+	ciao.assign(2, 3);
+	ciao.push_back(5);
+	std::vector<int>	ciao2(ciao);
 
-	// prova.reserve(10);
-	// std::cout << prova.at(8) << std::endl;
+	std::cout << "FT" << std::endl;
 
-	// std::vector<int>			prova(10, 10);
-	// std::vector<int>::iterator	iter;
-	// iter = prova.begin();
-	// while (iter != prova.end())
-	// {
-	// 	std::cout << *iter << std::endl;
-	// 	iter++;
-	// }
-	// std::cout << "Capacity: " << prova.capacity() << std::endl;
-	// std::cout << "Size: " << prova.size() << std::endl;
-	// prova.assign(5, 5);
-	// iter = prova.begin();
-	// while (iter != prova.end())
-	// {
-	// 	std::cout << *iter << std::endl;
-	// 	iter++;
-	// }
-	// std::cout << "Capacity: " << prova.capacity() << std::endl;
-	// std::cout << "Size: " << prova.size() << std::endl;
+	ft::vector<int>::iterator	iter;
+
+	iter = hello2.begin();
+	while (iter != hello2.end())
+	{
+		std::cout << *iter << std::endl;
+		iter++;
+	}
+
+	std::cout << "STD" << std::endl;
+
+
+	std::vector<int>::iterator	iter2;
+
+	iter2 = ciao2.begin();
+	while (iter2 != ciao2.end())
+	{
+		std::cout << *iter2 << std::endl;
+		iter2++;
+	}
+
+	std::vector<int>	empty;
+
+	empty.reserve(1);
+	std::cout << &(*empty.begin()) << std::endl;
+	std::cout << &(*empty.end()) << std::endl;
 	return (0);
 }

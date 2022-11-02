@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/29 16:11:26 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/02 12:52:05 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/02 17:13:22 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,33 @@
 #include "iterator.hpp"
 #include <typeinfo>
 #include <string>
+
+// static class nullptr_t
+// {
+//     public:
+//         /*
+//         ** @brief For conversion to any type
+//         ** of null non-member pointer.
+//         */
+//         template<class T>
+//         operator T*() const { return (0); }
+
+//         /*
+//         ** @brief For conversion to any type of null
+//         ** member pointer.
+//         */
+//         template<class C, class T>
+//         operator T C::*() const { return (0); }
+
+//     private:
+        
+//         /*
+//         ** @brief It's imposible to get an address of
+//         ** a nullptr.
+//         */
+//         void operator&() const;
+
+// } u_nullptr = {};
 
 namespace ft
 {
