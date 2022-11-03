@@ -84,8 +84,8 @@ static void max_size(void)
 static void resize(void)
 {
 	print_header("Resize");
-	ft::vector<std::string> v1;
-	std::vector<std::string> v2;
+	ft::vector<std::string>		v1;
+	std::vector<std::string>	v2;
 	v1.resize(10, "test");
 	v2.resize(10, "test");
 	check("v1 == v2", (v1 == v2));

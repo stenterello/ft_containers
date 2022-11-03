@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/02 19:13:35 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/03 17:14:03 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,8 @@ namespace ft
 			void assign(InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0)
 			{
-				bool	is_valid;
+				bool		is_valid;
+				iterator	new_end;
 
 				is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value;
 				if (!is_valid)
@@ -154,10 +155,19 @@ namespace ft
 				if (ft::distance(first, last) > static_cast<long>(_capacity))
 					this->reserve(ft::distance(first, last));
 				iterator	iter = this->begin();
+				_end = _begin;
+				_size = 0;
 				while (first != last)
 				{
 					_alloc.construct(&(*iter), *first);
 					iter++;
+					first++;
+					_end++;
+					_size++;
+				}
+				while (iter != this->end())
+				{
+					_alloc.destroy(&(*iter));
 					first++;
 				}
 			};
@@ -199,16 +209,16 @@ namespace ft
 				{
 					this->reserve(n);
 					n -= this->size();
+					_size += n;
 					while (n--)
 						_alloc.construct(_end++, val);
-					_size += n;
 				}
 				else if (n > _size)
 				{
 					n -= this->size();
+					_size += n;
 					while (n--)
 						_alloc.construct(_end++, val);
-					_size += n;
 				}
 				else
 				{
@@ -227,9 +237,7 @@ namespace ft
 					throw std::length_error("vector::push_back");
 				if (_size == _capacity)
 					this->reserve(_size + 1);
-				insert(this->end(), val);
-				_size++;
-				_end++;
+				this->insert(this->end(), val);
 			}
 
 			void	pop_back()
@@ -245,35 +253,43 @@ namespace ft
 
 			iterator	insert(iterator position, const value_type& val)
 			{
-				if (_size == _capacity && _capacity + 1 > this->max_size())
-					throw std::length_error("vector::insert");
-				if (_size == _capacity)
-					this->reserve(_size + 1);
-				ft::vector<T>	tmp = *this;
-				iterator		iter2 = tmp.begin();
-				iterator		iter3 = position;
-				while (&(*iter2) - &(*tmp.begin()) != &(*position) - &(*this->begin()))
-					iter2++;
+				difference_type	dist = ft::distance(this->begin(), position);
+				if (this->size() == this->capacity())
+				{
+					if (this->size() + 1 > this->max_size())
+						throw std::length_error("vector::insert");
+					this->reserve(this->size() + 1);
+				}
+				position = this->begin() + dist;
+				ft::vector<value_type>	tmp(position, this->end());
 				_alloc.construct(&(*position), val);
-				insert(++position, iter2, tmp.end());
-				return (iter3);
+				_size = dist + 1;
+				_end = _begin + _size;
+				this->insert(position + 1, tmp.begin(), tmp.end());
+				return (position);
 			}
 
 			void		insert(iterator position, size_type n, const value_type& val)
 			{
-				if (_size + n > this->max_size())
-					throw std::length_error("vector::insert");
-				if (_size + n > _capacity)
-					this->reserve(n);
-				ft::vector<T>	tmp;
-				iterator		iter2 = tmp.begin();
-				while (&(*iter2) - &(*tmp.begin()) != &(*position) - &(*this->begin()))
-					iter2++;
-				insert(position + n, iter2, tmp.end());
+				difference_type	dist = ft::distance(this->begin(), position);
+				if (this->size() == this->capacity())
+				{
+					if (this->size() + n > this->max_size())
+						throw std::length_error("vector::insert");
+					this->reserve(this->size() + n);
+				}
+				position = this->begin() + dist;
+				ft::vector<value_type>	tmp(position, this->end());
+				_size = dist;
+				_end = _begin + dist;
 				while (n--)
-					*position++ = val;
-				_end += n;
-				_size += n;
+				{
+					_alloc.construct(&(*position), val);
+					position++;
+					_size++;
+					_end++;
+				}
+				this->insert(position, tmp.begin(), tmp.end());
 			}
 
 			template <class InputIterator>
@@ -283,26 +299,40 @@ namespace ft
 				bool	is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value;
 				if (!is_valid)
 					throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>();
-				if (this->size() + ft::distance(first, last) > this->max_size())
+				difference_type	dist = ft::distance(this->begin(), position);
+				difference_type	size_plus = ft::distance(first, last);
+				if (this->size() + size_plus > this->max_size())
 					throw std::length_error("vector::insert");
-				if (this->capacity() < this->size() + ft::distance(first, last))
-					this->reserve(this->size() + ft::distance(first, last));
-				_end += ft::distance(first, last);
-				_size += ft::distance(first, last);
+				if (this->size() + size_plus > this->capacity())
+					this->reserve(this->size() + size_plus);
+				position = this->begin() + dist;
+				ft::vector<value_type>	tmp(position, this->end());
 				while (first != last)
+				{
 					*position++ = *first++;
+					_size++;
+					_end++;
+				}
+				iterator	iter = tmp.begin();
+				while (iter != tmp.end())
+					*position++ = *iter++;
 			}
 
 			iterator	erase(iterator position)
 			{
-				ft::vector<T>	tmp = *this;
+				ft::vector<T>	tmp(this->begin(), this->end());
 				iterator		iter = tmp.begin();
-				while (&(*iter) - &(*tmp.begin()) != &(*position) - &(*this->begin()))
+				while (distance(tmp.begin(), iter) != distance(this->begin(), position))
 					iter++;
+				iter++;
 				_alloc.destroy(&(*position));
-				insert(position, iter, tmp.end());
-				_alloc.destroy(_end);
+				while (position != this->end())
+				{
+					_alloc.construct(position.pointed(), *iter++);
+					position++;
+				}
 				_size--;
+				_alloc.destroy(_end);
 				_end--;
 				return (position + 1);
 			}
@@ -312,7 +342,7 @@ namespace ft
 				vector<T>	tmp;
 				iterator		iter = tmp.begin();
 				iterator		tmp_iter = first;
-				while (&(*iter) - &(*tmp.begin()) != &(*last) - &(*this->begin()))
+				while (distance(tmp.begin(), iter) != distance(this->begin(), last))
 					iter++;
 				while (first != last)
 					_alloc.destroy(&(*first++));
@@ -324,21 +354,18 @@ namespace ft
 
 			void	swap(vector& x)
 			{
-				ft::vector<T>	tmp;
+				ft::vector<T>	tmp(x.begin(), x.end());
 
-				tmp = x;
 				x = *this;
-				*this = tmp;
 			}
 
 			void	clear()
 			{
-				size_type	prev_size = this->size();
-
-				while (prev_size--)
+				while (_size)
 				{
-					_end--;
 					_alloc.destroy(_end);
+					_end--;
+					_size--;
 				}
 			}
 

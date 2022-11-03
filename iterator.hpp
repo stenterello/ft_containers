@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/02 16:58:44 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/03 13:22:13 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ namespace ft
 			random_access_iterator&	operator+=(difference_type n) { _pointed += n; return (*this); }
 			random_access_iterator&	operator-=(difference_type n) { _pointed += n; return (*this); }
 			operator				random_access_iterator<const T> () const { return (random_access_iterator<const T>(this->_pointed)); }
+			pointer					pointed() { return this->_pointed; };
 		private:
 			pointer	_pointed;
 	};
