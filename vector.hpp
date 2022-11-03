@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/03 17:14:03 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/03 17:40:39 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,10 @@ namespace ft
 
 			vector& operator=(const vector& other)
 			{
-				_size = other.size();
-				_capacity = other.capacity();
-				_alloc = other.get_allocator();
-				assign(other.begin(), other.begin() + _size);
+				if (other == *this)
+					return (*this);
+				this->clear();
+				this->insert(this->end(), other.begin(), other.end());
 				return (*this);
 			}
 
@@ -354,9 +354,10 @@ namespace ft
 
 			void	swap(vector& x)
 			{
-				ft::vector<T>	tmp(x.begin(), x.end());
+				ft::vector<T>	tmp(x);
 
 				x = *this;
+				*this = tmp;
 			}
 
 			void	clear()
@@ -485,7 +486,7 @@ namespace ft
 	template <class T, class Alloc>
 	bool	operator>=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
 	{
-		return (!(rhs < lhs));
+		return (!(rhs > lhs));
 	}
 
 	template <class T, class Alloc>
