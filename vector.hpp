@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/03 17:40:39 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/03 17:48:44 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,8 @@ namespace ft
 				}
 				else
 				{
-					_alloc.deallocate(_begin, this->capacity());
+					if (this->capacity() > 0)
+						_alloc.deallocate(_begin, this->capacity());
 					_begin = _alloc.allocate(count);
 					_end = _begin;
 					_capacity = count;
@@ -197,7 +198,8 @@ namespace ft
 						_end++;
 						prev_begin++;
 					}
-					_alloc.deallocate(prev_begin - prev_size, prev_capacity);
+					if (prev_size)
+						_alloc.deallocate(prev_begin - prev_size, prev_capacity);
 				}
 			};
 
