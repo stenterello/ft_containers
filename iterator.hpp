@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/03 17:45:18 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/06 00:47:35 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,9 @@ namespace ft
 			pointer					operator->() { return &(this->operator*()); }
 			random_access_iterator	operator+(difference_type n) const { return random_access_iterator(_pointed + n); }
 			random_access_iterator	operator-(difference_type n) const { return random_access_iterator(_pointed - n); }
-			random_access_iterator	operator++() { _pointed++; return (*this); }
+			random_access_iterator&	operator++() { _pointed++; return (*this); }
 			random_access_iterator	operator++(int) { random_access_iterator ret(*this); _pointed++; return (ret); }
-			random_access_iterator	operator--() { _pointed--; return (*this); }
+			random_access_iterator&	operator--() { _pointed--; return (*this); }
 			random_access_iterator	operator--(int) { random_access_iterator ret(*this); _pointed--; return (ret); }
 			random_access_iterator&	operator+=(difference_type n) { _pointed += n; return (*this); }
 			random_access_iterator&	operator-=(difference_type n) { _pointed += n; return (*this); }
@@ -175,6 +175,18 @@ namespace ft
 	bool	operator!=(InputIterator1 x, InputIterator2 y)
 	{
 		return (!(x == y));
+	}
+
+	template <class InputIterator>
+	typename InputIterator::difference_type operator-(InputIterator lhs, InputIterator rhs)
+	{
+		return (lhs.pointed() - rhs.pointed());
+	}
+
+	template <class InputIterator1, class InputIterator2>
+	typename InputIterator1::difference_type operator-(InputIterator1 lhs, InputIterator2 rhs)
+	{
+		return (lhs.pointed() - rhs.pointed());
 	}
 
 	//Operations

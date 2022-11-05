@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/29 16:11:26 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/02 17:13:22 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/05 23:19:49 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,6 @@
 #include "iterator.hpp"
 #include <typeinfo>
 #include <string>
-
-// static class nullptr_t
-// {
-//     public:
-//         /*
-//         ** @brief For conversion to any type
-//         ** of null non-member pointer.
-//         */
-//         template<class T>
-//         operator T*() const { return (0); }
-
-//         /*
-//         ** @brief For conversion to any type of null
-//         ** member pointer.
-//         */
-//         template<class C, class T>
-//         operator T C::*() const { return (0); }
-
-//     private:
-        
-//         /*
-//         ** @brief It's imposible to get an address of
-//         ** a nullptr.
-//         */
-//         void operator&() const;
-
-// } u_nullptr = {};
 
 namespace ft
 {
@@ -135,16 +108,31 @@ namespace ft
 	struct is_ft_iterator_tagged<ft::random_access_iterator_tag> : public valid_iterator_tag_res<true, ft::random_access_iterator_tag> {};
 
 	template <>
+	struct is_ft_iterator_tagged<std::random_access_iterator_tag> : public valid_iterator_tag_res<true, std::random_access_iterator_tag> {};
+
+	template <>
 	struct is_ft_iterator_tagged<ft::bidirectional_iterator_tag> : public valid_iterator_tag_res<true, ft::bidirectional_iterator_tag> {};
+
+	template <>
+	struct is_ft_iterator_tagged<std::bidirectional_iterator_tag> : public valid_iterator_tag_res<true, std::bidirectional_iterator_tag> {};
 
 	template <>
 	struct is_ft_iterator_tagged<ft::forward_iterator_tag> : public valid_iterator_tag_res<true, ft::forward_iterator_tag> {};
 
 	template <>
+	struct is_ft_iterator_tagged<std::forward_iterator_tag> : public valid_iterator_tag_res<true, std::forward_iterator_tag> {};
+
+	template <>
 	struct is_ft_iterator_tagged<ft::input_iterator_tag> : public valid_iterator_tag_res<true, ft::input_iterator_tag> {};
 
 	template <>
+	struct is_ft_iterator_tagged<std::input_iterator_tag> : public valid_iterator_tag_res<true, std::input_iterator_tag> {};
+
+	template <>
 	struct is_ft_iterator_tagged<ft::output_iterator_tag> : public valid_iterator_tag_res<true, ft::output_iterator_tag> {};
+
+	template <>
+	struct is_ft_iterator_tagged<std::output_iterator_tag> : public valid_iterator_tag_res<true, std::output_iterator_tag> {};
 
 	template <typename T>
 	class InvalidIteratorException : public std::exception

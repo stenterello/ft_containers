@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/03 17:48:44 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/06 00:55:12 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -320,24 +320,24 @@ namespace ft
 					*position++ = *iter++;
 			}
 
-			iterator	erase(iterator position)
-			{
-				ft::vector<T>	tmp(this->begin(), this->end());
-				iterator		iter = tmp.begin();
-				while (distance(tmp.begin(), iter) != distance(this->begin(), position))
-					iter++;
-				iter++;
-				_alloc.destroy(&(*position));
-				while (position != this->end())
-				{
-					_alloc.construct(position.pointed(), *iter++);
-					position++;
-				}
-				_size--;
-				_alloc.destroy(_end);
-				_end--;
-				return (position + 1);
-			}
+			// iterator	erase(iterator position)
+			// {
+			// 	ft::vector<T>	tmp(this->begin(), this->end());
+			// 	iterator		iter = tmp.begin();
+			// 	while (distance(tmp.begin(), iter) != distance(this->begin(), position))
+			// 		iter++;
+			// 	iter++;
+			// 	_alloc.destroy(&(*position));
+			// 	while (position != this->end())
+			// 	{
+			// 		_alloc.construct(position.pointed(), *iter++);
+			// 		position++;
+			// 	}
+			// 	_size--;
+			// 	_alloc.destroy(_end);
+			// 	_end--;
+			// 	return (position + 1);
+			// }
 
 			iterator	erase(iterator first, iterator last)
 			{
@@ -352,6 +352,15 @@ namespace ft
 				_size -= ft::distance(first, last);
 				_end -= ft::distance(first, last);
 				return (tmp_iter + ft::distance(iter, tmp.end()));
+			}
+
+			iterator	erase(iterator position)
+			{
+				_alloc.destroy(*position);
+				this->insert(position, position + 1, this->end());
+				_alloc.destroy(_end);
+				_end--;
+				_size--;
 			}
 
 			void	swap(vector& x)
