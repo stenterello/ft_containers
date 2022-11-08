@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/07 21:43:41 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/08 12:24:49 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,8 +171,6 @@ namespace ft
 			}
 		};
 
-		// void assign( std::initializer_list<T> ilist );
-
 		void reserve(size_type n)
 		{
 			pointer prev_begin = _begin;
@@ -295,24 +293,16 @@ namespace ft
 		void insert(iterator position, InputIterator first, InputIterator last,
 					typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type * = 0)
 		{
-
-			// Controlli sugli iteratori
 			bool is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::value;
 			if (!is_valid)
 				throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::type>();
-
-			// Calcoli preliminari
 			difference_type dist = ft::distance(this->begin(), position);
 			difference_type finalSize = this->size() + ft::distance(first, last);
-
-			// Allocazione di memoria
 			if ((size_type)finalSize > this->max_size())
 				throw std::length_error("vector::insert");
 			if ((size_type)finalSize > this->capacity())
 				this->reserve(finalSize);
 			position = this->begin() + dist;
-
-			// Copia vera e propria
 			ft::vector<value_type> tmp(position, this->end());
 			while (first != last)
 			{
@@ -323,8 +313,6 @@ namespace ft
 				}
 				*position++ = *first++;
 			}
-
-			// Copia dell'eventuale resto di elementi
 			iterator iter = tmp.begin();
 			while (iter != tmp.end())
 			{
@@ -336,25 +324,6 @@ namespace ft
 				*position++ = *iter++;
 			}
 		}
-
-		// iterator	erase(iterator position)
-		// {
-		// 	ft::vector<T>	tmp(this->begin(), this->end());
-		// 	iterator		iter = tmp.begin();
-		// 	while (distance(tmp.begin(), iter) != distance(this->begin(), position))
-		// 		iter++;
-		// 	iter++;
-		// 	_alloc.destroy(&(*position));
-		// 	while (position != this->end())
-		// 	{
-		// 		_alloc.construct(position.pointed(), *iter++);
-		// 		position++;
-		// 	}
-		// 	_size--;
-		// 	_alloc.destroy(_end);
-		// 	_end--;
-		// 	return (position + 1);
-		// }
 
 		iterator erase(iterator first, iterator last)
 		{
@@ -399,10 +368,18 @@ namespace ft
 
 		void swap(vector &x)
 		{
-			ft::vector<T> tmp(x);
+			ft::vector<value_type>	tmp(x);
+			pointer					tmpPtrBgn = x._begin;
+			pointer					tmpPtrEnd = x._end;
 
-			x = *this;
-			*this = tmp;
+			x._begin = this->_begin;
+			x._capacity = this->_capacity;
+			x._size = this->_size;
+			x._end = this->_end;
+			this->_begin = tmpPtrBgn;
+			this->_capacity = tmp.capacity();
+			this->_size = tmp.size();
+			this->_end = tmpPtrEnd;
 		}
 
 		void clear()
@@ -417,66 +394,66 @@ namespace ft
 
 		// Element access
 
-		reference at(size_type pos)
+		reference		at(size_type pos)
 		{
 			if (pos >= _size)
 				throw std::out_of_range("vector::out_of_range");
 			return (*(_begin + pos));
 		};
 
-		const_reference at(size_type pos) const
+		const_reference	at(size_type pos) const
 		{
 			if (pos >= _size)
 				throw std::out_of_range("vector::out_of_range");
 			return (*(_begin + pos));
 		};
 
-		reference operator[](size_type pos)
+		reference		operator[](size_type pos)
 		{
 			if (pos >= _size)
 				throw std::out_of_range("vector::out_of_range");
 			return (*(_begin + pos));
 		};
 
-		const_reference operator[](size_type pos) const
+		const_reference	operator[](size_type pos) const
 		{
 			if (pos >= _size)
 				throw std::out_of_range("vector::out_of_range");
 			return (*(_begin + pos));
 		};
 
-		reference front() { return (*_begin); };
+		reference		front() { return (*_begin); };
 		const_reference front() const { return (*_begin); };
-		reference back() { return (*(_end - 1)); };
+		reference		back() { return (*(_end - 1)); };
 		const_reference back() const { return (*(_end - 1)); };
-		T *data() { return (_begin); };
-		const T *data() const { return (_begin); };
+		T*				data() { return (_begin); };
+		const T*		data() const { return (_begin); };
 
 		// Iterators
 
-		iterator begin() { return (_begin); };
-		const_iterator begin() const { return (_begin); };
-		iterator end() { return (_end); };
-		const_iterator end() const { return (_end); };
-		reverse_iterator rbegin() { return reverse_iterator(this->end()); };
-		const_reverse_iterator rbegin() const { return reverse_iterator(this->end()); };
-		reverse_iterator rend() { return reverse_iterator(this->begin()); };
-		const_reverse_iterator rend() const { return reverse_iterator(this->begin()); };
+		iterator				begin() { return (_begin); };
+		const_iterator			begin() const { return (_begin); };
+		iterator				end() { return (_end); };
+		const_iterator			end() const { return (_end); };
+		reverse_iterator		rbegin() { return reverse_iterator(this->end()); };
+		const_reverse_iterator	rbegin() const { return reverse_iterator(this->end()); };
+		reverse_iterator		rend() { return reverse_iterator(this->begin()); };
+		const_reverse_iterator	rend() const { return reverse_iterator(this->begin()); };
 
 		// Vector info
 
-		bool empty() const { return (size() == 0 ? true : false); };
-		size_type size() const { return (_size); };
-		size_type max_size() const { return (allocator_type().max_size()); };
-		size_type capacity() const { return (_capacity); };
-		allocator_type get_allocator() const { return (_alloc); };
+		bool			empty() const { return (size() == 0 ? true : false); };
+		size_type		size() const { return (_size); };
+		size_type		max_size() const { return (allocator_type().max_size()); };
+		size_type		capacity() const { return (_capacity); };
+		allocator_type	get_allocator() const { return (_alloc); };
 
 	private:
-		size_type _size;
-		size_type _capacity;
-		pointer _begin;
-		pointer _end;
-		allocator_type _alloc;
+		size_type		_size;
+		size_type		_capacity;
+		pointer			_begin;
+		pointer			_end;
+		allocator_type	_alloc;
 	};
 
 	// Overloads
