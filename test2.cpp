@@ -108,31 +108,16 @@ void ft_eq_ope(const Ite_1 &first, const Ite_2 &second, const bool redo = 1)
 
 int		main(void)
 {
-	ft::vector<TESTED_TYPE> vct(10);
+	const int size = 5;
+	ft::vector<TESTED_TYPE> vct(size);
+	ft::vector<TESTED_TYPE>::iterator it = vct.begin();
+	ft::vector<TESTED_TYPE>::const_iterator ite = vct.begin();
 
-	for (unsigned long int i = 0; i < vct.size(); ++i)
-		vct[i] = std::string((vct.size() - i), i + 65);
-	printSize(vct);
+	for (int i = 0; i < size; ++i)
+		it[i] = i;
 
-	checkErase(vct, vct.erase(vct.begin() + 2));
-
-	checkErase(vct, vct.erase(vct.begin()));
-	checkErase(vct, vct.erase(vct.end() - 1));
-
-	checkErase(vct, vct.erase(vct.begin(), vct.begin() + 3));
-	checkErase(vct, vct.erase(vct.end() - 3, vct.end() - 1));
-
-	vct.push_back("Hello");
-	vct.push_back("Hi there");
-	printSize(vct);
-	checkErase(vct, vct.erase(vct.end() - 3, vct.end()));
-
-	vct.push_back("ONE");
-	vct.push_back("TWO");
-	vct.push_back("THREE");
-	vct.push_back("FOUR");
-	printSize(vct);
-	checkErase(vct, vct.erase(vct.begin(), vct.end()));
+	ite[1] = 42; // < -- error
 
 	return (0);
 }
+
