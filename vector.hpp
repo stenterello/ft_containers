@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/08 12:24:49 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/09 12:13:16 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ namespace ft
 		_begin(NULL),
 		_alloc(alloc)
 		{
-			if (n > 0)
+			if (n > 0 && n < this->max_size())
 			{
 				_size = n;
 				_capacity = 1;
@@ -68,6 +68,8 @@ namespace ft
 					_end++;
 				}
 			}
+			else
+				throw std::length_error("vector::constructor");
 		}
 
 		vector &operator=(const vector &other)
@@ -235,7 +237,9 @@ namespace ft
 				throw std::length_error("vector::push_back");
 			if (_size == _capacity)
 				this->reserve(_size + 1);
-			this->insert(this->end(), val);
+			_alloc.construct(_end, val);
+			_end++;
+			_size++;
 		}
 
 		void pop_back()
@@ -258,11 +262,20 @@ namespace ft
 				this->reserve(this->size() + 1);
 			}
 			position = this->begin() + dist;
-			ft::vector<value_type> tmp(position, this->end());
-			_alloc.construct(&(*position), val);
-			_size = dist + 1;
-			_end = _begin + _size;
-			this->insert(position + 1, tmp.begin(), tmp.end());
+			if (position != this->end())
+			{
+				ft::vector<value_type> tmp(position, this->end());
+				_alloc.construct(&(*position), val);
+				_size = dist;
+				_end = _begin + _size;
+				this->insert(position + 1, tmp.begin(), tmp.end());
+			}
+			else
+			{
+				_alloc.construct(&(*position), val);
+				_end++;
+				_size++;
+			}
 			return (position);
 		}
 

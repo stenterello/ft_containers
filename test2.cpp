@@ -108,15 +108,7 @@ void ft_eq_ope(const Ite_1 &first, const Ite_2 &second, const bool redo = 1)
 
 int		main(void)
 {
-	const int size = 5;
-	ft::vector<TESTED_TYPE> vct(size);
-	ft::vector<TESTED_TYPE>::iterator it = vct.begin();
-	ft::vector<TESTED_TYPE>::const_iterator ite = vct.begin();
-
-	for (int i = 0; i < size; ++i)
-		it[i] = i;
-
-	ite[1] = 42; // < -- error
+	ft::vector<int>	ciao(-1, -1);
 
 	return (0);
 }
