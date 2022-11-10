@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/09 12:13:16 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/10 15:09:53 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,7 @@ namespace ft
 			if (n > 0 && n < this->max_size())
 			{
 				_size = n;
-				_capacity = 1;
-				while (_capacity < n)
-					_capacity *= 2;
+				_capacity = n;
 				_begin = _alloc.allocate(_capacity);
 				_end = _begin;
 				while (n--)
@@ -69,7 +67,7 @@ namespace ft
 				}
 			}
 			else
-				throw std::length_error("vector::constructor");
+				throw std::length_error("vector");
 		}
 
 		vector &operator=(const vector &other)
@@ -89,9 +87,7 @@ namespace ft
 				throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::type>();
 			difference_type n = ft::distance(first, last);
 			_size = n;
-			_capacity = 1;
-			while (_capacity < static_cast<unsigned long>(n))
-				_capacity *= 2;
+			_capacity = n;
 			_begin = _alloc.allocate(_capacity);
 			_end = _begin;
 			while (n--)
@@ -175,28 +171,25 @@ namespace ft
 
 		void reserve(size_type n)
 		{
-			pointer prev_begin = _begin;
-			pointer prev_end = _end;
-			size_type prev_capacity = _capacity;
-			size_type prev_size = _size;
-			size_type new_cap = 1;
+			pointer 	prev_begin = _begin;
+			pointer 	prev_end = _end;
+			size_type 	prev_capacity = _capacity;
+			size_type 	prev_size = _size;
 
 			if (n > max_size())
 				throw std::length_error("vector::reserve");
 			if (n > _capacity)
 			{
-				while (new_cap < n)
-					new_cap *= 2;
-				_begin = _alloc.allocate(new_cap);
+				_begin = _alloc.allocate(n);
 				_end = _begin;
-				_capacity = new_cap;
+				_capacity = n;
 				while (prev_begin != prev_end)
 				{
 					_alloc.construct(_end, *prev_begin);
 					_end++;
 					prev_begin++;
 				}
-				if (prev_size)
+				if (prev_capacity)
 					_alloc.deallocate(prev_begin - prev_size, prev_capacity);
 			}
 		};
@@ -206,20 +199,17 @@ namespace ft
 			if (n > this->max_size())
 				throw std::length_error("vector::resize");
 			else if (n > _capacity)
-			{
 				this->reserve(n);
-				n -= this->size();
-				_size += n;
-				while (n--)
-					_alloc.construct(_end++, val);
-			}
-			else if (n > _size)
+			if (n > _size)
 			{
-				n -= this->size();
-				_size += n;
-				while (n--)
+				while (this->size() != n)
+				{
 					_alloc.construct(_end++, val);
+					_size++;
+				}
 			}
+			else if (n == _size)
+				return ;
 			else
 			{
 				pointer p = _begin + n;
@@ -235,10 +225,11 @@ namespace ft
 		{
 			if (_size == _capacity && _capacity + 1 > this->max_size())
 				throw std::length_error("vector::push_back");
-			if (_size == _capacity)
-				this->reserve(_size + 1);
-			_alloc.construct(_end, val);
-			_end++;
+			if (this->empty())
+				this->reserve(1);
+			else if (_size == _capacity)
+				this->reserve(_size * 2);
+			_alloc.construct(_end++, val);
 			_size++;
 		}
 
