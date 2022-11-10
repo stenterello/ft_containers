@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/08 12:57:38 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/10 17:36:16 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ namespace ft
 		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::pointer			pointer;
 		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::reference			reference;
 		random_access_iterator(){};
-		random_access_iterator(pointer p) : _pointed(p){};
+		random_access_iterator(pointer p) : _pointed(p) {};
 		random_access_iterator(random_access_iterator const &src) { this->_pointed = src.pointed(); }
 		virtual ~random_access_iterator(){};
 		reference				operator*() const { return (*_pointed); }

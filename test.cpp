@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:50:37 by gimartin          #+#    #+#             */
-/*   Updated: 2022/11/10 15:25:12 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/10 17:06:33 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,9 +255,33 @@ std::vector<int> push_back_test(_vector<T> vector) {
     return v;
 }
 
+template <typename T>
+std::vector<int> insert_test_1(std::vector<T> vector) {
+    std::vector<int> v;
+    vector.assign(2600 * _ratio, 1);
+    // g_start1 = timer();
+    v.push_back(*(vector.insert(vector.end() - 800 * _ratio, 44)));
+    // g_end1 = timer();
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+
+    return v;
+}
+
+template <typename T>
+std::vector<int> insert_test_1(_vector<T> vector) {
+    std::vector<int> v;
+    vector.assign(2600 * _ratio, 1);
+    // g_start2 = timer();
+    v.push_back(*(vector.insert(vector.end() - 800 * _ratio, 44)));
+    // g_end2 = timer();
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+
+    return v;
+}
+
 int main() {
 
-    run_vector_unit_test<int>("push_back()", push_back_test, push_back_test);
-	
-	return (0);
+    exit(run_vector_unit_test<int>("insert(value)", insert_test_1, insert_test_1));
 }
