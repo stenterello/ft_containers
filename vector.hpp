@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/11 13:38:59 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/11 17:46:25 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,22 +165,24 @@ namespace ft
 
 		void resize(size_type n, value_type val = value_type())
 		{
+			size_type	new_cap = this->capacity();
+
 			if (n > this->max_size())
 				throw std::length_error("vector::resize");
 			if (n > this->capacity())
 			{
-				this->reserve(n);
+				while (n > new_cap)
+					new_cap *= 2;
+				this->reserve(new_cap);
 				this->insert(this->end(), n - this->size(), val);
 			}
 			else if (n > this->size())
-			{
 				this->insert(this->end(), n - this->size(), val);
-			}
 			else if (n == this->size())
 				return ;
 			else
 			{
-				while (ft::distance(this->begin() + n, this->end()))
+				for (size_type i = ft::distance(this->begin() + n, this->end()); i > 0; i--)
 				{
 					_alloc.destroy(_end--);
 					_size--;
@@ -215,33 +217,38 @@ namespace ft
 			pointer		tmp;
 			size_type	dist = ft::distance(this->begin(), position);
 			if (this->size() == this->capacity())
-				this->reserve(this->size() + 1);
+				this->reserve(this->size() * 2);
 			_end++;
-			tmp = _end;
+			tmp = _end - 1;
 			position = this->begin() + dist;
-			while (ft::distance(position, tmp))
+			*position = val;
+			while (position.pointed() != tmp)
 			{
-				_alloc.construct(tmp, *(tmp - 1));
-				_size++;
+				*tmp = *(tmp - 1);
 				tmp--;
 			}
-			_alloc.construct(tmp, val);
+			_size++;
 			return (position);
 		}
 
 		void insert(iterator position, size_type n, const value_type &val)
 		{
 			size_type	dist = ft::distance(this->begin(), position);
-			this->reserve(this->size() + n);
-			_end += n;
+			size_type	finalSize = this->size();
+			pointer		rangeEnd;
+			finalSize += n;
+			if (finalSize > this->capacity())
+				this->reserve(finalSize);
+			_end = _begin + finalSize;
+			pointer		tmpEnd = _end;
+			_size = ft::distance(this->begin(), this->end());
 			position = this->begin() + dist;
-			dist = ft::distance(position, this->end());
-			while (dist--)
-			{
-				_begin[dist] = val;
-				_size++;
-			}
-			_begin[dist] = val;
+			iterator	tmpPosition = position;
+			rangeEnd = position.pointed() + n;
+			while (tmpEnd != rangeEnd)
+				*tmpEnd-- = *tmpPosition++;
+			while (position.pointed() != rangeEnd)
+				*position++ = val;
 		}
 
 		template <class InputIterator>
@@ -251,20 +258,29 @@ namespace ft
 			bool is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::value;
 			if (!is_valid)
 				throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::type>();
-			pointer		tmp;
 			size_type	dist = ft::distance(this->begin(), position);
-			if (this->size() + ft::distance(first, last) > this->capacity())
+			size_type	finalSize = this->size();
+			pointer		rangeEnd;
+			finalSize += ft::distance(first, last);
+			size_type	new_cap = this->capacity();
+			if (finalSize > this->capacity())
 			{
-				this->reserve(this->size() + ft::distance(first, last));
-				_end = _begin + dist;
+				if (!this->capacity())
+					new_cap = 1;
+				while (finalSize > new_cap)
+					new_cap *= 2;
+				this->reserve(new_cap);
 			}
-			else
-				_end = _begin;
-			while (first != last)
-			{
-				_alloc.construct(_end++, *first++);
-				_size++;
-			}
+			_end = _begin + finalSize;
+			pointer		tmpEnd = _end;
+			_size = finalSize;
+			position = this->begin() + dist;
+			iterator	tmpPosition = position;
+			rangeEnd = position.pointed() + ft::distance(first, last);
+			while (tmpEnd != rangeEnd)
+				*tmpEnd-- = *tmpPosition++;
+			while (position.pointed() != rangeEnd)
+				*position++ = *first++;
 		}
 
 		iterator erase(iterator first, iterator last)

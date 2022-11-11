@@ -16,6 +16,16 @@ ft::vector<int>	test()
 
 int	main()
 {
-	std::vector<int>	ciao(0, -1);
+	ft::vector<int>	ciao(15, 5);
+	ciao.insert(ciao.begin() + 3, 5, 7);
+	ft::vector<int>::iterator	iter = ciao.begin();
+	while (iter != ciao.end())
+		std::cout << *iter++ << std::endl;
+	std::cout << std::endl;
+	std::vector<int>	ciao2(15, 5);
+	ciao2.insert(ciao2.begin() + 3, 5, 7);
+	std::vector<int>::iterator	iter2 = ciao2.begin();
+	while (iter2 != ciao2.end())
+		std::cout << *iter2++ << std::endl;	
 	return (0);
 }
