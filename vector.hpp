@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/10 19:54:02 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/11 13:38:59 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,23 +54,20 @@ namespace ft
 		_begin(NULL),
 		_alloc(alloc)
 		{
-			if (n > 0 && n < this->max_size())
+			if (n >= 0 && n < this->max_size())
 			{
 				_size = n;
 				_capacity = n;
 				_begin = _alloc.allocate(_capacity);
 				_end = _begin;
 				while (n--)
-				{
-					_alloc.construct(_end, val);
-					_end++;
-				}
+					_alloc.construct(_end++, val);
 			}
 			else
 				throw std::length_error("vector");
 		}
 
-		vector &operator=(const vector &other)
+		vector&	operator=(const vector &other)
 		{
 			if (other == *this)
 				return (*this);
@@ -103,7 +100,6 @@ namespace ft
 			_size = x.size();
 			_capacity = x.capacity();
 			_begin = _alloc.allocate(x.capacity());
-			_end = _begin + _size;
 			if (!x.empty())
 				assign(x.begin(), x.end());
 			_end = _begin + _size;
@@ -226,6 +222,7 @@ namespace ft
 			while (ft::distance(position, tmp))
 			{
 				_alloc.construct(tmp, *(tmp - 1));
+				_size++;
 				tmp--;
 			}
 			_alloc.construct(tmp, val);
@@ -240,7 +237,10 @@ namespace ft
 			position = this->begin() + dist;
 			dist = ft::distance(position, this->end());
 			while (dist--)
+			{
 				_begin[dist] = val;
+				_size++;
+			}
 			_begin[dist] = val;
 		}
 
@@ -253,21 +253,18 @@ namespace ft
 				throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::type>();
 			pointer		tmp;
 			size_type	dist = ft::distance(this->begin(), position);
-			this->reserve(this->size() + ft::distance(first, last));
-			_end += ft::distance(first, last);
-			tmp = _end;
-			position = this->begin() + dist;
-			while (ft::distance(position + ft::distance(first, last), tmp))
+			if (this->size() + ft::distance(first, last) > this->capacity())
 			{
-				_alloc.construct(tmp, *(tmp - 1));
-				tmp--;
+				this->reserve(this->size() + ft::distance(first, last));
+				_end = _begin + dist;
 			}
-			while (last != first)
+			else
+				_end = _begin;
+			while (first != last)
 			{
-				_alloc.construct(tmp, *last);
-				last--;
+				_alloc.construct(_end++, *first++);
+				_size++;
 			}
-			_alloc.construct(tmp, *last);
 		}
 
 		iterator erase(iterator first, iterator last)
@@ -355,14 +352,14 @@ namespace ft
 
 		reference		operator[](size_type pos)
 		{
-			if (pos >= _size)
+			if (pos >= _capacity)
 				throw std::out_of_range("vector::out_of_range");
 			return (*(_begin + pos));
 		};
 
 		const_reference	operator[](size_type pos) const
 		{
-			if (pos >= _size)
+			if (pos >= _capacity)
 				throw std::out_of_range("vector::out_of_range");
 			return (*(_begin + pos));
 		};

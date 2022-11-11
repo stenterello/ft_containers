@@ -16,9 +16,6 @@ ft::vector<int>	test()
 
 int	main()
 {
-	std::vector<int>	ciao;
-
-	ciao.reserve(15);
-	std::cout << ft::distance(ciao.begin(), ciao.end()) << std::endl;
+	std::vector<int>	ciao(0, -1);
 	return (0);
 }
