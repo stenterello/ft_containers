@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:50:37 by gimartin          #+#    #+#             */
-/*   Updated: 2022/11/12 18:02:32 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/12 19:59:14 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,19 @@ const std::string REDD = "\x1B[1;31m";
 const std::string YELLOW = "\x1B[1;33m";
 const std::string WHITE = "\x1B[1;39m";
 const std::string RESET = "\033[0m";
+
+volatile static time_t g_start1;
+volatile static time_t g_start2;
+volatile static time_t g_end1;
+volatile static time_t g_end2;
+
+time_t timer() {
+	struct timeval start = {};
+	gettimeofday(&start, nullptr);
+	time_t msecs_time = (start.tv_sec * 1000) + (start.tv_usec / 1000);
+	return msecs_time;
+}
+
 
 int _ratio = 10000;
 int _allocator_used = 0;
@@ -139,9 +152,9 @@ int run_vector_unit_test(std::string test_name, std::vector<int> (func1)(std::ve
 	    printElement("FAILED");
 	    result = 1;
 	}
-	// t1 = g_end1 - g_start1, t2 = g_end2 - g_start2;
-	// (t1 >= t2) ? printElement(GREEN + std::to_string(t2) + "ms" + RESET) : printElement(REDD + std::to_string(t2) + "ms" + RESET);
-	// (t1 > t2) ? printElement(REDD + std::to_string(t1) + "ms" + RESET) : printElement(GREEN + std::to_string(t1) + "ms" + RESET);
+	t1 = g_end1 - g_start1, t2 = g_end2 - g_start2;
+	(t1 >= t2) ? printElement(GREEN + std::to_string(t2) + "ms" + RESET) : printElement(REDD + std::to_string(t2) + "ms" + RESET);
+	(t1 > t2) ? printElement(REDD + std::to_string(t1) + "ms" + RESET) : printElement(GREEN + std::to_string(t1) + "ms" + RESET);
 	// leaks = leaks_test(getpid());
 	std::cout << std::endl;
 
@@ -594,9 +607,9 @@ std::vector<int> erase_test_1(std::vector<T> vector) {
     std::vector<int> v;
     for (int i = 0; i < 9900 * _ratio; ++i)
         vector.push_back(i);
-    // g_start1 = timer();
+    g_start1 = timer();
     v.push_back(*(vector.erase(vector.begin() + 8 * _ratio)));
-    // g_end1 = timer();
+    g_end1 = timer();
     v.push_back(*(vector.begin() + 82 * _ratio));
     v.push_back(vector.size());
     v.push_back(vector.capacity());
@@ -608,9 +621,9 @@ std::vector<int> erase_test_1(_vector<T> vector) {
     std::vector<int> v;
     for (int i = 0; i < 9900 * _ratio; ++i)
         vector.push_back(i);
-    // g_start2 = timer();
+    g_start2 = timer();
     v.push_back(*(vector.erase(vector.begin() + 8 * _ratio)));
-    // g_end2 = timer();
+    g_end2 = timer();
     v.push_back(*(vector.begin() + 82 * _ratio));
     v.push_back(vector.size());
     v.push_back(vector.capacity());

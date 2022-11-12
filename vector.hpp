@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/12 18:55:13 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/12 19:50:23 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ namespace ft
 			if (this->capacity())
 			{
 				_alloc.deallocate(_begin, _capacity);
-				_capacity = 0;
 				_begin = _alloc.allocate(other.capacity());
 				_capacity = other.capacity();
 				_end = _begin;
@@ -166,7 +165,7 @@ namespace ft
 					prev_begin++;
 				}
 				_end = _begin + ft::distance(tmp_begin, prev_end);
-				if (tmp_begin && prev_capacity)
+				if (tmp_begin)
 					_alloc.deallocate(tmp_begin, prev_capacity);
 			}
 		};
@@ -336,9 +335,13 @@ namespace ft
 		iterator erase(iterator position)
 		{
 			iterator	ret = position;
-			iterator	oneForward = position + 1;
-			while (oneForward != this->end())
-				*position++ = *oneForward++;
+			size_type	idx = position - this->begin();
+			size_type	dist = this->end() - position;
+			while (dist--)
+			{
+				_begin[idx] = _begin[idx + 1];
+				idx++;
+			}
 			_alloc.destroy(_end--);
 			_size--;
 			return (ret);
@@ -359,13 +362,11 @@ namespace ft
 			x._alloc = this->_alloc;
 			x._size = this->_size;
 			x._end = this->_end;
-			x._end_capacity = this->_begin + this->_capacity;
 			this->_begin = tmpPtrBgn;
 			this->_capacity = tmpCapacity;
 			this->_alloc = tmpAlloc;
 			this->_size = tmpSize;
 			this->_end = tmpPtrEnd;
-			this->_end_capacity = tmpPtrBgn + tmpCapacity;
 		}
 
 		void clear()
@@ -439,7 +440,6 @@ namespace ft
 		size_type		_size;
 		pointer			_begin;
 		pointer			_end;
-		pointer			_end_capacity;
 		allocator_type	_alloc;
 	};
 
