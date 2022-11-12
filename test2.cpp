@@ -1,39 +1,15 @@
-#include "iterator.hpp"
+#include "utility.hpp"
 #include "vector.hpp"
-#include <vector>
-#include <iterator>
-#include <list>
-
-ft::vector<int>	test()
-{
-	ft::vector<int>	ciao(4, 4);
-
-	ciao.resize(2);
-	return (ciao);
-}
-
-
+#include "iterator.hpp"
+#include <iostream>
 
 int	main()
 {
-	std::vector<int>	uno(10);
-	std::vector<int>	due(20);
-	uno.resize(10);
-	due.resize(20);
-	std::cout << uno.capacity() << std::endl;
-	std::cout << due.capacity() << std::endl;
-	std::swap(uno, due);
-	std::cout << uno.capacity() << std::endl;
-	std::cout << due.capacity() << std::endl;
+	ft::vector<int>	uno(10);
+	ft::vector<int>::iterator	iter1 = uno.begin();
+	ft::vector<int>::iterator	iter2 = uno.end();
+
+	std::cout << ft::distance(iter2, iter1) << std::endl;
 	return (0);
 }
-#include <iterator>
-#include <vector>
-#include <iostream>
 
-int main()
-{
-
-	std::cout 
-	return (0);
-}

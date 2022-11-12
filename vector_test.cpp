@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:50:37 by gimartin          #+#    #+#             */
-/*   Updated: 2022/11/12 22:40:31 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/13 00:48:53 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -432,7 +432,7 @@ std::vector<int> resize_test(std::vector<T> vector) {
     v.push_back(vector.capacity());
     vector.resize(15300 * _ratio, T());
     v.push_back(vector.size());
-    v.push_back(vector.capacity());
+    // v.push_back(vector.capacity());
     v.push_back(vector[65]);
     // g_end1 = timer();
     return v;
@@ -452,7 +452,7 @@ std::vector<int> resize_test(_vector<T> vector) {
     v.push_back(vector.capacity());
     vector.resize(15300 * _ratio, T());
     v.push_back(vector.size());
-    v.push_back(vector.capacity());
+    // v.push_back(vector.capacity());
     v.push_back(vector[65]);
     // g_end2 = timer();
     return v;
@@ -719,7 +719,31 @@ std::vector<int> rbegin_test(_vector<T> vector) {
     return v;
 }
 
+template <typename T>
+std::vector<int> clear_test(std::vector<T> vector) {
+    std::vector<int> v;
+    vector.assign(5000 * _ratio, 1);
+    g_start1 = timer();
+    vector.clear();
+    g_end1 = timer();
+    v.push_back(vector.capacity());
+    v.push_back(vector.size());
+    return v;
+}
+
+template <typename T>
+std::vector<int> clear_test(_vector<T> vector) {
+    std::vector<int> v;
+    vector.assign(5000 * _ratio, 1);
+    g_start2 = timer();
+    vector.clear();
+    g_end2 = timer();
+    v.push_back(vector.capacity());
+    v.push_back(vector.size());
+    return v;
+}
+
 int main() {
 
-    exit(run_vector_unit_test<int>("rbegin()", rbegin_test, rbegin_test));
+    exit(run_vector_unit_test<int>("clear()", clear_test, clear_test));
 }
