@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:50:37 by gimartin          #+#    #+#             */
-/*   Updated: 2022/11/12 15:42:13 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/12 18:02:32 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,17 +104,45 @@ int run_vector_unit_test(std::string test_name, std::vector<int> (func1)(std::ve
 		std::cout << "tester: " << res1.at(3) << std::endl << std::endl;
 		std::cout << "nostro: " << res2.at(4) << std::endl;
 		std::cout << "tester: " << res1.at(4) << std::endl << std::endl;
-		// std::cout << "nostro: " << res2.at(5) << std::endl;
-		// std::cout << "tester: " << res1.at(5) << std::endl << std::endl;
-		// std::cout << "nostro: " << res2.at(6) << std::endl;
-		// std::cout << "tester: " << res1.at(6) << std::endl;
+		std::cout << "nostro: " << res2.at(5) << std::endl;
+		std::cout << "tester: " << res1.at(5) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(6) << std::endl;
+		std::cout << "tester: " << res1.at(6) << std::endl << std:: endl;
+		std::cout << "nostro: " << res2.at(7) << std::endl;
+		std::cout << "tester: " << res1.at(7) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(8) << std::endl;
+		std::cout << "tester: " << res1.at(8) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(9) << std::endl;
+		std::cout << "tester: " << res1.at(9) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(10) << std::endl;
+		std::cout << "tester: " << res1.at(10) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(11) << std::endl;
+		std::cout << "tester: " << res1.at(11) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(12) << std::endl;
+		std::cout << "tester: " << res1.at(12) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(13) << std::endl;
+		std::cout << "tester: " << res1.at(13) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(14) << std::endl;
+		std::cout << "tester: " << res1.at(14) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(15) << std::endl;
+		std::cout << "tester: " << res1.at(15) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(16) << std::endl;
+		std::cout << "tester: " << res1.at(16) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(17) << std::endl;
+		std::cout << "tester: " << res1.at(17) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(18) << std::endl;
+		std::cout << "tester: " << res1.at(18) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(19) << std::endl;
+		std::cout << "tester: " << res1.at(19) << std::endl << std::endl;
+		std::cout << "nostro: " << res2.at(20) << std::endl;
+		std::cout << "tester: " << res1.at(20) << std::endl << std::endl;
 	    printElement("FAILED");
 	    result = 1;
 	}
 	// t1 = g_end1 - g_start1, t2 = g_end2 - g_start2;
 	// (t1 >= t2) ? printElement(GREEN + std::to_string(t2) + "ms" + RESET) : printElement(REDD + std::to_string(t2) + "ms" + RESET);
 	// (t1 > t2) ? printElement(REDD + std::to_string(t1) + "ms" + RESET) : printElement(GREEN + std::to_string(t1) + "ms" + RESET);
-	leaks = leaks_test(getpid());
+	// leaks = leaks_test(getpid());
 	std::cout << std::endl;
 
 	return !(!result && !leaks);
@@ -533,7 +561,129 @@ std::vector<int> insert_test_3(_vector<T> vector) {
     return v;
 }
 
-int main()
-{
-    exit(run_vector_unit_test<int>("insert(range)", insert_test_3, insert_test_3));
+template <typename T>
+std::vector<int> erase_test_2(std::vector<T> vector) {
+    std::vector<int> v;
+    for (int i = 0; i < 9900 * _ratio; ++i)
+        vector.push_back(i);
+    // g_start1 = timer();
+    v.push_back(*(vector.erase(vector.begin() + 8 * _ratio, vector.end() - 1500 * _ratio)));
+    // g_end1 = timer();
+    v.push_back(*(vector.begin() + 82 * _ratio));
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    return v;
+}
+
+template <typename T>
+std::vector<int> erase_test_2(_vector<T> vector) {
+    std::vector<int> v;
+    for (int i = 0; i < 9900 * _ratio; ++i)
+        vector.push_back(i);
+    // g_start2 = timer();
+    v.push_back(*(vector.erase(vector.begin() + 8 * _ratio, vector.end() - 1500 * _ratio)));
+    // g_end2 = timer();
+    v.push_back(*(vector.begin() + 82 * _ratio));
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    return v;
+}
+
+template <typename T>
+std::vector<int> erase_test_1(std::vector<T> vector) {
+    std::vector<int> v;
+    for (int i = 0; i < 9900 * _ratio; ++i)
+        vector.push_back(i);
+    // g_start1 = timer();
+    v.push_back(*(vector.erase(vector.begin() + 8 * _ratio)));
+    // g_end1 = timer();
+    v.push_back(*(vector.begin() + 82 * _ratio));
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    return v;
+}
+
+template <typename T>
+std::vector<int> erase_test_1(_vector<T> vector) {
+    std::vector<int> v;
+    for (int i = 0; i < 9900 * _ratio; ++i)
+        vector.push_back(i);
+    // g_start2 = timer();
+    v.push_back(*(vector.erase(vector.begin() + 8 * _ratio)));
+    // g_end2 = timer();
+    v.push_back(*(vector.begin() + 82 * _ratio));
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    return v;
+}
+
+template <typename T>
+std::vector<int> swap_test(std::vector<T> vector) {
+    std::vector<int> v;
+    vector.assign(1100 * _ratio, 11);
+    std::vector<int> tmp(500 * _ratio, 5), tmp2(1000 * _ratio, 10), tmp3(1500 * _ratio, 15), tmp4(3000 * _ratio, 30);
+    // g_start1 = timer();
+    v.push_back(vector[2]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    long *adr1 = reinterpret_cast<long *>(&vector);
+    long *adr2 = reinterpret_cast<long *>(&tmp);
+    vector.swap(tmp);
+    if (reinterpret_cast<long *>(&vector) == adr1 && reinterpret_cast<long *>(&tmp) == adr2)
+    	v.push_back(1);
+    v.push_back(vector[2]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    vector.swap(tmp3);
+    v.push_back(vector[2]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    std::swap(vector, tmp2);
+    v.push_back(vector[2]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    std::swap(vector, tmp4);
+    // g_end1 = timer();
+    v.push_back(vector[2]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    return v;
+}
+
+template <typename T>
+std::vector<int> swap_test(_vector<T> vector) {
+    std::vector<int> v;
+    vector.assign(1100 * _ratio, 11);
+    _vector<int> tmp(500 * _ratio, 5), tmp2(1000 * _ratio, 10), tmp3(1500 * _ratio, 15), tmp4(3000 * _ratio, 30);
+    // g_start2 = timer();
+    v.push_back(vector[2]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    long *adr1 = reinterpret_cast<long *>(&vector);
+    long *adr2 = reinterpret_cast<long *>(&tmp);
+    vector.swap(tmp);
+    if (reinterpret_cast<long *>(&vector) == adr1 && reinterpret_cast<long *>(&tmp) == adr2)
+    	v.push_back(1);
+    v.push_back(vector[2]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    vector.swap(tmp3);
+    v.push_back(vector[2]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    std::swap(vector, tmp2);
+    v.push_back(vector[2]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    std::swap(vector, tmp4);
+    // g_end2 = timer();
+    v.push_back(vector[2]);
+    v.push_back(vector.size());
+    v.push_back(vector.capacity());
+    return v;
+}
+
+int main() {
+
+    exit(run_vector_unit_test<int>("swap()", swap_test, swap_test));
 }

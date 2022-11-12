@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/12 15:49:53 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/12 18:18:14 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ namespace ft
 				return ;
 			else
 			{
-				for (size_type i = ft::distance(this->begin() + n, this->end()); i > 0; i--)
+				for (size_type i = _size - n; i > 0; i--)
 				{
 					_alloc.destroy(_end--);
 					_size--;
@@ -294,59 +294,70 @@ namespace ft
 
 		iterator erase(iterator first, iterator last)
 		{
-			vector<T> tmp(*this);
-			iterator iter = tmp.begin();
-			iterator tmpIter = first;
-			iterator tmpIter2 = tmpIter;
-			iterator oldEnd = this->end();
-
-			while (ft::distance(tmp.begin(), iter) != ft::distance(this->begin(), first))
-				iter++;
-			while (first != last)
-				_alloc.destroy(&(*first++));
-			while (first != this->end())
+			if (last == this->end())
 			{
-				_alloc.construct(tmpIter.pointed(), *first++);
-				tmpIter++;
+				_size = ft::distance(this->begin(), first);
+				_end = _begin + _size;
+				while (first != last)
+				{
+					_alloc.destroy(first.pointed());
+					first++;
+				}
+				return (this->end());
 			}
-			_end = tmpIter.pointed();
-			_size = ft::distance(this->begin(), tmpIter);
-			while (first != oldEnd)
+			else
 			{
-				_alloc.destroy(first.pointed());
-				first++;
+				iterator	tmpLast = last;
+				iterator	tmpFirst = first;
+				while (first != tmpLast && last != this->end())
+				{
+					_alloc.construct(first.pointed(), *last++);
+					first++;
+				}
+				_size = ft::distance(this->begin(), first);
+				while (first != this->end())
+				{
+					_alloc.destroy(first.pointed());
+					first++;
+				}
+				_end = _begin + _size;
+				return (tmpFirst);
 			}
-			return (tmpIter2);
 		}
 
 		iterator erase(iterator position)
 		{
-			difference_type dist = ft::distance(this->begin(), position);
-			_alloc.destroy(position.pointed());
-			ft::vector<value_type> tmp(position + 1, this->end());
-			iterator tmpIter = tmp.begin();
-			while (tmpIter != tmp.end())
-				*position++ = *tmpIter++;
-			_alloc.destroy(_end);
-			_end--;
+			iterator	ret = position;
+			iterator	oneForward = position + 1;
+			while (oneForward != this->end())
+				*position++ = *oneForward++;
+			_alloc.destroy(_end--);
 			_size--;
-			return (this->begin() + dist);
+			return (ret);
 		}
 
 		void swap(vector &x)
 		{
-			ft::vector<value_type>	tmp(x);
 			pointer					tmpPtrBgn = x._begin;
 			pointer					tmpPtrEnd = x._end;
+			size_type				tmpCapacity = x._capacity;
+			size_type				tmpSize = x._size;
+			allocator_type			tmpAlloc = x._alloc;
 
+			if (x == *this)
+				return ;
 			x._begin = this->_begin;
 			x._capacity = this->_capacity;
+			x._alloc = this->_alloc;
 			x._size = this->_size;
 			x._end = this->_end;
+			x._end_capacity = this->_begin + this->_capacity;
 			this->_begin = tmpPtrBgn;
-			this->_capacity = tmp.capacity();
-			this->_size = tmp.size();
+			this->_capacity = tmpCapacity;
+			this->_alloc = tmpAlloc;
+			this->_size = tmpSize;
 			this->_end = tmpPtrEnd;
+			this->_end_capacity = tmpPtrBgn + tmpCapacity;
 		}
 
 		void clear()
@@ -416,10 +427,11 @@ namespace ft
 		allocator_type	get_allocator() const { return (_alloc); };
 
 	private:
-		size_type		_size;
 		size_type		_capacity;
+		size_type		_size;
 		pointer			_begin;
 		pointer			_end;
+		pointer			_end_capacity;
 		allocator_type	_alloc;
 	};
 
