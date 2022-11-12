@@ -27,3 +27,13 @@ int	main()
 	std::cout << due.capacity() << std::endl;
 	return (0);
 }
+#include <iterator>
+#include <vector>
+#include <iostream>
+
+int main()
+{
+
+	std::cout 
+	return (0);
+}

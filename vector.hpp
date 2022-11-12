@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/12 19:50:23 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/12 22:36:19 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 #include <memory>
 #include <stdexcept>
 #include <iostream>
+#include "utility.hpp"
 #include "iterator.hpp"
-#include "enable_if.hpp"
-#include "lexicographical_compare.hpp"
 
 namespace ft
 {
@@ -436,8 +435,8 @@ namespace ft
 		allocator_type	get_allocator() const { return (_alloc); };
 
 	private:
-		size_type		_capacity;
 		size_type		_size;
+		size_type		_capacity;
 		pointer			_begin;
 		pointer			_end;
 		allocator_type	_alloc;
