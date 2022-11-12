@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:50:37 by gimartin          #+#    #+#             */
-/*   Updated: 2022/11/11 17:44:55 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/12 15:42:13 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,10 @@ int run_vector_unit_test(std::string test_name, std::vector<int> (func1)(std::ve
 		std::cout << "tester: " << res1.at(3) << std::endl << std::endl;
 		std::cout << "nostro: " << res2.at(4) << std::endl;
 		std::cout << "tester: " << res1.at(4) << std::endl << std::endl;
-		std::cout << "nostro: " << res2.at(5) << std::endl;
-		std::cout << "tester: " << res1.at(5) << std::endl << std::endl;
-		std::cout << "nostro: " << res2.at(6) << std::endl;
-		std::cout << "tester: " << res1.at(6) << std::endl;
+		// std::cout << "nostro: " << res2.at(5) << std::endl;
+		// std::cout << "tester: " << res1.at(5) << std::endl << std::endl;
+		// std::cout << "nostro: " << res2.at(6) << std::endl;
+		// std::cout << "tester: " << res1.at(6) << std::endl;
 	    printElement("FAILED");
 	    result = 1;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/11 17:46:25 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/12 15:49:53 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,10 +258,10 @@ namespace ft
 			bool is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::value;
 			if (!is_valid)
 				throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::type>();
-			size_type	dist = ft::distance(this->begin(), position);
-			size_type	finalSize = this->size();
+			
+			size_type	positionDist = ft::distance(this->begin(), position);
+			size_type	finalSize = this->size() + ft::distance(first, last);
 			pointer		rangeEnd;
-			finalSize += ft::distance(first, last);
 			size_type	new_cap = this->capacity();
 			if (finalSize > this->capacity())
 			{
@@ -271,16 +271,25 @@ namespace ft
 					new_cap *= 2;
 				this->reserve(new_cap);
 			}
+			position = this->begin() + positionDist;
+			_size = finalSize;
 			_end = _begin + finalSize;
 			pointer		tmpEnd = _end;
-			_size = finalSize;
-			position = this->begin() + dist;
 			iterator	tmpPosition = position;
 			rangeEnd = position.pointed() + ft::distance(first, last);
-			while (tmpEnd != rangeEnd)
-				*tmpEnd-- = *tmpPosition++;
-			while (position.pointed() != rangeEnd)
-				*position++ = *first++;
+			try
+			{
+				while (tmpEnd != rangeEnd)
+					*tmpEnd-- = *tmpPosition++;
+				while (position.pointed() != rangeEnd)
+					*position++ = *first++;
+			}
+			catch (...)
+			{
+				_size = 0;
+				_capacity = 0;
+				throw "hey";
+			}
 		}
 
 		iterator erase(iterator first, iterator last)
