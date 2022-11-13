@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 16:35:25 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/13 01:24:24 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/13 01:29:58 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,16 @@ namespace ft
 			void	push(const value_type& value) { c.push_back(value); };
 			void	pop() { c.pop_back(); };
 
+			// Overloads
+
+			friend bool	operator==(stack const & lhs, stack const & rhs) { return lhs.c == rhs.c; };
+			friend bool	operator!=(stack const & lhs, stack const & rhs) { return lhs.c != rhs.c; };
+			friend bool	operator<(stack const & lhs, stack const & rhs) { return lhs.c < rhs.c; };
+			friend bool	operator<=(stack const & lhs, stack const & rhs) { return lhs.c <= rhs.c; };
+			friend bool	operator>(stack const & lhs, stack const & rhs) { return lhs.c > rhs.c; };
+			friend bool	operator>=(stack const & lhs, stack const & rhs) { return lhs.c >= rhs.c; };
+
 		protected:
 			Container	c;
 	};
-
-	// bool	operator==(stack const & lsh, stack const & rhs) {};
-	// bool	operator!=(stack const & lsh, stack const & rhs) {};
-	// bool	operator<(stack const & lsh, stack const & rhs) {};
-	// bool	operator<=(stack const & lsh, stack const & rhs) {};
-	// bool	operator>(stack const & lsh, stack const & rhs) {};
-	// bool	operator>=(stack const & lsh, stack const & rhs) {};
 }
