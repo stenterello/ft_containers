@@ -6,12 +6,13 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/13 00:29:06 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/13 13:59:53 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <cstddef>
+#include "utility.hpp"
 
 namespace ft
 {
@@ -67,99 +68,114 @@ namespace ft
 		typedef typename ft::iterator<ft::forward_iterator_tag, T>::value_type			value_type;
 		typedef typename ft::iterator<ft::forward_iterator_tag, T>::pointer				pointer;
 		typedef typename ft::iterator<ft::forward_iterator_tag, T>::reference			reference;
-		typedef T																			iterator_type;
+		typedef T																		iterator_type;
 	};
 
 	template <class T>
-	struct bidirectional_iterator : ft::iterator<ft::bidirectional_iterator_tag, T>
+	class bidirectional_iterator : ft::iterator<ft::bidirectional_iterator_tag, T>
 	{
-		typedef typename std::bidirectional_iterator_tag									iterator_category;
-		typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::difference_type	difference_type;
-		typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::value_type		value_type;
-		typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::pointer			pointer;
-		typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::reference			reference;
-		typedef T																			iterator_type;
+		public:
+			typedef typename std::bidirectional_iterator_tag									iterator_category;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::difference_type	difference_type;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::value_type		value_type;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::pointer			pointer;
+			typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::reference			reference;
+			typedef T																			iterator_type;
+			bidirectional_iterator() : _pointed(NULL) {};
+			bidirectional_iterator(pointer p) : _pointed(p) {};
+			bidirectional_iterator(bidirectional_iterator const & src) : _pointed(src._pointed) {};
+			bidirectional_iterator&	operator=(bidirectional_iterator const & rhs)
+			{
+				if (this == &rhs)
+					return (*this);
+				this->_pointed = rhs._pointed;
+				return (*this);
+			}
+			virtual ~bidirectional_iterator() {};
+
+		private:
+			pointer	_pointed;
 	};
 
 	template <class T>
 	class random_access_iterator : ft::iterator<ft::random_access_iterator_tag, T>
 	{
-	public:
-		typedef typename std::random_access_iterator_tag									iterator_category;
-		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::difference_type	difference_type;
-		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::value_type		value_type;
-		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::pointer			pointer;
-		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::reference			reference;
-		typedef T*																			iterator_type;
-		random_access_iterator() {};
-		random_access_iterator(pointer p) : _pointed(p) {};
-		random_access_iterator(random_access_iterator const &src) { this->_pointed = src.pointed(); }
-		random_access_iterator&	operator=(random_access_iterator const & rhs)
-		{
-			if (this == &rhs)
+		public:
+			typedef typename std::random_access_iterator_tag									iterator_category;
+			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::difference_type	difference_type;
+			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::value_type		value_type;
+			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::pointer			pointer;
+			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::reference			reference;
+			typedef T*																			iterator_type;
+			random_access_iterator() : _pointed(NULL) {};
+			random_access_iterator(pointer p) : _pointed(p) {};
+			random_access_iterator(random_access_iterator const &src) { this->_pointed = src.pointed(); }
+			random_access_iterator&	operator=(random_access_iterator const & rhs)
+			{
+				if (this == &rhs)
+					return (*this);
+				this->_pointed = rhs._pointed;
+				this->_value = value_type();
+				return (*this);	
+			}
+			virtual ~random_access_iterator(){};
+			reference				operator*() const { return (*_pointed); }
+			pointer					operator->() { return &(this->operator*()); }
+			random_access_iterator	operator+(difference_type n) const { return (_pointed + n); }
+			random_access_iterator	operator-(difference_type n) const { return (_pointed - n); }
+			random_access_iterator&	operator++()
+			{
+				_pointed++;
 				return (*this);
-			this->_pointed = rhs._pointed;
-			this->_value = value_type();
-			return (*this);	
-		}
-		virtual ~random_access_iterator(){};
-		reference				operator*() const { return (*_pointed); }
-		pointer					operator->() { return &(this->operator*()); }
-		random_access_iterator	operator+(difference_type n) const { return (_pointed + n); }
-		random_access_iterator	operator-(difference_type n) const { return (_pointed - n); }
-		random_access_iterator&	operator++()
-		{
-			_pointed++;
-			return (*this);
-		}
-		random_access_iterator	operator++(int)
-		{
-			random_access_iterator ret(*this);
-			_pointed++;
-			return (ret);
-		}
-		random_access_iterator&	operator--()
-		{
-			_pointed--;
-			return (*this);
-		}
-		random_access_iterator	operator--(int)
-		{
-			random_access_iterator ret(*this);
-			_pointed--;
-			return (ret);
-		}
-		random_access_iterator&	operator+=(difference_type n)
-		{
-			_pointed += n;
-			return (*this);
-		}
-		random_access_iterator&	operator-=(difference_type n)
-		{
-			_pointed -= n;
-			return (*this);
-		}
-		bool					operator==(random_access_iterator const &rhs)
-		{
-			if (this->pointed() == rhs.pointed())
-				return true;
-			return false;
-		}
-		bool					operator!=(random_access_iterator const &rhs)
-		{
-			if (this->pointed() == rhs.pointed())
+			}
+			random_access_iterator	operator++(int)
+			{
+				random_access_iterator ret(*this);
+				_pointed++;
+				return (ret);
+			}
+			random_access_iterator&	operator--()
+			{
+				_pointed--;
+				return (*this);
+			}
+			random_access_iterator	operator--(int)
+			{
+				random_access_iterator ret(*this);
+				_pointed--;
+				return (ret);
+			}
+			random_access_iterator&	operator+=(difference_type n)
+			{
+				_pointed += n;
+				return (*this);
+			}
+			random_access_iterator&	operator-=(difference_type n)
+			{
+				_pointed -= n;
+				return (*this);
+			}
+			bool					operator==(random_access_iterator const &rhs)
+			{
+				if (this->pointed() == rhs.pointed())
+					return true;
 				return false;
-			return true;
-		}
-		operator 				random_access_iterator<const T>() const { return (random_access_iterator<const T>(this->_pointed)); }
-		pointer 				pointed() const { return this->_pointed; }
-		reference 				operator[](difference_type n) { return (*(_pointed + n)); }
-		difference_type 		operator-(random_access_iterator const &rhs) const { return (this->pointed() - rhs.pointed()); }
-		difference_type 		operator+(random_access_iterator const &rhs) const { return (this->pointed() + rhs.pointed()); }
+			}
+			bool					operator!=(random_access_iterator const &rhs)
+			{
+				if (this->pointed() == rhs.pointed())
+					return false;
+				return true;
+			}
+			operator 				random_access_iterator<const T>() const { return (random_access_iterator<const T>(this->_pointed)); }
+			pointer 				pointed() const { return this->_pointed; }
+			reference 				operator[](difference_type n) { return (*(_pointed + n)); }
+			difference_type 		operator-(random_access_iterator const &rhs) const { return (this->pointed() - rhs.pointed()); }
+			difference_type 		operator+(random_access_iterator const &rhs) const { return (this->pointed() + rhs.pointed()); }
 
-	private:
-		pointer _pointed;
-		T		_value = value_type();
+		private:
+			pointer _pointed;
+			T		_value = value_type();
 	};
 
 	template <class T>

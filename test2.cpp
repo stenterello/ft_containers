@@ -1,15 +1,14 @@
-#include "utility.hpp"
-#include "vector.hpp"
-#include "iterator.hpp"
 #include <iostream>
+#include <iterator>
+#include <set>
 
-int	main()
+int main()
 {
-	ft::vector<int>	uno(10);
-	ft::vector<int>::iterator	iter1 = uno.begin();
-	ft::vector<int>::iterator	iter2 = uno.end();
+	std::set<int>			ciao;
+	std::cout << *ciao.begin() << std::endl;
+	// std::set<int>::iterator	iter = ciao.begin();
 
-	std::cout << ft::distance(iter2, iter1) << std::endl;
+	// while (iter != ciao.end())
+	// 	std::cout << *iter++ << std::endl;
 	return (0);
 }
-
