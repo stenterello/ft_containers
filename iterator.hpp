@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/13 13:59:53 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:57:14 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,13 @@ namespace ft
 				return (*this);
 			}
 			virtual ~bidirectional_iterator() {};
+			reference	operator*() const { return *(this->_pointed); }
+			bool		operator==(bidirectional_iterator const & rhs) { return ((this->_pointed == rhs._pointed) ? true : false); }
+			bool		operator!=(bidirectional_iterator const & rhs) { return ((this->_pointed != rhs._pointed) ? true : false); }
+			bidirectional_iterator&	operator++() { this->_pointed++; return *this; };
+			bidirectional_iterator	operator++(int) { bidirectional_iterator tmp(*this); this->_pointed++; return (tmp); };
+			bidirectional_iterator&	operator--() { this->_pointed--; return *this; };
+			bidirectional_iterator	operator--(int) { bidirectional_iterator tmp(*this); this->_pointed--; return (tmp); };
 
 		private:
 			pointer	_pointed;
@@ -252,6 +259,62 @@ namespace ft
 			difference_type 	operator-(reverse_iterator const &rhs) const { return (rhs.base() - this->base()); }
 		private:
 			iterator_type	_base;
+	};
+
+	template <typename T, class Compare, class NodeType>
+	class RBIterator
+	{
+		public:
+			typedef T							value_type;
+			typedef T*							pointer;
+			typedef T&							reference;
+			typedef NodeType*					nodePointer;
+			typedef std::ptrdiff_t				difference_type;
+			typedef bidirectional_iterator_tag	iterator_category;
+
+			nodePointer	node;
+			nodePointer	sentinel;
+			Compare		c;
+
+			RBIterator() : node(NULL), sentinel(NULL) {};
+			RBIterator(NodeType* start, NodeType* endPtr) : node(start), sentinel(endPtr) {};
+			template <typename T2>
+			RBIterator(RBIterator const & src) : node(src.node), sentinel(src.end), c(src.c) {};
+			RBIterator&	operator=(RBIterator const & rhs)
+			{
+				if (this == &rhs)
+					return (*this);
+				this->node = rhs.node;
+				this->sentinel = rhs.sentinel;
+				this->c = rhs.c;
+				return (*this);
+			}
+			~RBIterator() {};
+
+			
+			// Overloads
+
+			reference	operator*() const { return (this->node->data); }
+			pointer		operator->() const { return &operator*(); }
+			bool		operator==(RBIterator const & rhs) { return ((this->node->data == rhs.node->data) ? true : false); }
+			bool		operator!=(RBIterator const & rhs) { return ((this->node->data != rhs.node->data) ? true : false); }
+			RBIterator&	operator++()
+			{
+				if (this->node == sentinel)
+					return (*this);
+				
+			};
+			RBIterator	operator++(int) {};
+			RBIterator&	operator--() {};
+			RBIterator	operator--(int) {};
+			
+
+
+		private:
+			void	min()
+			{};
+			void	max()
+			{};
 	};
 
 	// Overloads

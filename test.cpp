@@ -8,5 +8,7 @@ int	main()
 	std::cout << "max size: " << ciao.max_size() << std::endl;
 	std::cout << "empty: " << ciao.empty() << std::endl;
 	std::cout << "size: " << ciao.size() << std::endl;
+	std::cout << *(ciao.find(2)) << std::endl;
+	
 	return (0);
 }
