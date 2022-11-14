@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/14 21:22:50 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/14 21:26:37 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ namespace ft
 			template <class T2>
 			iterator	find(T2 const & k)
 			{
-				pointer	ret = find(_root, k);
+				pointer	ret = findPointer(_root, k);
 				if (!ret)
 					return (this->end());
 				return (iterator(ret, _sentinel));
@@ -173,7 +173,7 @@ namespace ft
 			template <class T2>
 			const_iterator	find(T2 const & k) const
 			{
-				pointer	ret = find(_root, k);
+				pointer	ret = findPointer(_root, k);
 				if (!ret)
 					return (this->end());
 				return (const_iterator(ret, _sentinel));
@@ -184,9 +184,9 @@ namespace ft
 			{
 				if (!start)
 					return (NULL);
-				if (_c(start, n))
+				if (_c(start->data, n))
 					return (findPointer(start->child[RIGHT], n));
-				else if (!_c(start, n))
+				else if (!_c(start->data, n))
 					return (findPointer(start->child[LEFT], n));
 				return (start);
 			}
@@ -220,7 +220,7 @@ namespace ft
 
 			}
 
-			ft::pair<iterator, bool>	insert(T const & val)
+			ft::pair<iterator, bool>	insert(Key const & val)
 			{
 				ft::pair<iterator, bool>	ret;
 				pointer						node = _alloc.allocate(1);
