@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/14 16:57:14 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/16 16:47:59 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,10 +311,10 @@ namespace ft
 
 
 		private:
-			void	min()
-			{};
-			void	max()
-			{};
+			// void	min()
+			// {};
+			// void	max()
+			// {};
 	};
 
 	// Overloads
