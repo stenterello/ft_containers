@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/16 18:39:36 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/17 10:14:43 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,9 +340,12 @@ namespace ft
 							newParent->parent->child[LEFT] = _sentinel;
 						else
 							newParent->parent->child[RIGHT] = _sentinel;
-						newParent->parent->parent = newParent;
 						newParent->child[LEFT] = node->child[LEFT];
 						newParent->child[RIGHT] = node->child[RIGHT];
+						if (newParent->child[LEFT])
+							newParent->child[LEFT]->parent = newParent;
+						if (newParent->child[RIGHT])
+							newParent->child[RIGHT]->parent = newParent;
 					}
 					_root = newParent;
 					newParent->parent = _sentinel;
@@ -355,8 +358,10 @@ namespace ft
 				else
 					newParent->parent->child[RIGHT] = _sentinel;
 				newParent->parent = node->parent;
-				newParent->child[LEFT] = node->child[LEFT];
-				newParent->child[RIGHT] = node->child[RIGHT];
+				if (!newParent->child[LEFT])
+					newParent->child[LEFT] = node->child[LEFT];
+				if (!newParent->child[RIGHT])
+					newParent->child[RIGHT] = node->child[RIGHT];
 				if (node->child[LEFT])
 					node->child[LEFT]->parent = newParent;
 				if (node->child[RIGHT])
