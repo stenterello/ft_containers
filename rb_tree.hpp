@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/17 15:37:32 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/17 17:22:45 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ namespace ft
 
 		~RBTreeSet()
 		{
-			// deallocazione da scrivere (cancella solo la root))
 			this->clear();
 			_alloc.deallocate(_sentinel, 1);
 		};
@@ -335,7 +334,7 @@ namespace ft
 				insertNode(node, toHandle, node);
 		}
 
-		void	rotateRight(pointer & node)
+		pointer*	rotateRight(pointer & node)
 		{
 			pointer	toHandle;
 
@@ -345,19 +344,26 @@ namespace ft
 				toHandle = NULL;
 				
 			// setta la vecchia radice
+			if (node == _root)
+			{
+				_root = node->child[LEFT];
+				node->child[LEFT]->parent = _sentinel;
+			}
+			else
+			{
+				node->child[LEFT]->parent = node->parent;
+			}
 			node->parent = node->child[LEFT];
 			node->child[LEFT]->child[RIGHT] = node;
-			if (node == _root)
-				_root = node->child[LEFT];
 			// setta la nuova radice
 			node = node->child[LEFT];
-			node->parent = _sentinel;
 			node->color = BLACK;
 			// elimina figlio destro vecchia radice
 			node->child[RIGHT]->child[LEFT] = _sentinel;
 
 			if (toHandle)
 				insertNode(node, toHandle, node);
+			return (&node);
 		}
 
 		int	eraseLonelyNode(pointer & node)
@@ -464,12 +470,31 @@ namespace ft
 				uncle = _sentinel;
 		}
 
+		int	hasUncle(pointer & node)
+		{
+			if (!node->parent)
+				return (0);
+			if (node->parent->child[LEFT] && node->parent->child[LEFT] == node && node->parent->child[RIGHT])
+				return (1);
+			if (node->parent->child[RIGHT] && node->parent->child[RIGHT] == node && node->parent->child[LEFT])
+				return (1);
+			return (0);
+		}
+
+		pointer&	getUncle(pointer & node)
+		{
+			if (node->parent->child[LEFT] == node)
+				return (node->parent->child[RIGHT]);
+			return (node->parent->child[LEFT]);
+		}
+
 		void	balanceInsert(pointer & node)
 		{
-			pointer	*tmp = &node;
-			pointer	parent = (*tmp)->parent;
-			pointer	grandParent;
-			pointer	uncle;
+			pointer*	tmp = &node;
+			pointer*	tmp2;
+			pointer		parent = node->parent;
+			pointer		grandParent;
+			pointer		uncle;
 
 			node->color = RED;
 			while (1)
@@ -488,28 +513,27 @@ namespace ft
 					parent->color = BLACK;
 					uncle->color = BLACK;
 					grandParent->color = RED;
-					tmp = &grandParent;
+					tmp = &(*tmp)->parent->parent;
 				}
 				else if ((*tmp)->color == RED && parent->color == RED)
 				{
-					if (parent->child[RIGHT] == *(tmp) && grandParent->child[LEFT] == parent)
+					if (parent->child[RIGHT] == (*tmp) && grandParent->child[LEFT] == parent)
 					{
 						rotateLeft(parent);
 						tmp = &(*tmp)->child[LEFT];
 					}
-					else if (parent->child[LEFT] == *(tmp) && grandParent->child[RIGHT] == parent)
+					else if (parent->child[LEFT] == (*tmp) && grandParent->child[RIGHT] == parent)
 					{
-						rotateRight(parent);
-						tmp = &(*tmp)->child[RIGHT];
+						tmp = rotateRight(parent);
 					}
-					else if (parent->child[LEFT] == *(tmp) && grandParent->child[LEFT] == parent)
+					else if (parent->child[LEFT] == (*tmp) && grandParent->child[LEFT] == parent)
 					{
 						parent->color = BLACK;
 						grandParent->color = RED;
 						rotateRight(grandParent);
 						break ;
 					}
-					else if (parent->child[RIGHT] == node && grandParent->child[RIGHT] == parent)
+					else if (parent->child[RIGHT] == (*tmp) && grandParent->child[RIGHT] == parent)
 					{
 						parent->color = BLACK;
 						grandParent->color = RED;
