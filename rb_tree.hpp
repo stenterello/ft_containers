@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/17 14:13:38 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/17 15:37:32 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,6 +322,8 @@ namespace ft
 			// setta la vecchia radice
 			node->parent = node->child[RIGHT];
 			node->child[RIGHT]->child[LEFT] = node;
+			if (node == _root)
+				_root = node->child[RIGHT];
 			// setta la nuova radice
 			node = node->child[RIGHT];
 			node->parent = _sentinel;
@@ -337,7 +339,7 @@ namespace ft
 		{
 			pointer	toHandle;
 
-			if (node->child[LEFT]->child[RIGHT])
+			if (node && node->child[LEFT] && node->child[LEFT]->child[RIGHT])
 				toHandle = node->child[LEFT]->child[RIGHT];
 			else
 				toHandle = NULL;
@@ -345,6 +347,8 @@ namespace ft
 			// setta la vecchia radice
 			node->parent = node->child[LEFT];
 			node->child[LEFT]->child[RIGHT] = node;
+			if (node == _root)
+				_root = node->child[LEFT];
 			// setta la nuova radice
 			node = node->child[LEFT];
 			node->parent = _sentinel;
@@ -456,45 +460,49 @@ namespace ft
 				else
 					uncle = _sentinel;
 			}
+			else
+				uncle = _sentinel;
 		}
 
 		void	balanceInsert(pointer & node)
 		{
-			pointer	parent = node->parent;
+			pointer	*tmp = &node;
+			pointer	parent = (*tmp)->parent;
 			pointer	grandParent;
 			pointer	uncle;
 
 			node->color = RED;
 			while (1)
 			{
+				parent = (*tmp)->parent;
 				getRelatives(parent, grandParent, uncle);
 				if (!parent)
 				{
-					node->color = BLACK;
+					(*tmp)->color = BLACK;
 					break ;
 				}
 				else if (parent->color == BLACK)
 					break ;
-				else if (uncle && node->color == RED && parent->color == RED && uncle->color == RED)
+				else if (uncle && (*tmp)->color == RED && parent->color == RED && uncle->color == RED)
 				{
 					parent->color = BLACK;
 					uncle->color = BLACK;
 					grandParent->color = RED;
-					node = grandParent;
+					tmp = &grandParent;
 				}
-				else if (uncle && node->color == RED && parent->color == RED && uncle->color == BLACK)
+				else if ((*tmp)->color == RED && parent->color == RED)
 				{
-					if (parent->child[RIGHT] == node && grandParent->child[LEFT] == parent)
+					if (parent->child[RIGHT] == *(tmp) && grandParent->child[LEFT] == parent)
 					{
 						rotateLeft(parent);
-						node = parent;
+						tmp = &(*tmp)->child[LEFT];
 					}
-					else if (parent->child[LEFT] == node && grandParent->child[RIGHT] == parent)
+					else if (parent->child[LEFT] == *(tmp) && grandParent->child[RIGHT] == parent)
 					{
 						rotateRight(parent);
-						node = parent;
+						tmp = &(*tmp)->child[RIGHT];
 					}
-					else if (parent->child[LEFT] == node && grandParent->child[LEFT] == parent)
+					else if (parent->child[LEFT] == *(tmp) && grandParent->child[LEFT] == parent)
 					{
 						parent->color = BLACK;
 						grandParent->color = RED;
