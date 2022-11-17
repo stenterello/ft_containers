@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/17 10:14:43 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/17 14:13:38 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,33 +146,6 @@ namespace ft
 			}
 		}
 
-		ft::pair<iterator, bool> insertNode(pointer &start, pointer &node, pointer& parent)
-		{
-			ft::pair<iterator, bool>	ret;
-			
-			if (!start)
-			{
-				node->parent = parent;
-				if (_c(node->data, parent->data))
-					parent->child[LEFT] = node;
-				else
-					parent->child[RIGHT] = node;
-				start = node;
-				_size++;
-				ret.first = iterator(start, _sentinel);
-				ret.second = true;
-				return (ret);
-			}
-			if (_c(node->data, start->data))
-				return (insertNode(start->child[LEFT], node, start));
-			else if (_c(start->data, node->data))
-				return (insertNode(start->child[RIGHT], node, start));
-			delete node;
-			ret.first = iterator(_sentinel, _sentinel);
-			ret.second = false;
-			return (ret);
-		}
-
 		// Se non trova l'elemento, ritorna un puntatore a _sentinel che, in caso venga stampato,
 		// produce segmentation fault. Basta inserire all'interno di Set un controllo che l'iteratore
 		// non punti a NULL
@@ -291,81 +264,15 @@ namespace ft
 			pointer	nodeChild = getOnlyChildWithoutChildren(node);
 			if (!node->child[LEFT] && !node->child[RIGHT])
 			{
-				if (node->parent)
-				{
-					if (node->parent->child[LEFT] == node)
-						node->parent->child[LEFT] = _sentinel;
-					else
-						node->parent->child[RIGHT] = _sentinel;
-				}
-				else
-				{
-					_alloc.deallocate(node, 1);
-					_root = _sentinel;
-					_size--;
+				if (eraseLonelyNode(node))
 					return ;
-				}
 			}
 			else if (nodeChild)
-			{
-				if (node->parent)
-				{
-					nodeChild->parent = node->parent;
-					if (node->parent->child[LEFT] == node)
-						node->parent->child[LEFT] = nodeChild;
-					else
-						node->parent->child[RIGHT] = nodeChild;
-				}
-				else
-				{
-					_root = nodeChild;
-					nodeChild->parent = _sentinel;
-				}
-			}
+				eraseNodeChild(node, nodeChild);
 			else
 			{
-				pointer	newParent = getSuccessor(node);
-				if (node->parent)
-				{
-					if (node->parent->child[LEFT] == node)
-						node->parent->child[LEFT] = newParent;
-					else
-						node->parent->child[RIGHT] = newParent;
-				}
-				else
-				{
-					if (newParent->parent != node)
-					{
-						if (newParent->parent->child[LEFT] == newParent)
-							newParent->parent->child[LEFT] = _sentinel;
-						else
-							newParent->parent->child[RIGHT] = _sentinel;
-						newParent->child[LEFT] = node->child[LEFT];
-						newParent->child[RIGHT] = node->child[RIGHT];
-						if (newParent->child[LEFT])
-							newParent->child[LEFT]->parent = newParent;
-						if (newParent->child[RIGHT])
-							newParent->child[RIGHT]->parent = newParent;
-					}
-					_root = newParent;
-					newParent->parent = _sentinel;
-					_alloc.deallocate(node, 1);
-					_size--;
+				if (eraseAndSubstitute(node))
 					return ;
-				}
-				if (newParent->parent->child[LEFT] == newParent)
-					newParent->parent->child[LEFT] = _sentinel;
-				else
-					newParent->parent->child[RIGHT] = _sentinel;
-				newParent->parent = node->parent;
-				if (!newParent->child[LEFT])
-					newParent->child[LEFT] = node->child[LEFT];
-				if (!newParent->child[RIGHT])
-					newParent->child[RIGHT] = node->child[RIGHT];
-				if (node->child[LEFT])
-					node->child[LEFT]->parent = newParent;
-				if (node->child[RIGHT])
-					node->child[RIGHT]->parent = newParent;
 			}
 			_alloc.deallocate(node, 1);
 			node = NULL;
@@ -382,11 +289,11 @@ namespace ft
 		}
 
 	private:
-		pointer _root;
-		pointer _sentinel;
-		size_type _size;
-		allocator_type _alloc;
-		Compare _c;
+		pointer			_root;
+		pointer			_sentinel;
+		size_type		_size;
+		allocator_type	_alloc;
+		Compare			_c;
 
 		pointer	getOnlyChildWithoutChildren(pointer const & node)
 		{
@@ -403,34 +310,307 @@ namespace ft
 			return (child);
 		}
 
-		pointer&	getOnlyChild(pointer & node)
+		void	rotateLeft(pointer & node)
 		{
-			if (node->child[LEFT] && !node->child[RIGHT])
-				return (node->child[LEFT]);
+			pointer	toHandle;
+
+			if (node->child[RIGHT]->child[LEFT])
+				toHandle = node->child[RIGHT]->child[LEFT];
 			else
-				return (node->child[RIGHT]);
+				toHandle = NULL;
+				
+			// setta la vecchia radice
+			node->parent = node->child[RIGHT];
+			node->child[RIGHT]->child[LEFT] = node;
+			// setta la nuova radice
+			node = node->child[RIGHT];
+			node->parent = _sentinel;
+			node->color = BLACK;
+			// elimina figlio sinistro vecchia radice
+			node->child[LEFT]->child[RIGHT] = _sentinel;
+
+			if (toHandle)
+				insertNode(node, toHandle, node);
 		}
 
-		void	substituteChild(pointer & parent, pointer & oldSon, pointer & newChild)
+		void	rotateRight(pointer & node)
 		{
-			if (parent->child[LEFT] == oldSon)
-				parent->child[LEFT] = newChild;
+			pointer	toHandle;
+
+			if (node->child[LEFT]->child[RIGHT])
+				toHandle = node->child[LEFT]->child[RIGHT];
 			else
-				parent->child[RIGHT] = newChild;
+				toHandle = NULL;
+				
+			// setta la vecchia radice
+			node->parent = node->child[LEFT];
+			node->child[LEFT]->child[RIGHT] = node;
+			// setta la nuova radice
+			node = node->child[LEFT];
+			node->parent = _sentinel;
+			node->color = BLACK;
+			// elimina figlio destro vecchia radice
+			node->child[RIGHT]->child[LEFT] = _sentinel;
+
+			if (toHandle)
+				insertNode(node, toHandle, node);
 		}
 
-		void	warnChildren(pointer & src, pointer & dst)
+		int	eraseLonelyNode(pointer & node)
 		{
-			if (src->child[LEFT])
-				src->child[LEFT]->parent = dst;
-			if (src->child[RIGHT])
-				src->child[RIGHT]->parent = dst;
+			if (node->parent)
+			{
+				if (node->parent->child[LEFT] == node)
+					node->parent->child[LEFT] = _sentinel;
+				else
+					node->parent->child[RIGHT] = _sentinel;
+				if (node->color == BLACK)
+					balanceDelete(node->parent);
+			}
+			else
+			{
+				_alloc.deallocate(node, 1);
+				_root = _sentinel;
+				_size--;
+				return (1);
+			}
+			return (0);
 		}
 
-		void	adoptChildren(pointer & src, pointer & dst)
+		void	eraseNodeChild(pointer & node, pointer & nodeChild)
 		{
-			dst->child[LEFT] = src->child[LEFT];
-			dst->child[RIGHT] = src->child[RIGHT];
+			if (node->parent)
+			{
+				nodeChild->parent = node->parent;
+				if (node->parent->child[LEFT] == node)
+					node->parent->child[LEFT] = nodeChild;
+				else
+					node->parent->child[RIGHT] = nodeChild;
+			}
+			else
+			{
+				_root = nodeChild;
+				nodeChild->parent = _sentinel;
+			}
+		}
+
+		int	eraseAndSubstitute(pointer & node)
+		{
+			pointer	newParent = getSuccessor(node);
+			if (node->parent)
+			{
+				if (node->parent->child[LEFT] == node)
+					node->parent->child[LEFT] = newParent;
+				else
+					node->parent->child[RIGHT] = newParent;
+			}
+			else
+			{
+				if (newParent->parent != node)
+				{
+					if (newParent->parent->child[LEFT] == newParent)
+						newParent->parent->child[LEFT] = _sentinel;
+					else
+						newParent->parent->child[RIGHT] = _sentinel;
+					newParent->child[LEFT] = node->child[LEFT];
+					newParent->child[RIGHT] = node->child[RIGHT];
+					if (newParent->child[LEFT])
+						newParent->child[LEFT]->parent = newParent;
+					if (newParent->child[RIGHT])
+						newParent->child[RIGHT]->parent = newParent;
+				}
+				_root = newParent;
+				newParent->parent = _sentinel;
+				_alloc.deallocate(node, 1);
+				_size--;
+				return (1);
+			}
+			if (newParent->parent->child[LEFT] == newParent)
+				newParent->parent->child[LEFT] = _sentinel;
+			else
+				newParent->parent->child[RIGHT] = _sentinel;
+			newParent->parent = node->parent;
+			if (!newParent->child[LEFT])
+				newParent->child[LEFT] = node->child[LEFT];
+			if (!newParent->child[RIGHT])
+				newParent->child[RIGHT] = node->child[RIGHT];
+			if (node->child[LEFT])
+				node->child[LEFT]->parent = newParent;
+			if (node->child[RIGHT])
+				node->child[RIGHT]->parent = newParent;
+			return (0);
+		}
+
+		void	getRelatives(pointer & parent, pointer & grandParent, pointer & uncle)
+		{
+			if (parent)
+				grandParent = parent->parent;
+			else
+				grandParent = _sentinel;
+			if (grandParent)
+			{
+				if (grandParent->child[LEFT] == parent && grandParent->child[RIGHT])
+					uncle = grandParent->child[RIGHT];
+				else if (grandParent->child[RIGHT] == parent && grandParent->child[LEFT])
+					uncle = grandParent->child[LEFT];
+				else
+					uncle = _sentinel;
+			}
+		}
+
+		void	balanceInsert(pointer & node)
+		{
+			pointer	parent = node->parent;
+			pointer	grandParent;
+			pointer	uncle;
+
+			node->color = RED;
+			while (1)
+			{
+				getRelatives(parent, grandParent, uncle);
+				if (!parent)
+				{
+					node->color = BLACK;
+					break ;
+				}
+				else if (parent->color == BLACK)
+					break ;
+				else if (uncle && node->color == RED && parent->color == RED && uncle->color == RED)
+				{
+					parent->color = BLACK;
+					uncle->color = BLACK;
+					grandParent->color = RED;
+					node = grandParent;
+				}
+				else if (uncle && node->color == RED && parent->color == RED && uncle->color == BLACK)
+				{
+					if (parent->child[RIGHT] == node && grandParent->child[LEFT] == parent)
+					{
+						rotateLeft(parent);
+						node = parent;
+					}
+					else if (parent->child[LEFT] == node && grandParent->child[RIGHT] == parent)
+					{
+						rotateRight(parent);
+						node = parent;
+					}
+					else if (parent->child[LEFT] == node && grandParent->child[LEFT] == parent)
+					{
+						parent->color = BLACK;
+						grandParent->color = RED;
+						rotateRight(grandParent);
+						break ;
+					}
+					else if (parent->child[RIGHT] == node && grandParent->child[RIGHT] == parent)
+					{
+						parent->color = BLACK;
+						grandParent->color = RED;
+						rotateLeft(grandParent);
+						break ;
+					}
+				}
+			}
+		}
+
+		void	getRelatives2(pointer & node, pointer & sibling, pointer & leftNephew, pointer & rightNephew)
+		{
+			if (node->parent->child[LEFT] && node->parent->child[LEFT] == node)
+				sibling = node->parent->child[RIGHT];
+			else if (node->parent->child[RIGHT])
+				sibling = node->parent->child[LEFT];
+			else
+			{
+				sibling = NULL;
+				leftNephew = NULL;
+				rightNephew = NULL;
+			}
+			if (sibling->child[LEFT])
+				leftNephew = sibling->child[LEFT];
+			else
+				leftNephew = NULL;
+			if (sibling->child[RIGHT])
+				rightNephew = sibling->child[RIGHT];
+			else
+				rightNephew = NULL;
+		}
+
+		pointer	getSibling(pointer & node)
+		{
+			if (!node->parent)
+				return (NULL);
+			if (node->parent->child[LEFT] && node->parent->child[LEFT] == node)
+				return (node->parent->child[RIGHT]);
+			else if (node->parent->child[RIGHT] && node->parent->child[RIGHT] == node)
+				return (node->parent->child[LEFT]);
+			return (NULL);
+		}
+
+		void	balanceDelete(pointer & node)
+		{
+			pointer	sibling;
+			pointer	leftNephew;
+			pointer	rightNephew;
+
+			while (node != _root && node->color == BLACK)
+			{
+				getRelatives2(node, sibling, leftNephew, rightNephew);
+				if (sibling && sibling->color == RED)
+				{
+					sibling->color = BLACK;
+					sibling->parent->color = RED;
+					rotateLeft(sibling->parent);
+					sibling = getSibling(node);
+				}
+				if (sibling && sibling->child[LEFT] && sibling->child[LEFT]->color == BLACK && sibling->child[RIGHT] && sibling->child[RIGHT]->color == BLACK)
+				{
+					sibling->color = RED;
+					node = node->parent;
+				}
+				else
+				{
+					if (sibling && sibling->child[RIGHT]->color == BLACK)
+					{
+						sibling->child[LEFT]->color = BLACK;
+						sibling->color = RED;
+						rotateRight(sibling);
+						sibling = node->parent->child[RIGHT];
+					}
+					sibling->color = sibling->parent->color;
+					sibling->parent->color = BLACK;
+					rightNephew->color = BLACK;
+					rotateLeft(sibling->parent);
+					node = _root;
+				}
+			}
+			node->color = BLACK;
+		}
+
+		ft::pair<iterator, bool> insertNode(pointer &start, pointer &node, pointer& parent)
+		{
+			ft::pair<iterator, bool>	ret;
+			
+			if (!start)
+			{
+				node->parent = parent;
+				if (_c(node->data, parent->data))
+					parent->child[LEFT] = node;
+				else
+					parent->child[RIGHT] = node;
+				start = node;
+				_size++;
+				balanceInsert(start);
+				ret.first = iterator(start, _sentinel);
+				ret.second = true;
+				return (ret);
+			}
+			if (_c(node->data, start->data))
+				return (insertNode(start->child[LEFT], node, start));
+			else if (_c(start->data, node->data))
+				return (insertNode(start->child[RIGHT], node, start));
+			delete node;
+			ret.first = iterator(_sentinel, _sentinel);
+			ret.second = false;
+			return (ret);
 		}
 	};
 }
