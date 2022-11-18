@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/13 00:50:04 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/18 15:54:46 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ namespace ft
 		_begin(NULL),
 		_end(NULL),
 		_alloc(alloc)
-		{
-		}
+		{}
 
-		explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : _size(0),
+		explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) :
+		_size(0),
 		_capacity(0),
 		_begin(NULL),
 		_alloc(alloc)

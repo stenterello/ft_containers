@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/16 16:47:59 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/18 15:43:20 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,9 @@ namespace ft
 			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::pointer			pointer;
 			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::reference			reference;
 			typedef T*																			iterator_type;
-			random_access_iterator() : _pointed(NULL) {};
-			random_access_iterator(pointer p) : _pointed(p) {};
-			random_access_iterator(random_access_iterator const &src) { this->_pointed = src.pointed(); }
+			random_access_iterator() : _pointed(NULL), _value(value_type()) {};
+			random_access_iterator(pointer p) : _pointed(p), _value(value_type()) {};
+			random_access_iterator(random_access_iterator const &src) : _value(src._value) { this->_pointed = src.pointed(); }
 			random_access_iterator&	operator=(random_access_iterator const & rhs)
 			{
 				if (this == &rhs)
@@ -182,7 +182,7 @@ namespace ft
 
 		private:
 			pointer _pointed;
-			T		_value = value_type();
+			T		_value;
 	};
 
 	template <class T>

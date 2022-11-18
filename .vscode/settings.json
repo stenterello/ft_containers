@@ -73,6 +73,7 @@
 		"map": "cpp",
 		"memory_resource": "cpp",
 		"queue": "cpp",
-		"set": "cpp"
+		"set": "cpp",
+		"__functional_03": "cpp"
 	}
 }

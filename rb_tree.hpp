@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/17 17:22:45 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/18 19:49:51 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ namespace ft
 		T data;
 	};
 
-	template <class Key, class NodeType, class Compare = std::less<Key>>
+	template <class Key, class NodeType, class Compare = std::less<Key> >
 	class RBTreeSet
 	{
 
@@ -309,61 +309,67 @@ namespace ft
 			return (child);
 		}
 
-		void	rotateLeft(pointer & node)
+		pointer*	rotateLeft(pointer & node)
 		{
-			pointer	toHandle;
+			pointer		toHandle;
+			pointer*	tmp = &node;
+			pointer*	ret;
 
-			if (node->child[RIGHT]->child[LEFT])
-				toHandle = node->child[RIGHT]->child[LEFT];
+			if ((*tmp)->child[RIGHT]->child[LEFT])
+				toHandle = (*tmp)->child[RIGHT]->child[LEFT];
 			else
 				toHandle = NULL;
-				
-			// setta la vecchia radice
-			node->parent = node->child[RIGHT];
-			node->child[RIGHT]->child[LEFT] = node;
-			if (node == _root)
-				_root = node->child[RIGHT];
-			// setta la nuova radice
-			node = node->child[RIGHT];
-			node->parent = _sentinel;
-			node->color = BLACK;
-			// elimina figlio sinistro vecchia radice
-			node->child[LEFT]->child[RIGHT] = _sentinel;
-
+			if ((*tmp) == _root)
+			{
+				_root = (*tmp)->child[RIGHT];
+				(*tmp)->child[RIGHT]->parent = _sentinel;
+			}
+			else
+			{
+				(*tmp)->child[RIGHT]->parent = (*tmp)->parent;
+				if ((*tmp)->parent->child[RIGHT] == *tmp)
+					(*tmp)->parent->child[RIGHT] = (*tmp)->child[RIGHT];
+				else
+					(*tmp)->parent->child[LEFT] = (*tmp)->child[RIGHT];
+			}
+			(*tmp)->parent = (*tmp)->child[RIGHT];
+			(*tmp)->child[RIGHT]->child[LEFT] = (*tmp);
+			(*tmp) = (*tmp)->child[RIGHT];
+			(*tmp)->child[LEFT]->child[RIGHT] = _sentinel;
 			if (toHandle)
-				insertNode(node, toHandle, node);
+				insertNode((*tmp), toHandle, (*tmp));
+			ret = &(*tmp)->child[LEFT];
+			return (&node);
 		}
 
 		pointer*	rotateRight(pointer & node)
 		{
 			pointer	toHandle;
+			pointer*	tmp = &node;
+			pointer*	ret;
 
-			if (node && node->child[LEFT] && node->child[LEFT]->child[RIGHT])
-				toHandle = node->child[LEFT]->child[RIGHT];
+			if ((*tmp) && (*tmp)->child[LEFT] && (*tmp)->child[LEFT]->child[RIGHT])
+				toHandle = (*tmp)->child[LEFT]->child[RIGHT];
 			else
 				toHandle = NULL;
-				
-			// setta la vecchia radice
-			if (node == _root)
+			if ((*tmp) == _root)
 			{
-				_root = node->child[LEFT];
-				node->child[LEFT]->parent = _sentinel;
+				_root = (*tmp)->child[LEFT];
+				(*tmp)->child[LEFT]->parent = _sentinel;
 			}
 			else
 			{
-				node->child[LEFT]->parent = node->parent;
+				(*tmp)->child[LEFT]->parent = (*tmp)->parent;
+				(*tmp)->parent->child[RIGHT] = (*tmp)->child[LEFT];
 			}
-			node->parent = node->child[LEFT];
-			node->child[LEFT]->child[RIGHT] = node;
-			// setta la nuova radice
-			node = node->child[LEFT];
-			node->color = BLACK;
-			// elimina figlio destro vecchia radice
-			node->child[RIGHT]->child[LEFT] = _sentinel;
-
+			(*tmp)->parent = (*tmp)->child[LEFT];
+			(*tmp)->child[LEFT]->child[RIGHT] = (*tmp);
+			(*tmp) = (*tmp)->child[LEFT];
+			(*tmp)->child[RIGHT]->child[LEFT] = _sentinel;
 			if (toHandle)
-				insertNode(node, toHandle, node);
-			return (&node);
+				insertNode((*tmp), toHandle, (*tmp));
+			ret = &(*tmp)->child[RIGHT];
+			return (ret);
 		}
 
 		int	eraseLonelyNode(pointer & node)
@@ -406,13 +412,19 @@ namespace ft
 
 		int	eraseAndSubstitute(pointer & node)
 		{
-			pointer	newParent = getSuccessor(node);
+			pointer	newParent = getPredecessor(node);
 			if (node->parent)
 			{
 				if (node->parent->child[LEFT] == node)
 					node->parent->child[LEFT] = newParent;
 				else
 					node->parent->child[RIGHT] = newParent;
+				newParent->parent = node->parent;
+				node->child[RIGHT]->parent = newParent;
+				newParent->child[RIGHT] = node->child[RIGHT];
+				newParent->child[RIGHT]->color = BLACK;
+				if (newParent->color == BLACK && !newParent->child[LEFT])
+					rotateLeft(newParent);
 			}
 			else
 			{
@@ -435,19 +447,6 @@ namespace ft
 				_size--;
 				return (1);
 			}
-			if (newParent->parent->child[LEFT] == newParent)
-				newParent->parent->child[LEFT] = _sentinel;
-			else
-				newParent->parent->child[RIGHT] = _sentinel;
-			newParent->parent = node->parent;
-			if (!newParent->child[LEFT])
-				newParent->child[LEFT] = node->child[LEFT];
-			if (!newParent->child[RIGHT])
-				newParent->child[RIGHT] = node->child[RIGHT];
-			if (node->child[LEFT])
-				node->child[LEFT]->parent = newParent;
-			if (node->child[RIGHT])
-				node->child[RIGHT]->parent = newParent;
 			return (0);
 		}
 
@@ -496,8 +495,7 @@ namespace ft
 			pointer		grandParent;
 			pointer		uncle;
 
-			node->color = RED;
-			while (1)
+			while (1 && *tmp)
 			{
 				parent = (*tmp)->parent;
 				getRelatives(parent, grandParent, uncle);
@@ -519,8 +517,7 @@ namespace ft
 				{
 					if (parent->child[RIGHT] == (*tmp) && grandParent->child[LEFT] == parent)
 					{
-						rotateLeft(parent);
-						tmp = &(*tmp)->child[LEFT];
+						tmp = rotateLeft(parent);
 					}
 					else if (parent->child[LEFT] == (*tmp) && grandParent->child[RIGHT] == parent)
 					{
@@ -541,6 +538,8 @@ namespace ft
 						break ;
 					}
 				}
+				else
+					break ;
 			}
 		}
 
