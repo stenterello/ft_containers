@@ -32,7 +32,7 @@ int	main()
 	std::cout << (ciao.max()->data) << std::endl;
 	std::cout << ciao.getPredecessor(iter.node)->data << std::endl;
 	std::cout << "count before " << ciao.count() << std::endl;
-	ciao.erase(2);
+	ciao.erase(1);
 	std::cout << "cound after " << ciao.count() << std::endl;
 
 	return (0);
