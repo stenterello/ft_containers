@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/19 21:49:03 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/19 22:26:49 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,6 +257,7 @@ namespace ft
 		void	erase(Key const & val)
 		{
 			pointer	node = find(val).node;
+			pointer	tmp;
 			pointer	successor;
 			pointer	toHandle;
 			
@@ -265,9 +266,10 @@ namespace ft
 			
 			if (!node->child[LEFT] && !node->child[RIGHT])
 			{
+				tmp = node->parent;
 				if (node->color == BLACK && node != _root)
 					balanceDelete(node);
-				link(node->parent, node, _sentinel);
+				unlink(tmp, node);
 			}
 			else if (oneChild(node))
 			{
@@ -339,7 +341,6 @@ namespace ft
 		{
 			pointer		toHandle;
 			pointer*	tmp = &node;
-			pointer*	ret;
 
 			if ((*tmp)->child[RIGHT]->child[LEFT])
 				toHandle = (*tmp)->child[RIGHT]->child[LEFT];
@@ -360,14 +361,13 @@ namespace ft
 			}
 			(*tmp)->parent = (*tmp)->child[RIGHT];
 			(*tmp)->child[RIGHT]->child[LEFT] = (*tmp);
-			(*tmp) = (*tmp)->child[RIGHT];
-			(*tmp)->child[LEFT]->child[RIGHT] = _sentinel;
+			(*tmp)->child[RIGHT] = _sentinel;
 			if (toHandle)
-				insertNode((*tmp), toHandle, (*tmp));
-			ret = &(*tmp)->child[LEFT];
+				insertNode((*tmp)->parent, toHandle, (*tmp)->parent);
 			return (&node);
 		}
 
+		// Questa funzione è da corregere
 		pointer*	rotateRight(pointer & node)
 		{
 			pointer		toHandle;
