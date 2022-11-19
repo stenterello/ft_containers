@@ -33,7 +33,7 @@ int	main()
 	std::cout << ciao.getPredecessor(iter.node)->data << std::endl;
 	std::cout << "count before " << ciao.count() << std::endl;
 	ciao.erase(1);
-	std::cout << "cound after " << ciao.count() << std::endl;
+	std::cout << "count after " << ciao.count() << std::endl;
 
 	return (0);
 }

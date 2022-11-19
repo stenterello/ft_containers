@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/19 19:55:21 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/19 21:49:03 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,12 +265,14 @@ namespace ft
 			
 			if (!node->child[LEFT] && !node->child[RIGHT])
 			{
-				link(node->parent, node, _sentinel);
 				if (node->color == BLACK && node != _root)
 					balanceDelete(node);
+				link(node->parent, node, _sentinel);
 			}
 			else if (oneChild(node))
 			{
+				if (node->color == BLACK && node != _root)
+					balanceDelete(node);
 				oneChild(node)->parent = node->parent;
 				link(node->parent, node, oneChild(node));
 			}
@@ -368,7 +370,7 @@ namespace ft
 
 		pointer*	rotateRight(pointer & node)
 		{
-			pointer	toHandle;
+			pointer		toHandle;
 			pointer*	tmp = &node;
 			pointer*	ret;
 
@@ -406,49 +408,84 @@ namespace ft
 			while ((*tmp) != _root && (*tmp)->color == BLACK)
 			{
 				getRelatives2((*tmp), sibling, leftNephew, rightNephew);
-				pointer parent = (*tmp)->parent;
-				if (sibling && sibling->color == RED)
+				if ((*tmp) == (*tmp)->parent->child[LEFT])
 				{
-					parent->color = RED;
-					sibling->color = BLACK;
-					if (parent->child[LEFT] == (*tmp))
-						rotateLeft(parent);
+					if (sibling && sibling->color == RED)
+					{
+						(*tmp)->parent->color = RED;
+						sibling->color = BLACK;
+						rotateLeft((*tmp)->parent);
+					}
 					else
-						rotateRight(parent);
-					break ;
+					{
+						if (leftNephew && leftNephew->color == BLACK && rightNephew && rightNephew->color == BLACK)
+						{
+							sibling->color = RED;
+							tmp = &(*tmp)->parent;
+						}
+						else if (leftNephew && leftNephew->color == RED && rightNephew && rightNephew->color == BLACK)
+						{
+							leftNephew->color = BLACK;
+							sibling->color = RED;
+							rotateRight(sibling);
+						}
+						else if (rightNephew && rightNephew->color == RED)
+						{
+							sibling->color = (*tmp)->parent->color;
+							(*tmp)->parent->color = BLACK;
+							rightNephew->color = BLACK;
+							rotateLeft((*tmp)->parent);
+							break ;
+						}
+						else if (oneChild(*tmp) && oneChild(*tmp)->color == RED)
+						{
+							oneChild(*tmp)->color = BLACK;
+							break ;
+						}
+						else if (sibling && sibling->color == BLACK && (*tmp)->color == BLACK)
+						{
+							sibling->color = RED;
+							tmp = &(*tmp)->parent;
+						}
+					}
 				}
-				else if (parent->color == BLACK && sibling && sibling->color == BLACK && sibling->child[LEFT] && sibling->child[LEFT]->color == BLACK && sibling->child[RIGHT] && sibling->child[RIGHT]->color == BLACK)
+				else
 				{
-					sibling->color = RED;
-					tmp = &parent;
-				}
-				else if (parent->color == RED && sibling && sibling->color == BLACK && sibling->child[LEFT] && sibling->child[LEFT]->color == BLACK && sibling->child[RIGHT] && sibling->child[RIGHT]->color == BLACK)
-				{
-					sibling->color = RED;
-					parent->color = BLACK;
-					break ;
-				}
-				else if (sibling && sibling->color == BLACK && sibling->child[LEFT] && sibling->child[LEFT]->color == RED && sibling->child[RIGHT] && sibling->child[RIGHT]->color == BLACK && parent->child[LEFT] == (*tmp))
-				{
-					sibling->color = RED;
-					sibling->child[LEFT]->color = BLACK;
-					rotateRight(sibling);
-				}
-				else if (sibling && sibling->color == BLACK && sibling->child[RIGHT] && sibling->child[RIGHT]->color == RED && sibling->child[LEFT] && sibling->child[LEFT]->color == BLACK && parent->child[RIGHT] == (*tmp))
-				{
-					sibling->color = RED;
-					sibling->child[RIGHT]->color = BLACK;
-					rotateLeft(sibling);
-				}
-				else if (sibling && sibling->color == BLACK && sibling->child[RIGHT] && sibling->child[RIGHT]->color == RED && (*tmp) == parent->child[LEFT])
-				{
-					sibling->color = parent->color;
-					parent->color = BLACK;
-					rotateLeft(parent);
-					break ;
+					if (sibling && sibling->color == RED)
+					{
+						(*tmp)->parent->color = RED;
+						sibling->color = BLACK;
+						rotateRight((*tmp)->parent);
+					}
+					else
+					{
+						if (rightNephew && rightNephew->color == BLACK && leftNephew&& leftNephew->color == BLACK)
+						{
+							sibling->color = RED;
+							tmp = &(*tmp)->parent;
+						}
+						else if (rightNephew && rightNephew->color == RED && leftNephew && leftNephew->color == BLACK)
+						{
+							rightNephew->color = BLACK;
+							sibling->color = RED;
+							rotateLeft(sibling);
+						}
+						else if (leftNephew && leftNephew->color == RED)
+						{
+							sibling->color = (*tmp)->parent->color;
+							(*tmp)->parent->color = BLACK;
+							leftNephew->color = BLACK;
+							rotateRight((*tmp)->parent);
+							break ;
+						}
+						else if (oneChild(*tmp)->color == RED)
+						{
+							oneChild(*tmp)->color = BLACK;
+							break ;
+						}
+					}
 				}
 			}
-			node->color = BLACK;
 		}
 
 		void	getRelatives(pointer & parent, pointer & grandParent, pointer & uncle)
@@ -491,7 +528,6 @@ namespace ft
 		void	balanceInsert(pointer & node)
 		{
 			pointer*	tmp = &node;
-			pointer*	tmp2;
 			pointer		parent = node->parent;
 			pointer		grandParent;
 			pointer		uncle;
@@ -607,7 +643,7 @@ namespace ft
 				return (node->child[LEFT]);
 			else if (node->child[RIGHT] && !node->child[LEFT])
 				return (node->child[RIGHT]);
-			return (NULL);
+			return (_sentinel);
 		}
 
 		void	link(pointer& parent, pointer& oldSon, pointer& node)
@@ -616,7 +652,8 @@ namespace ft
 				parent->child[LEFT] = node;
 			else
 				parent->child[RIGHT] = node;
-			node->parent = parent;
+			if (node)
+				node->parent = parent;
 		}
 
 		void	unlink(pointer& parent, pointer& node)
