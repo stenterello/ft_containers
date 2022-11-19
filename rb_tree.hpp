@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/19 22:26:49 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/19 22:29:38 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,7 +276,10 @@ namespace ft
 				if (node->color == BLACK && node != _root)
 					balanceDelete(node);
 				oneChild(node)->parent = node->parent;
-				link(node->parent, node, oneChild(node));
+				if (node != _root)
+					link(node->parent, node, oneChild(node));
+				else
+					_root = oneChild(node);
 			}
 			else
 			{
