@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/19 22:29:38 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/20 14:10:29 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ namespace ft
 	{
 
 	public:
-		typedef std::allocator<NodeType> allocator_type;
-		typedef typename allocator_type::size_type size_type;
-		typedef NodeType *pointer;
-		typedef const NodeType *const_pointer;
-		typedef RBIterator<Key, Compare, NodeType> iterator;
-		typedef RBIterator<const Key, Compare, NodeType> const_iterator;
+		typedef std::allocator<NodeType>					allocator_type;
+		typedef typename allocator_type::size_type			size_type;
+		typedef NodeType*									pointer;
+		typedef const NodeType*								const_pointer;
+		typedef RBIterator<Key, Compare, NodeType>			iterator;
+		typedef RBIterator<const Key, Compare, NodeType>	const_iterator;
 		
 		RBTreeSet() : _root(NULL),
 					  _size(0),
@@ -106,8 +106,10 @@ namespace ft
 			return (ret);
 		}
 
-		pointer begin() { return (_root); }
-		const_pointer begin() const { return (_root); }
+		iterator		begin() { return (_root); }
+		const_iterator	begin() const { return (_root); }
+		iterator		end() { return (max()); }
+		const_iterator	end() const { return (max()); }
 
 		ft::pair<iterator, bool> insert(Key const &val)
 		{
@@ -269,7 +271,10 @@ namespace ft
 				tmp = node->parent;
 				if (node->color == BLACK && node != _root)
 					balanceDelete(node);
-				unlink(tmp, node);
+				if (tmp)
+					unlink(tmp, node);
+				else
+					_root = _sentinel;
 			}
 			else if (oneChild(node))
 			{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/18 15:43:20 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/20 14:42:13 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,6 +277,7 @@ namespace ft
 			Compare		c;
 
 			RBIterator() : node(NULL), sentinel(NULL) {};
+			RBIterator(NodeType* start) : node(start), sentinel(NULL) {};
 			RBIterator(NodeType* start, NodeType* endPtr) : node(start), sentinel(endPtr) {};
 			template <typename T2>
 			RBIterator(RBIterator const & src) : node(src.node), sentinel(src.end), c(src.c) {};
@@ -300,21 +301,83 @@ namespace ft
 			bool		operator!=(RBIterator const & rhs) { return ((this->node->data != rhs.node->data) ? true : false); }
 			RBIterator&	operator++()
 			{
-				if (this->node == sentinel)
+				nodePointer	tmp = this->node;
+
+				if (tmp->child[1])
+				{
+					this->node = goRight(tmp->child[1]);
 					return (*this);
-				
+				}
+				else
+				{
+					while (tmp->parent != sentinel)
+					{
+						if (tmp->parent->child[0] == tmp)
+						{
+							tmp = tmp->parent;
+							break ;
+						}
+						tmp = tmp->parent;
+					}
+					this->node = tmp;
+					return (*this);
+				}
 			};
-			RBIterator	operator++(int) {};
-			RBIterator&	operator--() {};
-			RBIterator	operator--(int) {};
+			RBIterator	operator++(int)
+			{
+				RBIterator	ret(*this);
+
+				++node;
+				return (ret);
+			};
+			RBIterator&	operator--()
+			{
+				nodePointer	tmp = node;
+				RBIterator	ret;
+
+				if (tmp->child[0])
+				{
+					this->node = goLeft(tmp->child[0]);
+					return (*this);
+				}
+				else
+				{
+					while (tmp->parent != sentinel)
+					{
+						if (tmp->parent->child[1] == tmp)
+						{
+							tmp = tmp->parent;
+							break ;
+						}
+						tmp = tmp->parent;
+					}
+					this->node = tmp;
+					return (*this);
+				}
+			};
+			RBIterator	operator--(int)
+			{
+				RBIterator	ret(*this);
+
+				--node;
+				return (ret);
+			};
 			
 
 
 		private:
-			// void	min()
-			// {};
-			// void	max()
-			// {};
+			nodePointer	goRight(nodePointer& node)
+			{
+				while (node->child[1])
+					node = node->child[1];
+				return (node);
+			}
+			nodePointer	goLeft(nodePointer& node)
+			{
+				while (node->child[0])
+					node = node->child[0];
+				return (node);
+			}
 	};
 
 	// Overloads
