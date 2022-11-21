@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/20 14:10:29 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/21 18:51:01 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ namespace ft
 		typedef RBIterator<Key, Compare, NodeType>			iterator;
 		typedef RBIterator<const Key, Compare, NodeType>	const_iterator;
 		
-		RBTreeSet() : _root(NULL),
-					  _size(0),
-					  _alloc(allocator_type()),
-					  _sentinel(NULL)
+		RBTreeSet() :	_root(NULL),
+						_size(0),
+						_alloc(allocator_type()),
+						_sentinel(NULL)
 		{};
 
 		RBTreeSet(RBTreeSet const &src) : _root(src._root),
@@ -106,8 +106,8 @@ namespace ft
 			return (ret);
 		}
 
-		iterator		begin() { return (_root); }
-		const_iterator	begin() const { return (_root); }
+		iterator		begin() { return (min()); }
+		const_iterator	begin() const { return (min()); }
 		iterator		end() { return (max()); }
 		const_iterator	end() const { return (max()); }
 
@@ -242,6 +242,9 @@ namespace ft
 		{
 			pointer	node = _root;
 
+			if (!node)
+				return (NULL);
+
 			while (node->child[RIGHT])
 				node = node->child[RIGHT];
 			return (node);
@@ -317,10 +320,7 @@ namespace ft
 		void	clear()
 		{
 			while (min())
-			{
 				erase(min()->data);
-				std::cout << "size: " << count() << std::endl;
-			}
 		}
 
 	private:

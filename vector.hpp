@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/18 15:54:46 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/21 17:48:37 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,15 +244,14 @@ namespace ft
 				this->reserve(finalSize);
 			_end = _begin + finalSize;
 			_size = _end - _begin;
-			size_type		idxEnd = _size;
+			size_type		idxEnd = _size - 1;
 			position = this->begin() + dist;
 			size_type	idxPosition = position - _begin;
-			size_type	rangeEnd = position.pointed() + n - _begin;
 			dist = idxEnd - idxPosition;
 			while (dist--)
 				_begin[idxEnd--] = _begin[idxPosition++];
 			idxPosition = position - _begin;
-			while (rangeEnd--)
+			while (n--)
 				_begin[idxPosition++] = val;
 		}
 

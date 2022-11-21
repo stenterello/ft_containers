@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/20 14:42:13 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/21 19:02:18 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,8 +276,13 @@ namespace ft
 			nodePointer	sentinel;
 			Compare		c;
 
-			RBIterator() : node(NULL), sentinel(NULL) {};
-			RBIterator(NodeType* start) : node(start), sentinel(NULL) {};
+			RBIterator()
+			{
+				node = NULL;
+				sentinel = NULL;
+				c = Compare();
+			};
+			RBIterator(NodeType* start) : node(start), sentinel(NULL), c(Compare()) {};
 			RBIterator(NodeType* start, NodeType* endPtr) : node(start), sentinel(endPtr) {};
 			template <typename T2>
 			RBIterator(RBIterator const & src) : node(src.node), sentinel(src.end), c(src.c) {};
@@ -298,14 +303,21 @@ namespace ft
 			reference	operator*() const { return (this->node->data); }
 			pointer		operator->() const { return &operator*(); }
 			bool		operator==(RBIterator const & rhs) { return ((this->node->data == rhs.node->data) ? true : false); }
-			bool		operator!=(RBIterator const & rhs) { return ((this->node->data != rhs.node->data) ? true : false); }
+			bool		operator!=(RBIterator const & rhs)
+			{
+				if ((this->node && !rhs.node) || (!this->node && rhs.node))
+					return (false);
+				else if (!this->node && !rhs.node)
+					return (true);
+				return ((this->node->data != rhs.node->data) ? true : false);
+			}
 			RBIterator&	operator++()
 			{
 				nodePointer	tmp = this->node;
 
 				if (tmp->child[1])
 				{
-					this->node = goRight(tmp->child[1]);
+					this->node = min(tmp->child[1]);
 					return (*this);
 				}
 				else
@@ -327,7 +339,7 @@ namespace ft
 			{
 				RBIterator	ret(*this);
 
-				++node;
+				++(*this);
 				return (ret);
 			};
 			RBIterator&	operator--()
@@ -337,7 +349,7 @@ namespace ft
 
 				if (tmp->child[0])
 				{
-					this->node = goLeft(tmp->child[0]);
+					this->node = max(tmp->child[0]);
 					return (*this);
 				}
 				else
@@ -366,17 +378,24 @@ namespace ft
 
 
 		private:
-			nodePointer	goRight(nodePointer& node)
+			nodePointer	min(nodePointer& node)
 			{
-				while (node->child[1])
-					node = node->child[1];
-				return (node);
+				nodePointer	tmp = node;
+
+				while (tmp->child[0])
+					tmp = tmp->child[0];
+				return (tmp);
 			}
-			nodePointer	goLeft(nodePointer& node)
+			nodePointer	max(nodePointer& node)
 			{
-				while (node->child[0])
-					node = node->child[0];
-				return (node);
+				nodePointer	tmp = node;
+
+				if (!node)
+					return (NULL);
+
+				while (tmp->child[1])
+					tmp = tmp->child[1];
+				return (tmp);
 			}
 	};
 

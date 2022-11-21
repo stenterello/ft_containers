@@ -55,6 +55,19 @@ int run_set_unit_test(std::string test_name, std::vector<int> (func1)(std::set<T
 	    result = 0;
 	}
 	else {
+		std::cout << std::endl;
+		std::vector<int>::iterator	iter = res1.begin();
+		std::vector<int>::iterator		iter2 = res2.begin();
+		while (iter != res1.end())
+		{
+			if (*iter != *iter2)
+			{
+				std::cout << "TESTER: " << *iter << " indice: " << iter - res1.begin() <<  std::endl;
+				std::cout << "NOSTRO: " << *iter2 << " indice: " << iter2 - res2.begin() << std::endl;
+			}
+			iter++;
+			iter2++;
+		}
 	    printElement("FAILED");
 	    result = 1;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/20 14:45:37 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/21 19:09:52 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,17 @@ namespace ft
 			explicit set(const Compare& comp = Compare(), const Alloc& alloc = Alloc()) :
 				_alloc(alloc),
 				_key_compare(comp),
-				_value_compare(comp)
+				_value_compare(comp),
+				_key_type(key_type()),
+				_value_type(value_type())
 			{};
 			template <class InputIt>
 			set(InputIt first, InputIt last, const Compare& comp = Compare(), const Alloc& alloc = allocator_type()) :
 				_alloc(alloc),
 				_key_compare(comp),
-				_value_compare(comp)
+				_value_compare(comp),
+				_key_type(key_type()),
+				_value_type(value_type())
 			{
 				this->insert(first, last);
 			};
@@ -60,7 +64,8 @@ namespace ft
 				_value_compare(other._value_compare),
 				_alloc(other._alloc)
 			{
-				this->insert(other.begin(), other.end());
+				if (other.begin().node != NULL)
+					this->insert(other.begin(), other.end());
 			};
 			set&	operator=(const set& rhs)
 			{
@@ -114,6 +119,7 @@ namespace ft
 			{
 				while (first != last)
 					this->_tree.insert(*first++);
+				this->_tree.insert(*first);
 			};
 			// iterator					erase(iterator pos)
 			// {};
