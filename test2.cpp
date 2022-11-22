@@ -4,7 +4,8 @@
 
 int main()
 {
-	std::set<int>	ciao;
+	ft::set<int>	ciao;
+	ft::set<int>	ciao2;
 
 	ciao.insert(1);
 	ciao.insert(0);
@@ -17,13 +18,9 @@ int main()
 	ciao.insert(9);
 	ciao.insert(8);
 
-	std::set<int>::iterator	iter = ciao.begin();
+	for (ft::set<int>::iterator it = ciao.begin(); it != ciao.end(); it++)
+	{ ciao2.insert(*it); }
 
-	while (iter != ciao.end())
-		std::cout << *(++iter) << std::endl;
 
-	std::cout << std::endl;
-
-	std::cout << ciao.begin() + 1 << std::endl;
 	return (0);
 }

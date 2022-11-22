@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/21 19:09:52 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/22 17:06:05 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,6 @@ namespace ft
 			{
 				while (first != last)
 					this->_tree.insert(*first++);
-				this->_tree.insert(*first);
 			};
 			// iterator					erase(iterator pos)
 			// {};
