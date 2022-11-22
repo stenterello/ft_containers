@@ -176,6 +176,7 @@ std::vector<int> iterators_test(_set<T> st) {
     _set<T> stt;
     fillSet(stt);
 	typename _set<T>::iterator iterrr = stt.begin();
+	typename _set<T>::iterator iterrr2 = stt.begin();
     for (typename _set<T>::iterator it = stt.begin(); it != stt.end(); it++)
 	{ v.push_back(*it); }
     for (typename _set<T>::iterator it = --stt.end(); it != stt.begin(); it--) 

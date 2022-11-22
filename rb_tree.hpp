@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/22 18:22:29 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/22 19:05:01 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -426,7 +426,10 @@ namespace ft
 			else
 			{
 				(*tmp)->child[LEFT]->parent = (*tmp)->parent;
-				(*tmp)->parent->child[RIGHT] = (*tmp)->child[LEFT];
+				if ((*tmp)->parent->child[RIGHT] == *tmp)
+					(*tmp)->parent->child[RIGHT] = (*tmp)->child[LEFT];
+				else
+					(*tmp)->parent->child[LEFT] = (*tmp)->child[LEFT];
 			}
 			(*tmp)->parent = (*tmp)->child[LEFT];
 			(*tmp)->child[LEFT]->child[RIGHT] = (*tmp);
