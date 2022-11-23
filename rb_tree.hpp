@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/23 14:44:15 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/23 19:40:10 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,14 @@ namespace ft
 	{
 
 	public:
-		typedef std::allocator<NodeType>					allocator_type;
-		typedef typename allocator_type::size_type			size_type;
-		typedef NodeType*									pointer;
-		typedef const NodeType*								const_pointer;
-		typedef RBIterator<Key, Compare, NodeType>			iterator;
-		typedef RBIterator<const Key, Compare, NodeType>	const_iterator;
+		typedef std::allocator<NodeType>						allocator_type;
+		typedef typename allocator_type::size_type				size_type;
+		typedef NodeType*										pointer;
+		typedef const NodeType*									const_pointer;
+		typedef RBIterator<Key, Compare, NodeType>				iterator;
+		typedef RBIterator<const Key, Compare, NodeType>		const_iterator;
+		typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
+		typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 		
 		RBTreeSet() :	_root(NULL),
 						_size(0),
@@ -111,12 +113,16 @@ namespace ft
 			return (ret);
 		}
 
-		iterator		begin() { return (iterator(min(), _sentinel)); }
-		const_iterator	begin() const { return (const_iterator(min(), _sentinel)); }
-		iterator		end() { return (_sentinel); }
-		const_iterator	end() const { return (_sentinel); }
+		iterator				begin() { return (iterator(min(), _sentinel)); }
+		const_iterator			begin() const { return (const_iterator(min(), _sentinel)); }
+		iterator				end() { return (_sentinel); }
+		const_iterator			end() const { return (_sentinel); }
+		reverse_iterator		rbegin() { return (iterator(max(), _sentinel)); }
+		const_reverse_iterator	rbegin() const { return (const_iterator(max(), _sentinel)); }
+		reverse_iterator		rend() { return (_sentinel); }
+		const_reverse_iterator	rend() const { return (_sentinel); }
 
-		ft::pair<iterator, bool> insert(Key const &val)
+		ft::pair<iterator, bool> insert(Key const &val, int flag)
 		{
 			ft::pair<iterator, bool> ret;
 			pointer node = _alloc.allocate(1);
@@ -132,19 +138,20 @@ namespace ft
 				_root = node;
 				_sentinel->parent = node;
 				node->color = BLACK;
-				_size++;
+				if (flag)
+					_size++;
 				ret.first = iterator(node, _sentinel);
 				ret.second = true;
 				return (ret);
 			}
 			else
 			{
-				ret.first = iterator(_sentinel, _sentinel);
+				ret.first = iterator(node, _sentinel);
 				ret.second = false;
 				if (_c(val, _root->data))
-					return (insertNode(_root->child[LEFT], node, _root));
+					return (insertNode(_root->child[LEFT], node, _root, flag));
 				else if (_c(_root->data, val))
-					return (insertNode(_root->child[RIGHT], node, _root));
+					return (insertNode(_root->child[RIGHT], node, _root, flag));
 				else
 				{
 					_alloc.deallocate(node, 1);
@@ -182,7 +189,7 @@ namespace ft
 		{
 			pointer	tmp = node;
 			
-			if (tmp->child[LEFT])
+			if (tmp->child[LEFT] != _sentinel)
 				return (max(tmp->child[LEFT]));
 			else
 			{
@@ -203,7 +210,7 @@ namespace ft
 		{
 			pointer	tmp = node;
 			
-			if (tmp->child[RIGHT])
+			if (tmp->child[RIGHT] != _sentinel)
 				return (min(tmp->child[RIGHT]));
 			else
 			{
@@ -287,21 +294,26 @@ namespace ft
 			if (!node || node == _sentinel)
 				return (_sentinel);
 
-			while (tmp->child[RIGHT])
+			while (tmp->child[RIGHT] != _sentinel)
 				tmp = tmp->child[RIGHT];
 			return (tmp);
 		}
 
-		void	erase(Key const & val)
+		iterator	erase(Key const & val)
 		{
-			pointer	node = find(val).node;
-			pointer	tmp;
-			pointer	successor;
-			pointer	toHandle;
+			pointer		node = find(val).node;
+			pointer		tmp;
+			pointer		successor;
+			pointer		toHandle;
+			iterator	ret;
 			
 			if (!node)
-				return ;
-			
+				return (iterator(_sentinel, _sentinel));
+			else if (node != _sentinel)
+				ret = this->find(getSuccessor(node)->data);
+			else
+				return (iterator(_sentinel, _sentinel));
+
 			if ((!node->child[LEFT] && !node->child[RIGHT]) || (node->child[LEFT] == _sentinel && node->child[RIGHT] == _sentinel))
 			{
 				tmp = node->parent;
@@ -315,7 +327,7 @@ namespace ft
 					_sentinel->parent = _root;
 				}
 			}
-			else if (oneChild(node))
+			else if (oneChild(node) != _sentinel)
 			{
 				if (node->color == BLACK && node != _root)
 					balanceDelete(node);
@@ -330,7 +342,12 @@ namespace ft
 			}
 			else
 			{
-				successor = getSuccessor(node);
+				toHandle = NULL;
+				if (_c(node->data, _root->data))
+					successor = getSuccessor(node);
+				else
+					successor = getPredecessor(node);
+				balanceDelete(successor);
 				if (successor->child[RIGHT] != _sentinel)
 				{
 					toHandle = successor->child[RIGHT];
@@ -345,7 +362,7 @@ namespace ft
 				}
 				if (node->child[RIGHT] != _sentinel)
 				{
-					if (successor->child[RIGHT])
+					if (successor->child[RIGHT] != _sentinel)
 						link(successor->parent, successor, successor->child[RIGHT]);
 					node->child[RIGHT]->parent = successor;
 					successor->child[RIGHT] = node->child[RIGHT];
@@ -354,6 +371,7 @@ namespace ft
 			_alloc.deallocate(node, 1);
 			node = NULL;
 			_size--;
+			return (ret);
 		}
 
 		void	clear()
@@ -413,7 +431,7 @@ namespace ft
 			(*tmp)->child[RIGHT]->child[LEFT] = (*tmp);
 			(*tmp)->child[RIGHT] = _sentinel;
 			if (toHandle)
-				insertNode((*tmp)->parent, toHandle, (*tmp)->parent);
+				insertNode((*tmp)->parent, toHandle, (*tmp)->parent, 0);
 			return (&node);
 		}
 
@@ -446,7 +464,7 @@ namespace ft
 			(*tmp) = (*tmp)->child[LEFT];
 			(*tmp)->child[RIGHT]->child[LEFT] = _sentinel;
 			if (toHandle)
-				insertNode((*tmp), toHandle, (*tmp));
+				insertNode((*tmp), toHandle, (*tmp), 0);
 			ret = &(*tmp)->child[RIGHT];
 			return (ret);
 		}
@@ -535,6 +553,11 @@ namespace ft
 						{
 							oneChild(*tmp)->color = BLACK;
 							break ;
+						}
+						else if (sibling && sibling->color == BLACK && (*tmp)->color == BLACK)
+						{
+							sibling->color = RED;
+							tmp = &(*tmp)->parent;
 						}
 					}
 				}
@@ -662,7 +685,7 @@ namespace ft
 			return (NULL);
 		}
 
-		ft::pair<iterator, bool> insertNode(pointer &start, pointer &node, pointer& parent)
+		ft::pair<iterator, bool> insertNode(pointer &start, pointer &node, pointer& parent, int flag)
 		{
 			ft::pair<iterator, bool>	ret;
 			
@@ -674,18 +697,19 @@ namespace ft
 				else
 					parent->child[RIGHT] = node;
 				start = node;
-				_size++;
+				if (flag)
+					_size++;
 				balanceInsert(start);
 				ret.first = iterator(start, _sentinel);
 				ret.second = true;
 				return (ret);
 			}
 			if (_c(node->data, start->data))
-				return (insertNode(start->child[LEFT], node, start));
+				return (insertNode(start->child[LEFT], node, start, flag));
 			else if (_c(start->data, node->data))
-				return (insertNode(start->child[RIGHT], node, start));
+				return (insertNode(start->child[RIGHT], node, start, flag));
+			ret.first = iterator(node, _sentinel);
 			delete node;
-			ret.first = iterator(_sentinel, _sentinel);
 			ret.second = false;
 			return (ret);
 		}

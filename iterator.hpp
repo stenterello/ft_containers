@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/23 14:23:05 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/23 15:01:36 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ namespace ft
 			reverse_iterator() : _base(NULL) {};
 			explicit reverse_iterator(iterator_type iter) : _base(iter) {};
 			template <class ReverseIterator>
-			reverse_iterator(const reverse_iterator<ReverseIterator> &rev_it) : _base(rev_it.base()){};
+			reverse_iterator(reverse_iterator<ReverseIterator> const &rev_it) : _base(rev_it.base()){};
 			virtual ~reverse_iterator(){};
 			iterator_type base() const { return (_base); };
 			reference			operator*() const { return (*(_base - 1)); };
@@ -394,8 +394,6 @@ namespace ft
 				--(*this);
 				return (ret);
 			};
-			
-
 
 		private:
 			nodePointer	min(nodePointer& node)

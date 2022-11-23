@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/23 14:44:22 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/23 20:00:11 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,10 @@ namespace ft
 			const_iterator			begin() const { return (this->_tree.begin()); };
 			iterator				end() { return (this->_tree.end()); };
 			const_iterator			end() const { return (this->_tree.end()); };
-			reverse_iterator		rbegin() { return (--(this->_tree.end())); };
-			const_reverse_iterator	rbegin() const { return (--(this->_tree.end())); };
-			reverse_iterator		rend() { return (iterator(--(this->_tree.begin()))); };
-			const_reverse_iterator	rend() const { return (iterator(--(this->_tree.begin()))); };
+			reverse_iterator		rbegin() { return (this->_tree.rbegin()); };
+			const_reverse_iterator	rbegin() const { return (this->_tree.rbegin()); };
+			reverse_iterator		rend() { return (this->_tree.rend()); };
+			const_reverse_iterator	rend() const { return (this->_tree.rend()); };
 
 
 			// // Capacity
@@ -107,37 +107,38 @@ namespace ft
 			void						clear() { this->_tree.clear(); };
 			ft::pair<iterator, bool>	insert(const value_type& value)
 			{
-				return (this->_tree.insert(value));
+				return (this->_tree.insert(value, 1));
 			}
 			iterator insert(iterator pos, const value_type& value)
 			{
 				(void)pos;
-				return (this->_tree.insert(value).first);
+				return (this->_tree.insert(value, 1).first);
 			}
 			template <class InputIt>
 			void						insert(InputIt first, InputIt last)
 			{
 				while (first != last)
-					this->_tree.insert(*first++);
+					this->_tree.insert(*first++, 1);
 			};
-			// iterator					erase(iterator pos) { return (this->_tree.erase(*pos)); }
-			// iterator					erase(iterator first, iterator last)
-			// {
-			// 	iterator	ret = first;
-			// 	while (first != last)
-			// 	{
-			// 		this->_tree.erase(*first++);
-			// 		ret = this->_tree.find(*first);
-			// 	}
-			// 	return (this->_tree.getSuccessor(ret));
-			// }
-			// size_type					erase(const Key& key)
-			// {
-			// 	iterator	ret = this->_tree.erase(key);
-			// 	if (ret != NULL)
-			// 		return (1);
-			// 	return (0);
-			// }
+			iterator					erase(iterator pos) { return (this->_tree.erase(*pos)); }
+			iterator					erase(iterator first, iterator last)
+			{
+				iterator	ret = this->end();
+				while (first != last)
+				{
+					if (this->_tree.erase(*first) != this->end())
+						ret = this->_tree.find(*first);
+					first++;
+				}
+				return (this->_tree.getSuccessor(ret.node));
+			}
+			size_type					erase(const Key& key)
+			{
+				iterator	ret = this->_tree.erase(key);
+				if (ret != this->end())
+					return (1);
+				return (0);
+			}
 			// void						swap(set& other) {};
 
 

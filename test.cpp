@@ -59,10 +59,8 @@ int run_set_unit_test(std::string test_name, std::vector<int> (func1)(std::set<T
 		std::cout << std::endl;
 		std::vector<int>::iterator	iter = res1.begin();
 		std::vector<int>::iterator		iter2 = res2.begin();
-		while (iter != res1.begin() + 10)
-		{
-			std::cout << "TESTER: " << *iter++ << " NOSTRO: " << *iter2++ <<  std::endl;
-		}
+		while (iter != res1.end())
+			std::cout << "TESTER: " << *iter++ << " NOSTRO: " << *iter2++ << std::endl;
 	    printElement("FAILED");
 	    result = 1;
 	}
@@ -234,6 +232,7 @@ std::vector<int> insert_test(std::set<T> st) {
         v.push_back(*it3);
     }
     v.push_back(st.size());
+	std::cout << "SIZE " << st.size() << std::endl;
     return v;
 }
 
@@ -257,14 +256,262 @@ std::vector<int> insert_test(_set<T> st) {
         st.insert(i);
     }
     g_end2 = timer();
+
     typename _set<T>::iterator it3 = st.begin();
     for (; it3 != st.end(); ++it3) {
         v.push_back(*it3);
     }
     v.push_back(st.size());
+	std::cout << "SIZE " << st.size() << std::endl;
+    return v;
+}
+
+template <class T>
+std::vector<int> reverse_iterators_test(std::set<T> st) {
+    std::vector<int> v;
+
+    g_start1 = g_end1 = timer();
+    st.insert(5);
+    st.insert(3);
+    st.insert(7);
+    typename std::set<T>::reverse_iterator rit = st.rbegin();
+    typename std::set<T>::reverse_iterator rit2 = st.rend();
+    v.push_back(*rit);
+    rit++;
+    rit2--;
+    v.push_back(*rit);
+    v.push_back(*rit2);
+    rit++;
+    v.push_back(*rit == *rit2);
+    v.push_back(rit == rit2);
+    rit2--;
+    v.push_back(*rit);
+    v.push_back(*rit2);
+    v.push_back(*rit2 > *rit);
+    v.push_back(*rit2 < *rit);
+    v.push_back(*(--rit));
+    v.push_back(*(++rit2));
+    v.push_back(*(rit--));
+    v.push_back(*(rit2++));
+    return v;
+}
+
+template <class T>
+std::vector<int> reverse_iterators_test(_set<T> st) {
+
+    std::vector<int> v;
+
+    g_start2 = g_end2 = timer();
+    st.insert(5);
+    st.insert(3);
+    st.insert(7);
+    typename _set<T>::reverse_iterator rit = st.rbegin();
+    typename _set<T>::reverse_iterator rit2 = st.rend();
+    v.push_back(*rit);
+    rit++;
+    rit2--;
+    v.push_back(*rit);
+    v.push_back(*rit2);
+    rit++;
+    v.push_back(*rit == *rit2);
+    v.push_back(rit == rit2);
+    rit2--;
+    v.push_back(*rit);
+    v.push_back(*rit2);
+    v.push_back(*rit2 > *rit);
+    v.push_back(*rit2 < *rit);
+    v.push_back(*(--rit));
+    v.push_back(*(++rit2));
+    v.push_back(*(rit--));
+    v.push_back(*(rit2++));
+    return v;
+}
+
+template <class T>
+std::vector<int> clear_test(std::set<T> st) {
+    std::vector<int> v;
+    st.clear();
+    for (int i = 0; i < 25 * _ratio; ++i)
+        st.insert(i);
+    v.push_back(st.size());
+    g_start1 = timer();
+    st.clear();
+    g_end1 = timer();
+    v.push_back(st.size());
+    typename std::set<T>::iterator it = st.begin();
+    if (it == st.end())
+        v.push_back(1);
+    return v;
+}
+
+template <class T>
+std::vector<int> clear_test(_set<T> st) {
+    std::vector<int> v;
+    st.clear();
+    for (int i = 0; i < 25 * _ratio; ++i)
+        st.insert(i);
+    v.push_back(st.size());
+    g_start2 = timer();
+    st.clear();
+    g_end2 = timer();
+    v.push_back(st.size());
+    typename _set<T>::iterator it = st.begin();
+    if (it == st.end())
+        v.push_back(1);
+    return v;
+}
+
+template <class T>
+std::vector<int> insert_test_3(std::set<T> st) {
+    std::vector<int> v;
+    typename std::set<T>::iterator it = st.end();
+    g_start1 = timer();
+    for (int i = 0; i < 50 * _ratio; ++i) {
+        st.insert(it, i);
+    }
+    g_end1 = timer();
+    typename std::set<T>::iterator it2 = st.begin();
+    for (; it2 != st.end(); ++it2) {
+        v.push_back(*it2);
+    }
+    return v;
+}
+
+template <class T>
+std::vector<int> insert_test_3(_set<T> st) {
+    std::vector<int> v;
+    typename _set<T>::iterator it = st.end();
+    g_start2 = timer();
+    for (int i = 0; i < 50 * _ratio; ++i) {
+        st.insert(it, i);
+    }
+    g_end2 = timer();
+    typename _set<T>::iterator it2 = st.begin();
+    for (; it2 != st.end(); ++it2) {
+        v.push_back(*it2);
+    }
+    return v;
+}
+
+template <class T>
+std::vector<int> erase_test_1(std::set<T> st) {
+    std::vector<int> v;
+    v.push_back(st.erase(3));
+    for (int i = 0; i < 30 * _ratio; ++i)
+        st.insert(i);
+    typename std::set<T>::iterator it = st.begin();
+    v.push_back(*it);
+    v.push_back(st.erase(-5));
+    v.push_back(st.size());
+    v.push_back(st.erase(0));
+    v.push_back(st.size());
+    typename std::set<T>::iterator it4 = st.begin();
+    g_start1 = timer();
+    for (; it4 != st.end(); it4 = st.begin())
+        st.erase(*it4);
+    g_end1 = timer();
+    v.push_back(st.erase(30 * _ratio - 1));
+    v.push_back(st.size());
+    std::set<int> st2;
+    for (int i = 0; i < 10 ; ++i)
+        st2.insert(i);
+    st2.erase(2);
+    st2.erase(7);
+    typename std::set<T>::iterator it3 = st2.begin();
+    for (; it3 != st2.end(); ++it3) {
+        v.push_back(*it3);
+    }
+    return v;
+}
+
+template <class T>
+std::vector<int> erase_test_1(_set<T> st) {
+    std::vector<int> v;
+    v.push_back(st.erase(3));
+    for (int i = 0; i < 30 * _ratio; ++i)
+        st.insert(i);
+    typename _set<T>::iterator it = st.begin();
+    v.push_back(*it);
+    v.push_back(st.erase(-5));
+    v.push_back(st.size());
+    v.push_back(st.erase(0));
+    v.push_back(st.size());
+    typename _set<T>::iterator it4 = st.begin();
+    g_start2 = timer();
+    for (; it4 != st.end(); it4 = st.begin())
+        st.erase(*it4);
+    g_end2 = timer();
+    v.push_back(st.erase(30 * _ratio - 1));
+    v.push_back(st.size());
+    _set<int> st2;
+    for (int i = 0; i < 10 ; ++i)
+        st2.insert(i);
+    st2.erase(2);
+    st2.erase(7);
+    typename _set<T>::iterator it3 = st2.begin();
+    for (; it3 != st2.end(); ++it3) {
+        v.push_back(*it3);
+    }
+    return v;
+}
+
+template <class T>
+std::vector<int> insert_test_2(std::set<T> st) {
+    std::vector<int> v;
+    for (int i = 0; i < 50 * _ratio; ++i)
+        st.insert(i);
+    std::set<int> st2;
+    g_start1 = timer();
+    st2.insert(st.begin(), st.end());
+    g_end1 = timer();
+    typename std::set<T>::iterator it2 = st2.begin();
+    for (; it2 != st2.end(); ++it2) {
+        v.push_back(*it2);
+    }
+    return v;
+}
+
+template <class T>
+std::vector<int> insert_test_2(_set<T> st) {
+    std::vector<int> v;
+    for (int i = 0; i < 50 * _ratio; ++i)
+        st.insert(i);
+    _set<int> st2;
+    g_start2 = timer();
+    st2.insert(st.begin(), st.end());
+    g_end2 = timer();
+    typename _set<T>::iterator it2 = st2.begin();
+    for (; it2 != st2.end(); ++it2) {
+        v.push_back(*it2);
+    }
+    return v;
+}
+
+template <class T>
+std::vector<int> erase_test_3(std::set<T> st) {
+    std::vector<int> v;
+    for (int i = 0; i < 50 * _ratio; ++i)
+        st.insert(i);
+    g_start1 = timer();
+    st.erase(st.begin(), --st.end());
+    g_end1 = timer();
+    v.push_back(*(st.begin()));
+    return v;
+}
+
+template <class T>
+std::vector<int> erase_test_3(_set<T> st) {
+    std::vector<int> v;
+    for (int i = 0; i < 50 * _ratio; ++i)
+        st.insert(i);
+    g_start2 = timer();
+    st.erase(st.begin(), --st.end());
+    g_end2 = timer();
+    v.push_back(*(st.begin()));
     return v;
 }
 
 int main() {
-    exit(run_set_unit_test<int>("constructor", copy_constructor_test, copy_constructor_test));
+
+    exit(run_set_unit_test<int>("erase(InputIt)", erase_test_3, erase_test_3));
 }
