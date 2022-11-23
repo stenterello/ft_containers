@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/22 19:09:32 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/23 14:23:05 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -357,14 +357,14 @@ namespace ft
 			{
 				nodePointer	tmp = this->node;
 
-				if (this->node == minNode)
+				if (this->node == sentinel)
 				{
-					this->node = sentinel;
+					this->node = max(this->node->parent);
 					return (*this);
 				}
-				else if (this->node == sentinel)
+				else if (this->node == minNode)
 				{
-					this->node = max(root);
+					this->node = sentinel;
 					return (*this);
 				}
 				else if (tmp->child[0] != sentinel)

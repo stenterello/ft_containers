@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/22 17:06:05 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/23 14:44:22 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,9 +120,24 @@ namespace ft
 				while (first != last)
 					this->_tree.insert(*first++);
 			};
-			// iterator					erase(iterator pos)
-			// {};
-			// size_type					erase(const Key& key);
+			// iterator					erase(iterator pos) { return (this->_tree.erase(*pos)); }
+			// iterator					erase(iterator first, iterator last)
+			// {
+			// 	iterator	ret = first;
+			// 	while (first != last)
+			// 	{
+			// 		this->_tree.erase(*first++);
+			// 		ret = this->_tree.find(*first);
+			// 	}
+			// 	return (this->_tree.getSuccessor(ret));
+			// }
+			// size_type					erase(const Key& key)
+			// {
+			// 	iterator	ret = this->_tree.erase(key);
+			// 	if (ret != NULL)
+			// 		return (1);
+			// 	return (0);
+			// }
 			// void						swap(set& other) {};
 
 

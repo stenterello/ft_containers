@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/22 19:05:01 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/23 14:44:15 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ namespace ft
 			_sentinel = _alloc.allocate(1);
 			_sentinel->color = SENTINEL;
 			_root = _sentinel;
+			_sentinel->parent = _root;
 		};
 
 		RBTreeSet(RBTreeSet const &src) : _root(src._root),
@@ -129,6 +130,7 @@ namespace ft
 			if (!_size)
 			{
 				_root = node;
+				_sentinel->parent = node;
 				node->color = BLACK;
 				_size++;
 				ret.first = iterator(node, _sentinel);
@@ -308,7 +310,10 @@ namespace ft
 				if (tmp != _sentinel)
 					unlink(tmp, node);
 				else
+				{
 					_root = _sentinel;
+					_sentinel->parent = _root;
+				}
 			}
 			else if (oneChild(node))
 			{
@@ -318,7 +323,10 @@ namespace ft
 				if (node != _root)
 					link(node->parent, node, oneChild(node));
 				else
+				{
 					_root = oneChild(node);
+					_sentinel->parent = _root;
+				}
 			}
 			else
 			{
@@ -390,6 +398,7 @@ namespace ft
 			if ((*tmp) == _root)
 			{
 				_root = (*tmp)->child[RIGHT];
+				_sentinel->parent = _root;
 				(*tmp)->child[RIGHT]->parent = _sentinel;
 			}
 			else
@@ -421,6 +430,7 @@ namespace ft
 			if ((*tmp) == _root)
 			{
 				_root = (*tmp)->child[LEFT];
+				_sentinel->parent = _root;
 				(*tmp)->child[LEFT]->parent = _sentinel;
 			}
 			else
