@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/23 19:40:10 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/23 23:38:23 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,24 +93,12 @@ namespace ft
 		size_type size() const { return this->_size; }
 		size_type max_size() const { return _alloc.max_size(); }
 
-		size_type	count(pointer const &node) const
+		size_type	count(Key const & k) const
 		{
-			if (!node || node->color == SENTINEL)
+			iterator	ret = this->find(k);
+			if (ret == iterator(_sentinel, _sentinel))
 				return (0);
-			size_type ret = 1;
-			ret += count(node->child[LEFT]);
-			ret += count(node->child[RIGHT]);
-			return (ret);
-		}
-
-		size_type	count() const
-		{
-			if (!_root)
-				return (0);
-			size_type ret = 1;
-			ret += count(_root->child[LEFT]);
-			ret += count(_root->child[RIGHT]);
-			return (ret);
+			return (1);
 		}
 
 		iterator				begin() { return (iterator(min(), _sentinel)); }
@@ -160,20 +148,16 @@ namespace ft
 			}
 		}
 
-		// Se non trova l'elemento, ritorna un puntatore a _sentinel che, in caso venga stampato,
-		// produce segmentation fault. Basta inserire all'interno di Set un controllo che l'iteratore
-		// non punti a NULL
-
-		iterator	find(Key const & val)
+		iterator	find(Key const & val) const
 		{
 			pointer	node = _root;
 
-			if (node)
+			if (node && node != _sentinel)
 				return (findPointer(node, val));
 			return (iterator(_sentinel, _sentinel));
 		}
 
-		iterator	findPointer(pointer& start, Key const & val)
+		iterator	findPointer(pointer& start, Key const & val) const
 		{
 			if (!start || start->color == SENTINEL)
 				return (iterator(_sentinel, _sentinel));
@@ -185,7 +169,7 @@ namespace ft
 				return (iterator(start, _sentinel));
 		}
 
-		pointer	getPredecessor(pointer const & node)
+		pointer	getPredecessor(pointer const & node) const
 		{
 			pointer	tmp = node;
 			
@@ -206,7 +190,7 @@ namespace ft
 			}
 		}
 
-		pointer	getSuccessor(pointer const & node)
+		pointer	getSuccessor(pointer const & node) const
 		{
 			pointer	tmp = node;
 			
@@ -380,6 +364,46 @@ namespace ft
 
 			while (iter != this->end())
 				erase(*iter++);
+		}
+
+		iterator	lower_bound(Key const & k)
+		{
+			pointer	ret;
+
+			ret = max();
+			while (getPredecessor(ret)->data >= k && ret != _sentinel)
+				ret = getPredecessor(ret);
+			return (ret);
+		}
+
+		const_iterator	lower_bound(Key const & k) const
+		{
+			pointer	ret;
+
+			ret = max();
+			while (getPredecessor(ret)->data >= k && ret != _sentinel)
+				ret = getPredecessor(ret);
+			return (ret);
+		}
+
+		iterator	upper_bound(Key const & k)
+		{
+			pointer	ret;
+
+			ret = min();
+			while (getSuccessor(ret)->data >= k && ret != _sentinel)
+				ret = getSuccessor(ret);
+			return (ret);
+		}
+
+		const_iterator	upper_bound(Key const & k) const
+		{
+			pointer	ret;
+
+			ret = min();
+			while (getSuccessor(ret)->data >= k && ret != _sentinel)
+				ret = getSuccessor(ret);
+			return (ret);
 		}
 
 	private:

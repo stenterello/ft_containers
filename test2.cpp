@@ -4,7 +4,7 @@
 
 int main()
 {
-	std::set<int>	ciao;
+	ft::set<int>	ciao;
 
 	ciao.insert(16);
 	ciao.insert(8);
@@ -15,11 +15,8 @@ int main()
 	ciao.insert(41);
 	ciao.insert(4);
 	ciao.insert(11);
-	
-	std::set<int>::iterator	iter = ciao.find(16);
-	iter = ciao.erase(iter);
 
-	std::cout << *iter << std::endl;
+	std::cout << *(ciao.lower_bound(6)) << std::endl;
 
 	return (0);
 }

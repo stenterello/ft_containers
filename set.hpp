@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/23 20:00:11 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/23 23:38:15 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,15 +144,15 @@ namespace ft
 
 			// // Lookup
 
-			size_type		count(const Key& key) const { return (this->_tree.count()); };
+			size_type		count(const Key& key) const { return (this->_tree.count(key)); };
 			iterator		find(const Key& key) { return (this->_tree.find(key)); }
 			const_iterator	find(const Key& key) const { return (this->_tree.const_find(key)); };
 			// ft::pair<iterator, iterator>	equal_range(const Key& key) {};
 			// ft::pair<const_iterator,m const_iterator>	equal_range(const Key& key) const {};
-			// iterator									lower_bounf(const Key& key) {};
-			// const_iterator								lower_bound(const Key& key) const {};
-			// iterator									upper_bound(const Key& key) {};
-			// const_iterator								upper_bound(const Key& key) const {};
+			iterator									lower_bound(const Key& key) { return (this->_tree.lower_bound(key)); };
+			const_iterator								lower_bound(const Key& key) const { return (this->_tree.lower_bound(key)); };
+			iterator									upper_bound(const Key& key) { return (this->_tree.upper_bound(key)); };
+			const_iterator								upper_bound(const Key& key) const { return (this->_tree.upper_bound(key)); };
 
 			
 			// // Observers

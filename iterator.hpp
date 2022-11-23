@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/23 15:01:36 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/23 23:36:51 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,10 +285,31 @@ namespace ft
 				sentinel = NULL;
 				c = Compare();
 			};
-			RBIterator(NodeType* start) : node(start), sentinel(findSentinel()), root(findRoot(start)), c(Compare()), minNode(min(root)), maxNode(max(root)) {};
-			RBIterator(NodeType* start, NodeType* endPtr) : node(start), sentinel(endPtr), root(findRoot(start)), minNode(min(root)), maxNode(max(root)) {};
+			RBIterator(NodeType* start) : 
+				node(start),
+				sentinel(findSentinel()),
+				root(findRoot(start)),
+				c(Compare()),
+				minNode(min(root)),
+				maxNode(max(root))
+			{};
+			RBIterator(NodeType* start, NodeType* endPtr) :
+				node(start),
+				sentinel(endPtr),
+				root(findRoot(start)),
+				c(Compare()),
+				minNode(min(root)),
+				maxNode(max(root))
+			{};
 			template <typename T2>
-			RBIterator(RBIterator const & src) : node(src.node), sentinel(src.end), root(src.root), c(src.c), minNode(src.minNode), maxNode(src.maxNode) {};
+			RBIterator(RBIterator const & src) :
+				node(src.node),
+				sentinel(src.end),
+				root(src.root),
+				c(src.c),
+				minNode(src.minNode),
+				maxNode(src.maxNode)
+			{};
 			RBIterator&	operator=(RBIterator const & rhs)
 			{
 				if (this == &rhs)
