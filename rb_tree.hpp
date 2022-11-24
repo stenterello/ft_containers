@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/23 23:38:23 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/24 15:10:31 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ namespace ft
 			_sentinel->color = SENTINEL;
 			_root = _sentinel;
 			_sentinel->parent = _root;
+			_sentinel->data = 1;
 		};
 
 		RBTreeSet(RBTreeSet const &src) : _root(src._root),
@@ -173,6 +174,8 @@ namespace ft
 		{
 			pointer	tmp = node;
 			
+			if (node == min())
+				return (_sentinel);
 			if (tmp->child[LEFT] != _sentinel)
 				return (max(tmp->child[LEFT]));
 			else
@@ -194,6 +197,8 @@ namespace ft
 		{
 			pointer	tmp = node;
 			
+			if (node == max())
+				return (_sentinel);
 			if (tmp->child[RIGHT] != _sentinel)
 				return (min(tmp->child[RIGHT]));
 			else
@@ -370,19 +375,23 @@ namespace ft
 		{
 			pointer	ret;
 
-			ret = max();
-			while (getPredecessor(ret)->data >= k && ret != _sentinel)
-				ret = getPredecessor(ret);
+			ret = min();
+			while (_c(ret->data, k) && ret != _sentinel)
+				ret = getSuccessor(ret);
+			if (_c(ret->data, k))
+				return (_sentinel);
 			return (ret);
 		}
 
 		const_iterator	lower_bound(Key const & k) const
 		{
-			pointer	ret;
+			iterator	ret;
 
-			ret = max();
-			while (getPredecessor(ret)->data >= k && ret != _sentinel)
-				ret = getPredecessor(ret);
+			ret = this->begin();
+			while (_c(ret.first, k) && ret.first != _sentinel)
+				ret++;
+			if (_c(ret->data, k))
+				return (_sentinel);
 			return (ret);
 		}
 
@@ -391,8 +400,10 @@ namespace ft
 			pointer	ret;
 
 			ret = min();
-			while (getSuccessor(ret)->data >= k && ret != _sentinel)
+			while (_c(ret->data, k) && ret != _sentinel)
 				ret = getSuccessor(ret);
+			if (_c(ret->data, k))
+				return (_sentinel);
 			return (ret);
 		}
 
@@ -401,8 +412,10 @@ namespace ft
 			pointer	ret;
 
 			ret = min();
-			while (getSuccessor(ret)->data >= k && ret != _sentinel)
+			while (_c(ret->data, k) && ret != _sentinel)
 				ret = getSuccessor(ret);
+			if (_c(ret->data, k))
+				return (_sentinel);
 			return (ret);
 		}
 
@@ -767,3 +780,5 @@ namespace ft
 		}
 	};
 }
+
+// LOWER BOUND E UPPER BOUND NON SONO CORRETTI

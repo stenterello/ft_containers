@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/23 23:36:51 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/24 13:29:48 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,6 +322,16 @@ namespace ft
 				this->maxNode = rhs.maxNode;
 				return (*this);
 			}
+			template <class InputIt>
+			RBIterator&	operator=(InputIt const & rhs)
+			{
+				this->node = rhs.node;
+				this->sentinel = rhs.sentinel;
+				this->root = rhs.root;
+				this->minNode = rhs.minNode;
+				this->maxNode = rhs.maxNode;
+				return (*this);
+			}
 			~RBIterator() {};
 
 			
@@ -451,6 +461,8 @@ namespace ft
 	};
 
 	// Overloads
+
+
 
 	// template <class InputIterator>
 	// bool	operator<(reverse_iterator<InputIterator> const lhs, reverse_iterator<InputIterator> const rhs)
