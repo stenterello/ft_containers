@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/24 15:02:47 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/25 21:45:45 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,12 +147,12 @@ namespace ft
 			size_type									count(const Key& key) const { return (this->_tree.count(key)); };
 			iterator									find(const Key& key) { return (this->_tree.find(key)); }
 			const_iterator								find(const Key& key) const { return (this->_tree.const_find(key)); };
-			// ft::pair<iterator, iterator>				equal_range(const Key& key) {  };
-			// ft::pair<const_iterator, const_iterator>	equal_range(const Key& key) const {  };
 			iterator									lower_bound(const Key& key) { return (this->_tree.lower_bound(key)); };
 			const_iterator								lower_bound(const Key& key) const { return (this->_tree.lower_bound(key)); };
 			iterator									upper_bound(const Key& key) { return (this->_tree.upper_bound(key)); };
 			const_iterator								upper_bound(const Key& key) const { return (this->_tree.upper_bound(key)); };
+			ft::pair<iterator, iterator>				equal_range(const Key& key) { return (make_pair(lower_bound(key), upper_bound(key))); };
+			ft::pair<const_iterator, const_iterator>	equal_range(const Key& key) const { return (make_pair(lower_bound(key), upper_bound(key))); };
 
 
 			// Observers

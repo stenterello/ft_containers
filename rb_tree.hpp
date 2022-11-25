@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/24 15:10:31 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/25 21:39:46 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,54 +216,38 @@ namespace ft
 			}
 		}
 
-		pointer	min()
-		{
-			pointer*	node = &_root;
-
-			if (!(*node) || (*node) == _sentinel)
-				return (_sentinel);
-
-			while ((*node)->child[LEFT] && (*node)->child[LEFT] != _sentinel)
-				node = &(*node)->child[LEFT];
-			return (*node);
-		}
-
 		pointer	min() const
 		{
 			const pointer*	node = &_root;
+			int			dir = 0;
 
 			if (!(*node) || (*node) == _sentinel)
 				return (_sentinel);
 
-			while ((*node)->child[LEFT] && (*node)->child[LEFT] != _sentinel)
-				node = &(*node)->child[LEFT];
+			// if ((*node)->child[0]->data > (*node)->child[1]->data)
+			// 	dir = 1;
+
+			while ((*node)->child[dir] && (*node)->child[dir] != _sentinel)
+				node = &(*node)->child[dir];
 			return (*node);
 		}
 
-		pointer min(pointer const & node)
+		pointer	min(pointer const & node) const
 		{
-			pointer	tmp = node;
+			const pointer*	tmp = &node;
+			int				dir = 0;
 
-			if (!node || node == _sentinel)
+			if (!(*tmp) || (*tmp) == _sentinel)
 				return (_sentinel);
 
-			while (tmp->child[LEFT] && tmp->child[LEFT] != _sentinel)
-				tmp = tmp->child[LEFT];
-			return (tmp);
+			// if ((*tmp)->child[0]->data > (*tmp)->child[1]->data)
+			// 	dir = 1;
+
+			while ((*tmp)->child[dir] && (*tmp)->child[dir] != _sentinel)
+				tmp = &(*tmp)->child[dir];
+			return (*tmp);
 		}
-
-		pointer min(pointer const & node) const
-		{
-			pointer	tmp = node;
-
-			if (!node || node == _sentinel)
-				return (_sentinel);
-
-			while (tmp->child[LEFT] && tmp->child[LEFT] != _sentinel)
-				tmp = tmp->child[LEFT];
-			return (tmp);
-		}
-
+		
 		pointer	max() const
 		{
 			pointer	node = _root;
@@ -373,49 +357,53 @@ namespace ft
 
 		iterator	lower_bound(Key const & k)
 		{
-			pointer	ret;
+			iterator	ret = this->begin();
 
-			ret = min();
-			while (_c(ret->data, k) && ret != _sentinel)
-				ret = getSuccessor(ret);
-			if (_c(ret->data, k))
-				return (_sentinel);
+			while (ret != this->end())
+			{
+				if (!_c(ret.node->data, k))
+					break ;
+				ret++;
+			}
 			return (ret);
 		}
 
 		const_iterator	lower_bound(Key const & k) const
 		{
-			iterator	ret;
+			iterator	ret = this->begin();
 
-			ret = this->begin();
-			while (_c(ret.first, k) && ret.first != _sentinel)
+			while (ret != this->end())
+			{
+				if (!_c(ret.node->data, k))
+					break ;
 				ret++;
-			if (_c(ret->data, k))
-				return (_sentinel);
+			}
 			return (ret);
 		}
 
 		iterator	upper_bound(Key const & k)
 		{
-			pointer	ret;
+			iterator	ret = this->begin();
 
-			ret = min();
-			while (_c(ret->data, k) && ret != _sentinel)
-				ret = getSuccessor(ret);
-			if (_c(ret->data, k))
-				return (_sentinel);
+			while (ret != this->end())
+			{
+				if (_c(k, ret.node->data))
+					break ;
+				ret++;
+			}
 			return (ret);
 		}
 
 		const_iterator	upper_bound(Key const & k) const
 		{
-			pointer	ret;
+			iterator	ret = this->begin();
 
-			ret = min();
-			while (_c(ret->data, k) && ret != _sentinel)
-				ret = getSuccessor(ret);
-			if (_c(ret->data, k))
-				return (_sentinel);
+			while (ret != this->end())
+			{
+				if (_c(k, ret.node->data))
+					break ;
+				ret++;
+			}
 			return (ret);
 		}
 
@@ -780,5 +768,3 @@ namespace ft
 		}
 	};
 }
-
-// LOWER BOUND E UPPER BOUND NON SONO CORRETTI
