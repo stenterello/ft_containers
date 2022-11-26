@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/25 21:45:45 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/26 13:57:22 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,14 +123,9 @@ namespace ft
 			iterator					erase(iterator pos) { return (this->_tree.erase(*pos)); }
 			iterator					erase(iterator first, iterator last)
 			{
-				iterator	ret = this->end();
 				while (first != last)
-				{
-					if (this->_tree.erase(*first) != this->end())
-						ret = this->_tree.find(*first);
-					first++;
-				}
-				return (this->_tree.getSuccessor(ret.node));
+					first = this->_tree.erase(*first);
+				return (this->_tree.getSuccessor(first.node));
 			}
 			size_type					erase(const Key& key)
 			{
@@ -151,8 +146,8 @@ namespace ft
 			const_iterator								lower_bound(const Key& key) const { return (this->_tree.lower_bound(key)); };
 			iterator									upper_bound(const Key& key) { return (this->_tree.upper_bound(key)); };
 			const_iterator								upper_bound(const Key& key) const { return (this->_tree.upper_bound(key)); };
-			ft::pair<iterator, iterator>				equal_range(const Key& key) { return (make_pair(lower_bound(key), upper_bound(key))); };
-			ft::pair<const_iterator, const_iterator>	equal_range(const Key& key) const { return (make_pair(lower_bound(key), upper_bound(key))); };
+			ft::pair<iterator, iterator>				equal_range(const Key& key) { return (ft::make_pair(this->_tree.lower_bound(key), this->_tree.upper_bound(key))); };
+			ft::pair<const_iterator, const_iterator>	equal_range(const Key& key) const { return (ft::make_pair(this->_tree.lower_bound(key), this->_tree.upper_bound(key))); };
 
 
 			// Observers

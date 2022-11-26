@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:03:04 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/25 22:04:44 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/26 13:21:07 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,9 +193,9 @@ namespace ft
 		first_type	first;
 		second_type	second;
 		pair() : first(), second() {}
-		pair(const first_type & x, const second_type & y) : first(x), second(y) {}
+		pair(first_type const & x, second_type const & y) : first(x), second(y) {}
 		template <class U1, class U2>
-		pair(const pair<U1, U2>& p) : first(p.first), second(p.second) {}
+		pair(pair<U1, U2> const & p) : first(p.first), second(p.second) {}
 		pair&	operator=(pair const & rhs)
 		{
 			if (this == &rhs)

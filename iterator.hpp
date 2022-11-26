@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/24 13:29:48 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/26 14:09:41 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,15 +301,26 @@ namespace ft
 				minNode(min(root)),
 				maxNode(max(root))
 			{};
-			template <typename T2>
 			RBIterator(RBIterator const & src) :
 				node(src.node),
-				sentinel(src.end),
+				sentinel(src.sentinel),
 				root(src.root),
 				c(src.c),
 				minNode(src.minNode),
 				maxNode(src.maxNode)
 			{};
+			template <class InputIt>
+			RBIterator(InputIt const & src)
+			{
+				if (src.node == NULL)
+					return ;
+				node = src.node;
+				sentinel = src.sentinel;
+				root = src.root;
+				c = src.c;
+				minNode = src.minNode;
+				maxNode = src.maxNode;
+			};
 			RBIterator&	operator=(RBIterator const & rhs)
 			{
 				if (this == &rhs)
@@ -350,30 +361,30 @@ namespace ft
 			}
 			RBIterator&	operator++()
 			{
-				nodePointer	tmp = this->node;
+				nodePointer*	tmp = &this->node;
 
 				if (this->node == maxNode || this->node == sentinel)
 				{
 					this->node = sentinel;
 					return (*this);
 				}
-				else if (tmp->child[1] != sentinel)
+				else if ((*tmp)->child[1] != sentinel)
 				{
-					this->node = min(tmp->child[1]);
+					this->node = min((*tmp)->child[1]);
 					return (*this);
 				}
 				else
 				{
-					while (tmp->parent != sentinel)
+					while ((*tmp)->parent != sentinel)
 					{
-						if (tmp->parent->child[0] == tmp)
+						if ((*tmp)->parent->child[0] == (*tmp))
 						{
-							tmp = tmp->parent;
+							(*tmp) = (*tmp)->parent;
 							break ;
 						}
-						tmp = tmp->parent;
+						tmp = &(*tmp)->parent;
 					}
-					this->node = tmp;
+					this->node = (*tmp);
 					return (*this);
 				}
 			};

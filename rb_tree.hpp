@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/25 21:39:46 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/26 13:21:32 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,9 +224,6 @@ namespace ft
 			if (!(*node) || (*node) == _sentinel)
 				return (_sentinel);
 
-			// if ((*node)->child[0]->data > (*node)->child[1]->data)
-			// 	dir = 1;
-
 			while ((*node)->child[dir] && (*node)->child[dir] != _sentinel)
 				node = &(*node)->child[dir];
 			return (*node);
@@ -239,9 +236,6 @@ namespace ft
 
 			if (!(*tmp) || (*tmp) == _sentinel)
 				return (_sentinel);
-
-			// if ((*tmp)->child[0]->data > (*tmp)->child[1]->data)
-			// 	dir = 1;
 
 			while ((*tmp)->child[dir] && (*tmp)->child[dir] != _sentinel)
 				tmp = &(*tmp)->child[dir];
@@ -370,7 +364,7 @@ namespace ft
 
 		const_iterator	lower_bound(Key const & k) const
 		{
-			iterator	ret = this->begin();
+			const_iterator	ret = this->begin();
 
 			while (ret != this->end())
 			{
@@ -396,7 +390,7 @@ namespace ft
 
 		const_iterator	upper_bound(Key const & k) const
 		{
-			iterator	ret = this->begin();
+			const_iterator	ret = this->begin();
 
 			while (ret != this->end())
 			{
