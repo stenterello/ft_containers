@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/26 14:09:41 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/27 16:30:31 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -363,7 +363,7 @@ namespace ft
 			{
 				nodePointer*	tmp = &this->node;
 
-				if (this->node == maxNode || this->node == sentinel)
+				if (*tmp == maxNode || *tmp == sentinel)
 				{
 					this->node = sentinel;
 					return (*this);
@@ -379,7 +379,7 @@ namespace ft
 					{
 						if ((*tmp)->parent->child[0] == (*tmp))
 						{
-							(*tmp) = (*tmp)->parent;
+							tmp = &(*tmp)->parent;
 							break ;
 						}
 						tmp = &(*tmp)->parent;
@@ -458,6 +458,9 @@ namespace ft
 			{
 				nodePointer*	tmp = &this->node;
 				
+				if (!(*tmp))
+					return (NULL);
+
 				while ((*tmp)->color != 2)
 					tmp = &((*tmp)->child[0]);
 				return (*tmp);

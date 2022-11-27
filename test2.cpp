@@ -4,15 +4,17 @@
 
 int main()
 {
-	ft::set<int, std::greater<int> > st;
-    st.insert(10);
-    st.insert(11);
-	st.insert(9);
-	ft::pair<ft::set<int, std::greater<int> >::iterator, ft::set<int, std::greater<int> >::iterator>	p;
+	std::set<int>	uno;
+	std::set<int>	due;
 
-	p = ft::make_pair(st.lower_bound(10), st.upper_bound(10));
+	uno.insert(1);
+	uno.insert(2);
+	uno.insert(3);
+	due.insert(4);
+	due.insert(5);
+	due.insert(6);
 
-	std::cout << *(p.first) << " " << *(p.second) << std::endl;
+	uno.swap(due);
 
 	return (0);
 }

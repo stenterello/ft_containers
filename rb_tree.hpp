@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/26 13:21:32 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/27 17:29:08 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,20 @@ namespace ft
 		reverse_iterator		rend() { return (_sentinel); }
 		const_reverse_iterator	rend() const { return (_sentinel); }
 
-		ft::pair<iterator, bool> insert(Key const &val, int flag)
+		template <class InputIt>
+		void						insert(InputIt first, InputIt last)
+		{
+			while (first != last)
+				this->insert(*first++);
+		};
+
+		iterator	insert(iterator pos, const Key & val)
+		{
+			(void)pos;
+			return (this->insert(val).first);
+		}
+
+		ft::pair<iterator, bool> insert(Key const &val)
 		{
 			ft::pair<iterator, bool> ret;
 			pointer node = _alloc.allocate(1);
@@ -127,8 +140,7 @@ namespace ft
 				_root = node;
 				_sentinel->parent = node;
 				node->color = BLACK;
-				if (flag)
-					_size++;
+				_size++;
 				ret.first = iterator(node, _sentinel);
 				ret.second = true;
 				return (ret);
@@ -138,9 +150,9 @@ namespace ft
 				ret.first = iterator(node, _sentinel);
 				ret.second = false;
 				if (_c(val, _root->data))
-					return (insertNode(_root->child[LEFT], node, _root, flag));
+					return (insertNode(_root->child[LEFT], node, _root, 1));
 				else if (_c(_root->data, val))
-					return (insertNode(_root->child[RIGHT], node, _root, flag));
+					return (insertNode(_root->child[RIGHT], node, _root, 1));
 				else
 				{
 					_alloc.deallocate(node, 1);
@@ -266,7 +278,29 @@ namespace ft
 			return (tmp);
 		}
 
-		iterator	erase(Key const & val)
+		iterator	erase(iterator pos)
+		{
+			iterator	ret = getSuccessor(pos.node);
+
+			this->erase_deep(*pos);
+			return (ret);
+		}
+
+		iterator	erase(iterator first, iterator last)
+		{
+			while (first != last)
+				this->erase_deep(*first++);
+			return (last.node);
+		}
+
+		size_type	erase(const Key& key)
+		{
+			if (this->erase_deep(key) != this->end())
+				return (1);
+			return (0);
+		}
+
+		iterator	erase_deep(Key const & val)
 		{
 			pointer		node = find(val).node;
 			pointer		tmp;
@@ -344,8 +378,9 @@ namespace ft
 		void	clear()
 		{
 			iterator	iter = this->begin();
+			iterator	end = this->end();
 
-			while (iter != this->end())
+			while (iter != end)
 				erase(*iter++);
 		}
 
@@ -401,7 +436,41 @@ namespace ft
 			return (ret);
 		}
 
-	private:
+		ft::pair<iterator, iterator>				equal_range(const Key& key)
+		{
+			return (ft::make_pair(this->lower_bound(key), this->upper_bound(key)));
+		}
+
+		ft::pair<const_iterator, const_iterator>	equal_range(const Key& key) const
+		{
+			return (ft::make_pair(this->lower_bound(key), this->upper_bound(key)));
+		}
+
+		void			swap(RBTreeSet & rhs)
+		{
+			if (this == &rhs)
+				return ;
+			
+			pointer			tmpRoot = this->_root;
+			pointer			tmpSentinel = this->_sentinel;
+			size_type		tmpSize = this->_size;
+			allocator_type	tmpAllocatorType = this->_alloc;
+			Compare			tmpCompare = this->_c;
+
+			this->_root = rhs._root;
+			this->_sentinel = rhs._sentinel;
+			this->_size = rhs._size;
+			this->_alloc = rhs._alloc;
+			this->_c = rhs._c;
+
+			rhs._root = tmpRoot;
+			rhs._sentinel = tmpSentinel;
+			rhs._size = tmpSize;
+			rhs._alloc = tmpAllocatorType;
+			rhs._c = tmpCompare;
+		}
+
+	protected:
 		pointer			_root;
 		pointer			_sentinel;
 		size_type		_size;
