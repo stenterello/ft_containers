@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/27 16:30:31 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/27 18:24:56 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,7 +305,6 @@ namespace ft
 				node(src.node),
 				sentinel(src.sentinel),
 				root(src.root),
-				c(src.c),
 				minNode(src.minNode),
 				maxNode(src.maxNode)
 			{};
@@ -317,7 +316,6 @@ namespace ft
 				node = src.node;
 				sentinel = src.sentinel;
 				root = src.root;
-				c = src.c;
 				minNode = src.minNode;
 				maxNode = src.maxNode;
 			};
@@ -328,7 +326,6 @@ namespace ft
 				this->node = rhs.node;
 				this->sentinel = rhs.sentinel;
 				this->root = rhs.root;
-				this->c = rhs.c;
 				this->minNode = rhs.minNode;
 				this->maxNode = rhs.maxNode;
 				return (*this);
@@ -362,31 +359,24 @@ namespace ft
 			RBIterator&	operator++()
 			{
 				nodePointer*	tmp = &this->node;
+				nodePointer		tmp2 = this->node;
 
 				if (*tmp == maxNode || *tmp == sentinel)
-				{
 					this->node = sentinel;
-					return (*this);
-				}
 				else if ((*tmp)->child[1] != sentinel)
-				{
 					this->node = min((*tmp)->child[1]);
-					return (*this);
+				else if ((*tmp)->parent != sentinel)
+				{
+					tmp = &(*tmp)->parent;
+					while ((*tmp)->parent != sentinel && c((*tmp)->data, tmp2->data))
+						tmp = &(*tmp)->parent;
+					if (c((*tmp)->data, tmp2->data))
+						tmp = &sentinel;
+					this->node = (*tmp);
 				}
 				else
-				{
-					while ((*tmp)->parent != sentinel)
-					{
-						if ((*tmp)->parent->child[0] == (*tmp))
-						{
-							tmp = &(*tmp)->parent;
-							break ;
-						}
-						tmp = &(*tmp)->parent;
-					}
-					this->node = (*tmp);
-					return (*this);
-				}
+					this->node = sentinel;
+				return (*this);
 			};
 			RBIterator	operator++(int)
 			{

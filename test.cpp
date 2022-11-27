@@ -849,8 +849,10 @@ template <class T>
 std::vector<int> comparator_test(_set<T> st) {
     std::vector<int> v;
     fillSet(st);
-    for (typename _set<T>::iterator it = st.begin(); it != st.end(); it++) { v.push_back(*it); }
-    for (typename _set<T>::iterator it = --st.end(); it != st.begin(); it--) { v.push_back(*it); }
+    for (typename _set<T>::iterator it = st.begin(); it != st.end(); it++)
+    { v.push_back(*it); }
+    for (typename _set<T>::iterator it = --st.end(); it != st.begin(); it--)
+    { v.push_back(*it); }
     _set<int, std::greater<int> > st1;
     fillSet(st1);
     v.push_back(*(st1.begin()));
@@ -866,8 +868,10 @@ std::vector<int> comparator_test(_set<T> st) {
         v.push_back(1);
     _set<int, std::plus<int> > st3;
     fillSet(st3);
-    for (typename _set<T>::iterator it = st3.begin(); it != st3.end(); it++) { v.push_back(*it); }
-    for (typename _set<T>::iterator it = --st3.end(); it != st3.begin(); it--) { v.push_back(*it); }
+    for (typename _set<T>::iterator it = st3.begin(); it != st3.end(); it++)
+    { v.push_back(*it); }
+    for (typename _set<T>::iterator it = --st3.end(); it != st3.begin(); it--)
+    { v.push_back(*it); }
     _set<int, std::minus<int> > st4;
     fillSet(st4);
     for (typename _set<T>::iterator it = st4.begin(); it != st4.end(); it++) { v.push_back(*it); }
