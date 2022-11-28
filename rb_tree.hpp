@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/28 17:46:00 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/28 20:12:21 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,26 +231,24 @@ namespace ft
 		pointer	min() const
 		{
 			const pointer*	node = &_root;
-			int			dir = 0;
 
 			if (!(*node) || (*node) == _sentinel)
 				return (_sentinel);
 
-			while ((*node)->child[dir] && (*node)->child[dir] != _sentinel)
-				node = &(*node)->child[dir];
+			while ((*node)->child[LEFT] && (*node)->child[LEFT] != _sentinel)
+				node = &(*node)->child[LEFT];
 			return (*node);
 		}
 
 		pointer	min(pointer const & node) const
 		{
 			const pointer*	tmp = &node;
-			int				dir = 0;
 
 			if (!(*tmp) || (*tmp) == _sentinel)
 				return (_sentinel);
 
-			while ((*tmp)->child[dir] && (*tmp)->child[dir] != _sentinel)
-				tmp = &(*tmp)->child[dir];
+			while ((*tmp)->child[LEFT] && (*tmp)->child[LEFT] != _sentinel)
+				tmp = &(*tmp)->child[LEFT];
 			return (*tmp);
 		}
 		

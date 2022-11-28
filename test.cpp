@@ -57,10 +57,15 @@ int run_set_unit_test(std::string test_name, std::vector<int> (func1)(std::set<T
 	}
 	else {
 		std::cout << std::endl;
-		std::vector<int>::iterator	iter = res1.begin();
-		std::vector<int>::iterator		iter2 = res2.begin();
-		while (iter != res1.end())
-			std::cout << "TESTER: " << *iter++ << " NOSTRO: " << *iter2++ << std::endl;
+		// std::vector<int>::iterator	iter = res1.begin();
+		// std::vector<int>::iterator		iter2 = res2.begin();
+		// while (iter2 != res2.end())
+        // {
+        //     if (*iter != *iter2)
+    	// 		std::cout << "TESTER: " << *iter << " NOSTRO: " << *iter2 << std::endl;
+        //     iter++;
+        //     iter2++;
+        // }
 	    printElement("FAILED");
 	    result = 1;
 	}
@@ -899,7 +904,43 @@ std::vector<int> comparator_test(_set<T> st) {
     return v;
 }
 
+template <class T>
+std::vector<int> assign_overload_test(std::set<T> st) {
+    std::vector<int> v;
+    for (int i = 0; i < 20 * _ratio; ++i)
+        st.insert(i);
+    std::set<T> st2;
+    for (int i = 20 * _ratio; i < 40 * _ratio; ++i)
+        st2.insert(i);
+    g_start1 = timer();
+    st2 = st;
+    g_end1 = timer();
+    typename std::set<T>::iterator it = st2.begin();
+    for (; it != st2.end(); it++)
+        v.push_back(*it);
+    v.push_back(st2.size());
+    return v;
+}
+
+template <class T>
+std::vector<int> assign_overload_test(_set<T> st) {
+    std::vector<int> v;
+    for (int i = 0; i < 20 * _ratio; ++i)
+        st.insert(i);
+    _set<T> st2;
+    for (int i = 20 * _ratio; i < 40 * _ratio; ++i)
+        st2.insert(i);
+    g_start2 = timer();
+    st2 = st;
+    g_end2 = timer();
+    typename _set<T>::iterator it = st2.begin();
+    for (; it != st2.end(); it++)
+        v.push_back(*it);
+    v.push_back(st2.size());
+    return v;
+}
+
 int main() {
 
-    exit(run_set_unit_test<int>("compare class", comparator_test, comparator_test));
+    exit(run_set_unit_test<int>("swap()", swap_test, swap_test));
 }

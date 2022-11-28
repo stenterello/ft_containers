@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/28 17:39:33 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/28 21:17:34 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,6 +285,7 @@ namespace ft
 				sentinel = NULL;
 				c = Compare();
 			};
+			
 			RBIterator(NodeType* start) : 
 				node(start),
 				sentinel(findSentinel()),
@@ -293,6 +294,7 @@ namespace ft
 				minNode(min(root)),
 				maxNode(max(root))
 			{};
+			
 			RBIterator(NodeType* start, NodeType* endPtr) :
 				node(start),
 				sentinel(endPtr),
@@ -301,6 +303,7 @@ namespace ft
 				minNode(min(root)),
 				maxNode(max(root))
 			{};
+			
 			RBIterator(RBIterator const & src) :
 				node(src.node),
 				sentinel(src.sentinel),
@@ -308,6 +311,7 @@ namespace ft
 				minNode(src.minNode),
 				maxNode(src.maxNode)
 			{};
+			
 			template <class InputIt>
 			RBIterator(InputIt const & src)
 			{
@@ -319,6 +323,7 @@ namespace ft
 				minNode = src.minNode;
 				maxNode = src.maxNode;
 			};
+			
 			RBIterator&	operator=(RBIterator const & rhs)
 			{
 				if (this == &rhs)
@@ -330,6 +335,7 @@ namespace ft
 				this->maxNode = rhs.maxNode;
 				return (*this);
 			}
+			
 			template <class InputIt>
 			RBIterator&	operator=(InputIt const & rhs)
 			{
@@ -340,6 +346,7 @@ namespace ft
 				this->maxNode = rhs.maxNode;
 				return (*this);
 			}
+			
 			~RBIterator() {};
 
 			
@@ -348,6 +355,7 @@ namespace ft
 			reference	operator*() const { return (this->node->data); }
 			pointer		operator->() const { return &operator*(); }
 			bool		operator==(RBIterator const & rhs) { return ((this->node == rhs.node) ? true : false); }
+			
 			bool		operator!=(RBIterator const & rhs)
 			{
 				if ((this->node && !rhs.node) || (!this->node && rhs.node))
@@ -356,35 +364,13 @@ namespace ft
 					return (true);
 				return ((this->node != rhs.node) ? true : false);
 			}
+			
 			RBIterator&	operator++()
 			{
-				nodePointer*	tmp = &this->node;
-				nodePointer		tmp2 = this->node;
-
-				if (*tmp == maxNode || *tmp == sentinel)
-					this->node = sentinel;
-				else if ((*tmp)->child[1] != sentinel)
-					this->node = min((*tmp)->child[1]);
-				else if ((*tmp)->parent != sentinel)
-				{
-					if (!c(1, 1))
-					{
-						tmp = &(*tmp)->parent;
-						while ((*tmp)->parent != sentinel && c((*tmp)->data, tmp2->data))
-							tmp = &(*tmp)->parent;
-					}
-					else if (c(1, 1) && (*tmp)->child[0] == sentinel && (*tmp)->child[1] == sentinel && (*tmp)->parent->parent != sentinel && (*tmp)->parent->child[1] == *tmp)
-					{
-						tmp = &(*tmp)->parent->parent;
-					}
-					else
-						tmp = &(*tmp)->parent;
-					this->node = (*tmp);
-				}
-				else
-					this->node = sentinel;
+				this->node = getSuccessor(this->node);
 				return (*this);
 			};
+			
 			RBIterator	operator++(int)
 			{
 				RBIterator	ret(*this);
@@ -392,40 +378,13 @@ namespace ft
 				++(*this);
 				return (ret);
 			};
+			
 			RBIterator&	operator--()
 			{
-				nodePointer	tmp = this->node;
-
-				if (this->node == sentinel)
-				{
-					this->node = max(this->node->parent);
-					return (*this);
-				}
-				else if (this->node == minNode)
-				{
-					this->node = sentinel;
-					return (*this);
-				}
-				else if (tmp->child[0] != sentinel)
-				{
-					this->node = max(tmp->child[0]);
-					return (*this);
-				}
-				else
-				{
-					while (tmp->parent != sentinel)
-					{
-						if (tmp->parent->child[1] == tmp)
-						{
-							tmp = tmp->parent;
-							break ;
-						}
-						tmp = tmp->parent;
-					}
-					this->node = tmp;
-					return (*this);
-				}
+				this->node = getPredecessor(this->node);
+				return (*this);
 			};
+			
 			RBIterator	operator--(int)
 			{
 				RBIterator	ret(*this);
@@ -435,6 +394,18 @@ namespace ft
 			};
 
 		private:
+			nodePointer	min()
+			{
+				nodePointer*	node = &root;
+
+				if (!(*node) || (*node) == sentinel)
+					return (sentinel);
+
+				while ((*node)->child[0] && (*node)->child[0] != sentinel)
+					node = &(*node)->child[0];
+				return (*node);
+			}
+			
 			nodePointer	min(nodePointer& node)
 			{
 				nodePointer*	tmp = &node;
@@ -443,6 +414,19 @@ namespace ft
 					tmp = &((*tmp)->child[0]);
 				return (*tmp);
 			}
+			
+			nodePointer	max()
+			{
+				nodePointer*	node = &root;
+
+				if (!(*node) || (*node) == sentinel)
+					return (sentinel);
+
+				while ((*node)->child[1] && (*node)->child[1] != sentinel)
+					node = &(*node)->child[1];
+				return (*node);
+			}
+			
 			nodePointer	max(nodePointer& node)
 			{
 				nodePointer*	tmp = &node;
@@ -451,6 +435,7 @@ namespace ft
 					tmp = &((*tmp)->child[1]);
 				return (*tmp);
 			}
+			
 			nodePointer	findSentinel()
 			{
 				nodePointer*	tmp = &this->node;
@@ -462,12 +447,61 @@ namespace ft
 					tmp = &((*tmp)->child[0]);
 				return (*tmp);
 			}
+			
 			nodePointer	findRoot(nodePointer & node)
 			{
 				nodePointer*	tmp = &this->node;
 				while (*tmp != sentinel && (*tmp)->parent != sentinel)
 					tmp = &((*tmp)->parent);
 				return (*tmp);
+			}
+
+			nodePointer	getSuccessor(nodePointer & node)
+			{
+				nodePointer*	tmp = &node;
+			
+				if (node == max())
+					return (sentinel);
+				if ((*tmp)->child[1] != sentinel)
+					return (min((*tmp)->child[1]));
+				else
+				{
+					while ((*tmp)->parent != sentinel)
+					{
+						if ((*tmp)->parent->child[0] == *tmp)
+						{
+							tmp = &(*tmp)->parent;
+							break ;
+						}
+						tmp = &(*tmp)->parent;
+					}
+					return (*tmp);
+				}
+			}
+
+			nodePointer	getPredecessor(nodePointer & node)
+			{
+				nodePointer*	tmp = &node;
+				
+				if (node == sentinel)
+					return (max(node->parent));
+				if (node == min())
+					return (sentinel);
+				if ((*tmp)->child[0] != sentinel)
+					return (max((*tmp)->child[0]));
+				else
+				{
+					while ((*tmp)->parent != sentinel)
+					{
+						if ((*tmp)->parent->child[1] == *tmp)
+						{
+							tmp = &(*tmp)->parent;
+							break ;
+						}
+						tmp = &(*tmp)->parent;
+					}
+					return (*tmp);
+				}
 			}
 	};
 
