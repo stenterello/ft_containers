@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/27 18:24:56 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/28 17:39:33 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -367,11 +367,18 @@ namespace ft
 					this->node = min((*tmp)->child[1]);
 				else if ((*tmp)->parent != sentinel)
 				{
-					tmp = &(*tmp)->parent;
-					while ((*tmp)->parent != sentinel && c((*tmp)->data, tmp2->data))
+					if (!c(1, 1))
+					{
 						tmp = &(*tmp)->parent;
-					if (c((*tmp)->data, tmp2->data))
-						tmp = &sentinel;
+						while ((*tmp)->parent != sentinel && c((*tmp)->data, tmp2->data))
+							tmp = &(*tmp)->parent;
+					}
+					else if (c(1, 1) && (*tmp)->child[0] == sentinel && (*tmp)->child[1] == sentinel && (*tmp)->parent->parent != sentinel && (*tmp)->parent->child[1] == *tmp)
+					{
+						tmp = &(*tmp)->parent->parent;
+					}
+					else
+						tmp = &(*tmp)->parent;
 					this->node = (*tmp);
 				}
 				else

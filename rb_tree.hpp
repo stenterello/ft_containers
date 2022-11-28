@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/27 17:29:08 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/28 17:46:00 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -549,8 +549,7 @@ namespace ft
 			}
 			(*tmp)->parent = (*tmp)->child[LEFT];
 			(*tmp)->child[LEFT]->child[RIGHT] = (*tmp);
-			(*tmp) = (*tmp)->child[LEFT];
-			(*tmp)->child[RIGHT]->child[LEFT] = _sentinel;
+			(*tmp)->child[LEFT] = _sentinel;
 			if (toHandle)
 				insertNode((*tmp), toHandle, (*tmp), 0);
 			ret = &(*tmp)->child[RIGHT];
