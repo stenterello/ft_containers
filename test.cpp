@@ -34,8 +34,32 @@ void printElement(std::string t) {
 	std::cout << std::left << std::setw(30) << std::setfill(' ') << t;
 }
 
+class SetBoolTest {
+public:
+	std::set<int> s1, s2, s3, s4;
+	std::set<std::string> s5, s6, s7, s8, s9;
+	_set<int> st1, st2, st3, st4;
+	_set<std::string> st5, st6, st7, st8, st9;
+
+	SetBoolTest() {
+		s1.insert(2); st1.insert(2);
+		s2.insert(3); st2.insert(3);
+		s3.insert(3); st3.insert(3);
+		s4.insert(4); st4.insert(4);
+		s4.insert(4); st4.insert(4);
+		s5.insert("122"); st5.insert("122");
+		s6.insert("123"); st6.insert("123");
+		s7.insert("124"); st7.insert("124");
+		s8.insert("12"); st8.insert("12");
+		s9.insert("123"); st9.insert("123");
+	}
+};
+
+
 
 int _ratio = 10000;
+int _allocator_used = 0;
+
 
 template <class T>
 int run_set_unit_test(std::string test_name, std::vector<int> (func1)(std::set<T>), std::vector<int> (func2)(_set<T>)) {
@@ -78,6 +102,50 @@ int run_set_unit_test(std::string test_name, std::vector<int> (func1)(std::set<T
 
 	return !(!result && !leaks);
 }
+
+int run_bool_unit_test(std::string test_name, bool (func1)()) {
+    int ret = 0;
+    time_t t1;
+    time_t t2;
+    bool res;
+
+	printElement(test_name);
+	res = func1();
+	if (res) {
+	    printElement("OK");
+	    ret = 0;
+	}
+	else {
+	    printElement("FAILED");
+	    ret = 1;
+	}
+	t1 = g_end1 - g_start1, t2 = g_end2 - g_start2;
+	(t1 >= t2) ? printElement(GREEN + std::to_string(t2) + "ms" + RESET) : printElement(REDD + std::to_string(t2) + "ms" + RESET);
+	(t1 > t2) ? printElement(REDD + std::to_string(t1) + "ms" + RESET) : printElement(GREEN + std::to_string(t1) + "ms" + RESET);
+	std::cout << std::endl;
+
+    return ret;
+}
+
+
+template <class T, class C, class A>
+int run_set_allocator_unit_test(std::string test_name, void (func)(_set<T, C, A>)) {
+    _set<T, C, A> my_set;
+
+    printElement(test_name);
+    func(my_set);
+    if (_allocator_used) {
+        printElement("OK");
+        std::cout << std::endl;
+        return (0);
+    }
+    else {
+        printElement("FAILED");
+        std::cout << std::endl;
+        return (1);
+    }
+}
+
 
 template <class T>
 std::vector<int> copy_constructor_test(std::set<T> st) {
@@ -940,7 +1008,97 @@ std::vector<int> assign_overload_test(_set<T> st) {
     return v;
 }
 
-int main() {
+bool set_not_equal_test() {
+	std::vector<int> result, result2;
+	g_start2 = g_end2 = g_start1 = g_end1 = 0;
+	SetBoolTest st;
 
-    exit(run_set_unit_test<int>("swap()", swap_test, swap_test));
+	result.push_back(st.s1 != st.s1); result.push_back(st.s3 != st.s3); result.push_back(st.s5 != st.s9);
+	result.push_back(st.s1 != st.s2); result.push_back(st.s3 != st.s4); result.push_back(st.s6 != st.s6);
+	result.push_back(st.s1 != st.s3); result.push_back(st.s4 != st.s4); result.push_back(st.s6 != st.s7);
+	result.push_back(st.s1 != st.s4); result.push_back(st.s5 != st.s5); result.push_back(st.s6 != st.s8);
+	result.push_back(st.s2 != st.s2); result.push_back(st.s5 != st.s6); result.push_back(st.s6 != st.s9);
+	result.push_back(st.s2 != st.s3); result.push_back(st.s5 != st.s7); result.push_back(st.s7 != st.s7);
+	result.push_back(st.s2 != st.s4); result.push_back(st.s5 != st.s8); result.push_back(st.s7 != st.s8);
+	result.push_back(st.s7 != st.s9); result.push_back(st.s8 != st.s8); result.push_back(st.s8 != st.s9);
+	result.push_back(st.s9 != st.s9);
+
+	result2.push_back(st.st1 != st.st1); result2.push_back(st.st3 != st.st3); result2.push_back(st.st5 != st.st9);
+	result2.push_back(st.st1 != st.st2); result2.push_back(st.st3 != st.st4); result2.push_back(st.st6 != st.st6);
+	result2.push_back(st.st1 != st.st3); result2.push_back(st.st4 != st.st4); result2.push_back(st.st6 != st.st7);
+	result2.push_back(st.st1 != st.st4); result2.push_back(st.st5 != st.st5); result2.push_back(st.st6 != st.st8);
+	result2.push_back(st.st2 != st.st2); result2.push_back(st.st5 != st.st6); result2.push_back(st.st6 != st.st9);
+	result2.push_back(st.st2 != st.st3); result2.push_back(st.st5 != st.st7); result2.push_back(st.st7 != st.st7);
+	result2.push_back(st.st2 != st.st4); result2.push_back(st.st5 != st.st8); result2.push_back(st.st7 != st.st8);
+	result2.push_back(st.st7 != st.st9); result2.push_back(st.st8 != st.st8); result2.push_back(st.st8 != st.st9);
+	result2.push_back(st.st9 != st.st9);
+
+	return result == result2;
+}
+
+bool set_less_than_test() {
+	std::vector<int> result, result2;
+	g_start2 = g_end2 = g_start1 = g_end1 = 0;
+	SetBoolTest st;
+
+	result.push_back(st.s1 < st.s1); result.push_back(st.s3 < st.s3); result.push_back(st.s5 < st.s9);
+	result.push_back(st.s1 < st.s2); result.push_back(st.s3 < st.s4); result.push_back(st.s6 < st.s6);
+	result.push_back(st.s1 < st.s3); result.push_back(st.s4 < st.s4); result.push_back(st.s6 < st.s7);
+	result.push_back(st.s1 < st.s4); result.push_back(st.s5 < st.s5); result.push_back(st.s6 < st.s8);
+	result.push_back(st.s2 < st.s2); result.push_back(st.s5 < st.s6); result.push_back(st.s6 < st.s9);
+	result.push_back(st.s2 < st.s3); result.push_back(st.s5 < st.s7); result.push_back(st.s7 < st.s7);
+	result.push_back(st.s2 < st.s4); result.push_back(st.s5 < st.s8); result.push_back(st.s7 < st.s8);
+	result.push_back(st.s7 < st.s9); result.push_back(st.s8 < st.s8); result.push_back(st.s8 < st.s9);
+	result.push_back(st.s9 < st.s9);
+
+	result2.push_back(st.st1 < st.st1); result2.push_back(st.st3 < st.st3); result2.push_back(st.st5 < st.st9);
+	result2.push_back(st.st1 < st.st2); result2.push_back(st.st3 < st.st4); result2.push_back(st.st6 < st.st6);
+	result2.push_back(st.st1 < st.st3); result2.push_back(st.st4 < st.st4); result2.push_back(st.st6 < st.st7);
+	result2.push_back(st.st1 < st.st4); result2.push_back(st.st5 < st.st5); result2.push_back(st.st6 < st.st8);
+	result2.push_back(st.st2 < st.st2); result2.push_back(st.st5 < st.st6); result2.push_back(st.st6 < st.st9);
+	result2.push_back(st.st2 < st.st3); result2.push_back(st.st5 < st.st7); result2.push_back(st.st7 < st.st7);
+	result2.push_back(st.st2 < st.st4); result2.push_back(st.st5 < st.st8); result2.push_back(st.st7 < st.st8);
+	result2.push_back(st.st7 < st.st9); result2.push_back(st.st8 < st.st8); result2.push_back(st.st8 < st.st9);
+	result2.push_back(st.st9 < st.st9);
+
+	return result == result2;
+}
+
+bool set_more_than_test() {
+	std::vector<int> result, result2;
+	g_start2 = g_end2 = g_start1 = g_end1 = 0;
+	SetBoolTest st;
+
+	result.push_back(st.s1 > st.s1); result.push_back(st.s3 > st.s3); result.push_back(st.s5 > st.s9);
+	result.push_back(st.s1 > st.s2); result.push_back(st.s3 > st.s4); result.push_back(st.s6 > st.s6);
+	result.push_back(st.s1 > st.s3); result.push_back(st.s4 > st.s4); result.push_back(st.s6 > st.s7);
+	result.push_back(st.s1 > st.s4); result.push_back(st.s5 > st.s5); result.push_back(st.s6 > st.s8);
+	result.push_back(st.s2 > st.s2); result.push_back(st.s5 > st.s6); result.push_back(st.s6 > st.s9);
+	result.push_back(st.s2 > st.s3); result.push_back(st.s5 > st.s7); result.push_back(st.s7 > st.s7);
+	result.push_back(st.s2 > st.s4); result.push_back(st.s5 > st.s8); result.push_back(st.s7 > st.s8);
+	result.push_back(st.s7 > st.s9); result.push_back(st.s8 > st.s8); result.push_back(st.s8 > st.s9);
+	result.push_back(st.s9 > st.s9);
+
+	result2.push_back(st.st1 > st.st1); result2.push_back(st.st3 > st.st3); result2.push_back(st.st5 > st.st9);
+	result2.push_back(st.st1 > st.st2); result2.push_back(st.st3 > st.st4); result2.push_back(st.st6 > st.st6);
+	result2.push_back(st.st1 > st.st3); result2.push_back(st.st4 > st.st4); result2.push_back(st.st6 > st.st7);
+	result2.push_back(st.st1 > st.st4); result2.push_back(st.st5 > st.st5); result2.push_back(st.st6 > st.st8);
+	result2.push_back(st.st2 > st.st2); result2.push_back(st.st5 > st.st6); result2.push_back(st.st6 > st.st9);
+	result2.push_back(st.st2 > st.st3); result2.push_back(st.st5 > st.st7); result2.push_back(st.st7 > st.st7);
+	result2.push_back(st.st2 > st.st4); result2.push_back(st.st5 > st.st8); result2.push_back(st.st7 > st.st8);
+	result2.push_back(st.st7 > st.st9); result2.push_back(st.st8 > st.st8); result2.push_back(st.st8 > st.st9);
+	result2.push_back(st.st9 > st.st9);
+
+	return result == result2;
+}
+
+template <class T, class C, class A>
+void allocator_test(_set<T, C, A> st) {
+    for (int i = 0; i < 10; ++i) {
+        st.insert(i);
+    }
+}
+
+int main() {
+    exit(run_set_allocator_unit_test<int, std::less<int>, Alloc<int> >("using allocator", allocator_test));
 }

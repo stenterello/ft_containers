@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/29 01:21:05 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/29 02:05:00 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,52 @@ namespace ft
 			value_compare	_value_compare;
 			allocator_type	_alloc;
 	};
+
+	template <class T, class Compare, class Alloc>
+	bool operator==(set<T, Compare, Alloc> const & lhs, set<T, Compare, Alloc> const & rhs)
+	{
+		typename set<T, Compare, Alloc>::iterator	iter = lhs.begin();
+		typename set<T, Compare, Alloc>::iterator	iter2 = rhs.begin();
+	
+		while (iter != lhs.end())
+		{
+			if (*iter != *iter2)
+				return (0);
+			iter++;
+			iter2++;
+		}
+		if (iter2 != rhs.end())
+			return (0);
+		return (1);
+	}
+
+	template <class T, class Compare, class Alloc>
+	bool operator!=(set<T, Compare, Alloc> const & lhs, set<T, Compare, Alloc> const & rhs)
+	{
+		return (!(lhs == rhs));
+	}
+
+	template <class T, class Compare, class Alloc>
+	bool operator<(set<T, Compare, Alloc> const & lhs, set<T, Compare, Alloc> const & rhs)
+	{
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+
+	template <class T, class Compare, class Alloc>
+	bool operator<=(set<T, Compare, Alloc> const & lhs, set<T, Compare, Alloc> const & rhs)
+	{
+		return (!(lhs > rhs));
+	}
+
+	template <class T, class Compare, class Alloc>
+	bool operator>(set<T, Compare, Alloc> const & lhs, set<T, Compare, Alloc> const & rhs)
+	{
+		return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+	}
+
+	template <class T, class Compare, class Alloc>
+	bool operator>=(set<T, Compare, Alloc> const & lhs, set<T, Compare, Alloc> const & rhs)
+	{
+		return (!(lhs < rhs));
+	}
 }
