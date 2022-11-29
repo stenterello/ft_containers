@@ -1,41 +1,48 @@
 #include <iostream>
 #include "set.hpp"
 #include <set>
+#include <type_traits>
 
 int main()
 {
-	ft::set<int, std::plus<int> >	ciao;
+	ft::set<int>	ciao;
 
-	ciao.insert(16);
-	ciao.insert(8);
-	ciao.insert(23);
-	ciao.insert(7);
-	ciao.insert(19);
-	ciao.insert(29);
-	ciao.insert(41);
-	ciao.insert(4);
-	ciao.insert(11);
+	ciao.insert(1);
+	ciao.insert(2);
+	ciao.insert(3);
 
-	ft::set<int, std::plus<int> >::iterator	begin = ciao.begin();
-	ft::set<int, std::plus<int> >::iterator	end = ciao.end();
-	for (ft::set<int, std::plus<int> >::iterator	iter = ciao.begin(); iter != ciao.end(); iter++)
-		std::cout << *iter << std::endl;
+	ft::set<int>	ciao2;
 
-	// std::plus<int>	p;
 
-	// std::cout << "PLUS: " <<  p(1, 1) << std::endl;
+	// ft::set<int>::iterator	iter = ciao.begin();
+	// ft::set<int>::iterator	iter2 = ciao2.begin();
 
-	// std::minus<int>	m;
+	// std::cout << ciao.size() << std::endl;
+	// while (iter != ciao.end())
+	// 	std::cout << *iter++ << std::endl;
+	// std::cout << std::endl;
 
-	// std::cout << "MINUS: " << m(1, 1) << std::endl;
+	// std::cout << ciao2.size() << std::endl;
+	// while (iter2 != ciao2.end())
+	// 	std::cout << *iter2++ << std::endl;
+	// std::cout << std::endl;
 
-	// std::greater<int>	g;
+	// ciao.swap(ciao2);
 
-	// std::cout << "GREATER: " << g(1, 1) << std::endl;
+	// std::swap(ciao2, ciao);
 
-	// std::less<int>	l;
+	// iter = ciao.begin();
+	// iter2 = ciao2.begin();
 
-	// std::cout << "LESS: " << l(1, 1) << std::endl;
+	// std::cout << ciao.size() << std::endl;
+	// while (iter != ciao.end())
+	// 	std::cout << *iter++ << std::endl;
+	// std::cout << std::endl;
+
+	// std::cout << ciao2.size() << std::endl;
+	// while (iter2 != ciao2.end())
+	// 	std::cout << *iter2++ << std::endl;
+	// std::cout << std::endl;
 
 	return (0);
 }

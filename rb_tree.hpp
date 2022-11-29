@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/28 20:12:21 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/29 01:07:45 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,21 +66,36 @@ namespace ft
 			_sentinel->data = 1;
 		};
 
-		RBTreeSet(RBTreeSet const &src) : _root(src._root),
-										  _size(src._size),
-										  _alloc(src._alloc),
-										  _sentinel(src._sentinel)
-		{};
+		RBTreeSet(RBTreeSet const &src)
+		{
+			_alloc = allocator_type();
+			_sentinel = _alloc.allocate(1);
+			_sentinel->color = SENTINEL;
+			_root = _sentinel;
+			_sentinel->parent = _root;
+			_sentinel->data = 1;
+			_root = _sentinel;
+			_size = 0;
+			iterator	iter = src.begin();
+			while (iter != src.end())
+				this->insert(*iter++);
+		};
 
 		RBTreeSet &operator=(RBTreeSet const &rhs)
 		{
 			if (this == &rhs)
 				return (*this);
-			this->_root = rhs._root;
-			this->_alloc = rhs._alloc;
-			this->_c = rhs._c;
-			this->_size = rhs._size;
-			this->_sentinel = rhs._sentinel;
+			_alloc = rhs.get_allocator();
+			_sentinel = _alloc.allocate(1);
+			_sentinel->color = SENTINEL;
+			_root = _sentinel;
+			_sentinel->parent = _root;
+			_sentinel->data = 1;
+			_root = _sentinel;
+			_size = 0;
+			iterator	iter = rhs.begin();
+			while (iter != rhs.end())
+				this->insert(*iter++);
 			return (*this);
 		};
 
@@ -89,6 +104,8 @@ namespace ft
 			this->clear();
 			_alloc.deallocate(_sentinel, 1);
 		};
+
+		allocator_type	get_allocator() const { return (this->_alloc); }
 
 		bool empty() const { return ((!this->_size) ? true : false); }
 		size_type size() const { return this->_size; }

@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/27 17:24:40 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/29 01:21:05 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ namespace ft
 				_value_compare(other._value_compare),
 				_alloc(other._alloc)
 			{
-				if (other.begin().node->color != SENTINEL)
+				if (other.begin() != other.end())
 					this->insert(other.begin(), other.end());
 			};
 			set&	operator=(const set& rhs)

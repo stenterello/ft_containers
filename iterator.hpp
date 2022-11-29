@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/28 21:17:34 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/29 01:32:03 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -460,7 +460,9 @@ namespace ft
 			{
 				nodePointer*	tmp = &node;
 			
-				if (node == max())
+				if (node == sentinel)
+					return (sentinel);
+				if (node == max(sentinel->parent))
 					return (sentinel);
 				if ((*tmp)->child[1] != sentinel)
 					return (min((*tmp)->child[1]));
@@ -485,7 +487,7 @@ namespace ft
 				
 				if (node == sentinel)
 					return (max(node->parent));
-				if (node == min())
+				if (node == min(sentinel->parent))
 					return (sentinel);
 				if ((*tmp)->child[0] != sentinel)
 					return (max((*tmp)->child[0]));
