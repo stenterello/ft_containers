@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <set>
 #include "set.hpp"
+int _allocator_used = 0;
+#include "Alloc.hpp"
 
 #define _set	ft::set
 #define _pair	ft::pair
@@ -58,7 +60,6 @@ public:
 
 
 int _ratio = 10000;
-int _allocator_used = 0;
 
 
 template <class T>
@@ -1100,5 +1101,5 @@ void allocator_test(_set<T, C, A> st) {
 }
 
 int main() {
-    exit(run_set_allocator_unit_test<int, std::less<int>, Alloc<int> >("using allocator", allocator_test));
+    exit(run_set_unit_test<int>("reverse iterators", reverse_iterators_test, reverse_iterators_test));
 }

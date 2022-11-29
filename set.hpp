@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/29 02:05:00 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/29 17:11:15 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,27 +19,16 @@
 namespace ft
 {
 	template <class Key, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
-	class set : public RBTreeSet<Key, Node<Key>, Compare>
+	class set : public RBTreeSet<Key, Node<Key>, Compare, Alloc>
 	{
 		public:
 			typedef Key														key_type;
 			typedef Key														value_type;
 			typedef Compare													key_compare;
 			typedef Compare													value_compare;
-			typedef Alloc													allocator_type;
-			typedef typename allocator_type::reference						reference;
-			typedef typename allocator_type::const_reference				const_reference;
-			typedef typename allocator_type::pointer						pointer;
-			typedef typename allocator_type::const_pointer					const_pointer;
-			typedef typename allocator_type::size_type						size_type;
-			typedef typename ft::RBIterator<Key, Compare, Node<Key> >		iterator;
-			typedef typename ft::RBIterator<const Key, Compare, Node<Key> >	const_iterator;
-			typedef	typename ft::reverse_iterator<iterator>					reverse_iterator;
-			typedef typename ft::reverse_iterator<const_iterator>			const_reverse_iterator;
-			typedef typename ft::iterator_traits<iterator>::difference_type	difference_type;
+			typedef Alloc													allocator_type;			
 
 			explicit set(const Compare& comp = Compare(), const Alloc& alloc = Alloc()) :
-				_alloc(alloc),
 				_key_compare(comp),
 				_value_compare(comp),
 				_key_type(key_type()),
@@ -47,7 +36,6 @@ namespace ft
 			{};
 			template <class InputIt>
 			set(InputIt first, InputIt last, const Compare& comp = Compare(), const Alloc& alloc = allocator_type()) :
-				_alloc(alloc),
 				_key_compare(comp),
 				_value_compare(comp),
 				_key_type(key_type()),
@@ -59,8 +47,7 @@ namespace ft
 				_key_type(other._key_type),
 				_value_type(other._value_type),
 				_key_compare(other._key_compare),
-				_value_compare(other._value_compare),
-				_alloc(other._alloc)
+				_value_compare(other._value_compare)
 			{
 				if (other.begin() != other.end())
 					this->insert(other.begin(), other.end());
@@ -89,7 +76,6 @@ namespace ft
 			value_type		_value_type;
 			key_compare		_key_compare;
 			value_compare	_value_compare;
-			allocator_type	_alloc;
 	};
 
 	template <class T, class Compare, class Alloc>

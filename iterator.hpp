@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/29 01:32:03 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/29 17:31:54 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,7 @@ namespace ft
 			explicit reverse_iterator(iterator_type iter) : _base(iter) {};
 			template <class ReverseIterator>
 			reverse_iterator(reverse_iterator<ReverseIterator> const &rev_it) : _base(rev_it.base()){};
-			virtual ~reverse_iterator(){};
+			virtual ~reverse_iterator() {};
 			iterator_type base() const { return (_base); };
 			reference			operator*() const { return (*(_base - 1)); };
 			reverse_iterator	operator+(difference_type n) const
@@ -257,6 +257,8 @@ namespace ft
 			reference			operator[](difference_type n) const { return (*(_base - n - 1)); };
 			difference_type 	operator+(reverse_iterator const &rhs) const { return (this->base() + rhs.base()); }
 			difference_type 	operator-(reverse_iterator const &rhs) const { return (rhs.base() - this->base()); }
+			// operator 			reverse_iterator<const InputIterator>() const { return (reverse_iterator<const InputIterator>()); }
+			// friend bool			operator==(reverse_iterator const & lhs, reverse_iterator const & rhs);
 		private:
 			iterator_type	_base;
 	};
@@ -393,6 +395,22 @@ namespace ft
 				return (ret);
 			};
 
+			RBIterator	operator-(difference_type n) const
+			{
+				RBIterator	ret(*this);
+				for (int i = 0; i < n; i++)
+					ret--;
+				return (ret);
+			}
+			
+			RBIterator	operator+(difference_type n) const
+			{
+				RBIterator	ret(*this);
+				for (int i = 0; i < n; i++)
+					ret++;
+				return (ret);
+			}
+
 		private:
 			nodePointer	min()
 			{
@@ -509,6 +527,8 @@ namespace ft
 
 	// Overloads
 
+	template <class InputIt>
+	bool			operator==(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt> const & rhs) { return (lhs.base() == rhs.base()); }
 
 
 	// template <class InputIterator>

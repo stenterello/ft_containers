@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/29 01:56:56 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/29 17:35:30 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,22 @@ namespace ft
 		T data;
 	};
 
-	template <class Key, class NodeType, class Compare = std::less<Key> >
+	template <class Key, class NodeType, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
 	class RBTreeSet
 	{
 
 	public:
-		typedef std::allocator<NodeType>						allocator_type;
-		typedef typename allocator_type::size_type				size_type;
-		typedef NodeType*										pointer;
-		typedef const NodeType*									const_pointer;
-		typedef RBIterator<Key, Compare, NodeType>				iterator;
-		typedef RBIterator<const Key, Compare, NodeType>		const_iterator;
-		typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
-		typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+		typedef typename Alloc::template rebind<NodeType>::other		allocator_type;
+		typedef typename allocator_type::reference						reference;
+		typedef typename allocator_type::const_reference				const_reference;
+		typedef typename allocator_type::pointer						pointer;
+		typedef typename allocator_type::const_pointer					const_pointer;
+		typedef typename allocator_type::size_type						size_type;
+		typedef RBIterator<Key, Compare, NodeType>						iterator;
+		typedef RBIterator<const Key, Compare, NodeType>				const_iterator;
+		typedef typename ft::reverse_iterator<iterator>					reverse_iterator;
+		typedef typename ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+		typedef typename ft::iterator_traits<iterator>::difference_type	difference_type;
 		
 		RBTreeSet() :	_root(NULL),
 						_size(0),
@@ -123,10 +126,10 @@ namespace ft
 		const_iterator			begin() const { return (const_iterator(min(), _sentinel)); }
 		iterator				end() { return (_sentinel); }
 		const_iterator			end() const { return (_sentinel); }
-		reverse_iterator		rbegin() { return (iterator(max(), _sentinel)); }
-		const_reverse_iterator	rbegin() const { return (const_iterator(max(), _sentinel)); }
-		reverse_iterator		rend() { return (_sentinel); }
-		const_reverse_iterator	rend() const { return (_sentinel); }
+		reverse_iterator		rbegin() { return (reverse_iterator(end())); }
+		const_reverse_iterator	rbegin() const { return (const_iterator(end())); }
+		reverse_iterator		rend() { return (reverse_iterator(begin())); }
+		const_reverse_iterator	rend() const { return (const_reverse_iterator(begin())); }
 
 		template <class InputIt>
 		void						insert(InputIt first, InputIt last)
@@ -166,9 +169,9 @@ namespace ft
 			{
 				ret.first = iterator(node, _sentinel);
 				ret.second = false;
-				if (_c(val, _root->data))
+				if (_c(val, _root->data) && _root->data != val)
 					return (insertNode(_root->child[LEFT], node, _root, 1));
-				else if (_c(_root->data, val))
+				else if (_c(_root->data, val) && _root->data != val)
 					return (insertNode(_root->child[RIGHT], node, _root, 1));
 				else
 				{
@@ -191,9 +194,9 @@ namespace ft
 		{
 			if (!start || start->color == SENTINEL)
 				return (iterator(_sentinel, _sentinel));
-			if (_c(val, start->data))
+			if (_c(val, start->data) && start->data != val)
 				return (findPointer(start->child[LEFT], val));
-			else if (_c(start->data, val))
+			else if (_c(start->data, val) && start->data != val)
 				return (findPointer(start->child[RIGHT], val));
 			else
 				return (iterator(start, _sentinel));
