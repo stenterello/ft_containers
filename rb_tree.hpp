@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/29 17:35:30 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/29 18:51:59 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,14 @@ namespace ft
 		RIGHT
 	};
 
-	template <typename T>
+	template <typename T, typename T2 = T()>
 	struct Node
 	{
-		node_color color;
-		Node *parent;
-		Node *child[2];
-		T data;
+		node_color	color;
+		Node		*parent;
+		Node		*child[2];
+		T 			data;
+		T2			value;
 	};
 
 	template <class Key, class NodeType, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
@@ -46,6 +47,10 @@ namespace ft
 	{
 
 	public:
+		typedef Key														key_type;
+		typedef Key														value_type;
+		typedef Compare													key_compare;
+		typedef Compare													value_compare;
 		typedef typename Alloc::template rebind<NodeType>::other		allocator_type;
 		typedef typename allocator_type::reference						reference;
 		typedef typename allocator_type::const_reference				const_reference;
@@ -488,7 +493,14 @@ namespace ft
 			rhs._c = tmpCompare;
 		}
 
+		key_compare		key_comp() const { return (this->_key_compare); }
+		value_compare	value_comp() const { return (this->_value_compare); }
+
 	protected:
+		key_type		_key_type;
+		value_type		_value_type;
+		key_compare		_key_compare;
+		value_compare	_value_compare;
 		pointer			_root;
 		pointer			_sentinel;
 		size_type		_size;
