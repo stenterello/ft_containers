@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/29 18:51:59 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/30 14:43:47 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,13 @@ namespace ft
 		RIGHT
 	};
 
-	template <typename T, typename T2 = T()>
+	template <typename T>
 	struct Node
 	{
 		node_color	color;
 		Node		*parent;
 		Node		*child[2];
 		T 			data;
-		T2			value;
 	};
 
 	template <class Key, class NodeType, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
