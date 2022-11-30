@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 19:16:36 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/30 23:58:26 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,10 +315,8 @@ namespace ft
 			{};
 			
 			template <class InputIt>
-			RBIterator(InputIt const & src)
+			RBIterator(InputIt const & src, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = 0)
 			{
-				if (src.node == NULL)
-					return ;
 				node = src.node;
 				sentinel = src.sentinel;
 				root = src.root;

@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 22:51:13 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/30 23:54:27 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ namespace ft
 		Node		*parent;
 		Node		*child[2];
 		T 			data;
+
+		template <class U, class V>
+		Node(ft::pair<U, V> const & val) : data(val) {};
 	};
 
 	template <class Key, class NodeType, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
@@ -137,8 +140,7 @@ namespace ft
 		virtual iterator					erase_deep(Key const & val) = 0;
 		virtual ft::pair<iterator, bool>	insert(Key const &val) = 0;
 		virtual ft::pair<iterator, bool>	insertNode(pointer &start, pointer &node, pointer& parent, int flag) = 0;
-		virtual iterator					erase(iterator pos) = 0;
-		virtual iterator					erase(iterator first, iterator last) = 0;
+		// virtual iterator					erase(iterator first, iterator last) = 0;
 		virtual size_type					erase(const Key& key) = 0;
 		virtual void						clear() = 0;
 

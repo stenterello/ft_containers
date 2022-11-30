@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:17:37 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 22:50:56 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/30 23:54:39 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@
 
 namespace ft
 {
-	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<Key, T> > >
-	class map : public RBTreeSet<ft::pair<Key, T>, Node<ft::pair<Key, T> >, Compare, Allocator>
+	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<const Key, T> > >
+	class map : public RBTreeSet<ft::pair<const Key, T>, Node<ft::pair<const Key, T> >, Compare, Allocator>
 	{
 		public:
 			typedef Key														key_type;
 			typedef	T														mapped_type;
-			typedef ft::pair<Key, T>										value_type;
+			typedef ft::pair<const Key, T>										value_type;
 			typedef typename Allocator::template rebind<Node<value_type> >::other		allocator_type;
 			typedef typename allocator_type::reference						reference;
 			typedef typename allocator_type::const_reference				const_reference;
@@ -50,35 +50,32 @@ namespace ft
 					return (*this);
 				iterator	first = rhs.begin();
 				iterator	end = rhs.end();
+				clear();
 				while (first != end)
-					this->insert(*first++);
+					insert(*first++);
 				return (*this);
 			}
 			~map() { clear(); };
 
-			iterator	erase(iterator pos)
+			void	erase(iterator pos)
 			{
-				iterator	ret = this->getSuccessor(pos.node);
-
 				this->erase_deep(*pos);
-				return (ret);
 			}
 
-			iterator	erase(iterator first, iterator last)
+			void	erase(iterator first, iterator last)
 			{
 				while (first != last)
 					this->erase_deep(*first++);
-				return (last.node);
 			}
 
-			size_type	erase(const ft::pair<Key, T>& key)
+			size_type	erase(const ft::pair<const Key, T>& key)
 			{
 				if (erase_deep(key) != this->end())
 					return (1);
 				return (0);
 			}
 
-			iterator	erase_deep(ft::pair<Key, T> const & val)
+			iterator	erase_deep(ft::pair<const Key, T> const & val)
 			{
 				pointer		node = this->find(val).node;
 				pointer		tmp;
@@ -153,7 +150,7 @@ namespace ft
 				return (ret);
 			}
 
-			iterator	find(ft::pair<Key, T> const & val) const
+			iterator	find(ft::pair<const Key, T> const & val) const
 			{
 				pointer	node = this->_root;
 
@@ -162,7 +159,7 @@ namespace ft
 				return (iterator(this->_sentinel, this->_sentinel));
 			}
 
-			iterator	findPointer(pointer& start, ft::pair<Key, T> const & val) const
+			iterator	findPointer(pointer& start, ft::pair<const Key, T> const & val) const
 			{
 				if (!start || start->color == SENTINEL)
 					return (iterator(this->_sentinel, this->_sentinel));
@@ -187,17 +184,17 @@ namespace ft
 					insert(*first++);
 			}
 
-			ft::pair<iterator, bool> insert(ft::pair<Key, T> const &val)
+			ft::pair<iterator, bool> insert(ft::pair<const Key, T> const &val)
 			{
 				ft::pair<iterator, bool> ret;
-				pointer node = this->_alloc.allocate(1);
+				pointer	node = new Node<value_type>(val);
+				// pointer node = this->_alloc.allocate(1);
 
 				node->color = RED;
 				node->parent = this->_sentinel;
 				node->child[LEFT] = this->_sentinel;
 				node->child[RIGHT] = this->_sentinel;
-				node->data.first = val.first;
-				node->data.second = val.second;
+				// node->data(val.first, val.second);
 
 				if (!this->_size)
 				{
