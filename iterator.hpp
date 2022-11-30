@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 23:58:26 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/01 00:21:48 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,10 +313,14 @@ namespace ft
 				minNode(src.minNode),
 				maxNode(src.maxNode)
 			{};
+
+			// typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type * = 0
 			
 			template <class InputIt>
-			RBIterator(InputIt const & src, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = 0)
+			RBIterator(InputIt const & src)
 			{
+				if (src.node == NULL)
+					return ;
 				node = src.node;
 				sentinel = src.sentinel;
 				root = src.root;

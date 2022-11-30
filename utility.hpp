@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:03:04 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 23:30:35 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/01 00:11:16 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,14 +196,14 @@ namespace ft
 		pair(first_type const & x, second_type const & y) : first(x), second(y) {}
 		template <class U1, class U2>
 		pair(pair<U1, U2> const & p) : first(p.first), second(p.second) {}
-		// pair&	operator=(pair const & rhs)
-		// {
-		// 	if (this == &rhs)
-		// 		return (*this);
-		// 	first = rhs.first;
-		// 	second = rhs.second;
-		// 	return (*this);
-		// }
+		pair&	operator=(pair const & rhs)
+		{
+			if (this == &rhs)
+				return (*this);
+			first = rhs.first;
+			second = rhs.second;
+			return (*this);
+		}
 		virtual ~pair() {};
 	};
 

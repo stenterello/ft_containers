@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:17:37 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 00:04:14 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/01 00:23:50 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,11 @@ namespace ft
 					this->erase_deep(*first++);
 			}
 
-			size_type	erase(const ft::pair<const Key, T>& key)
+			size_type	erase(const key_type& key)
 			{
-				if (erase_deep(key) != this->end())
+				ft::pair<key_type, mapped_type>	tmp(key, mapped_type());
+				
+				if (erase_deep(tmp) != this->end())
 					return (1);
 				return (0);
 			}
@@ -257,7 +259,7 @@ namespace ft
 				iterator	end = this->end();
 
 				while (iter != end)
-					erase(*iter++);
+					erase((*iter++).first);
 			}
 	};
 }
