@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 17:08:29 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:29:12 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,10 @@ namespace ft
 		virtual iterator					erase_deep(Key const & val) = 0;
 		virtual ft::pair<iterator, bool>	insert(Key const &val) = 0;
 		virtual ft::pair<iterator, bool>	insertNode(pointer &start, pointer &node, pointer& parent, int flag) = 0;
+		virtual iterator					erase(iterator pos) = 0;
+		virtual iterator					erase(iterator first, iterator last) = 0;
+		virtual size_type					erase(const Key& key) = 0;
+		virtual void						clear() = 0;
 
 		pointer	getPredecessor(pointer const & node) const
 		{
@@ -231,12 +235,6 @@ namespace ft
 				tmp = tmp->child[RIGHT];
 			return (tmp);
 		}
-
-		virtual iterator	erase(iterator pos) = 0;
-		virtual iterator	erase(iterator first, iterator last) = 0;
-		virtual size_type	erase(const Key& key) = 0;
-		
-		virtual void	clear() = 0;
 
 		iterator	lower_bound(Key const & k)
 		{

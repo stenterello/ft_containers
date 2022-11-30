@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:17:37 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 18:08:03 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:28:32 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,11 @@ namespace ft
 			template <class InputIt>
 			map(InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator())
 			{
-				while (first != last)
-					insert(*first++);
+				this->insert(first, last);
 			};
 			map(const map& other)
 			{
-				iterator	start = other.begin();
-				iterator	end = other.end();
-
-				while (start != end)
-					insert(*start++);
+				this->insert(other.begin(), other.end());
 			};
 			map&	operator=(map const & rhs)
 			{
@@ -56,7 +51,7 @@ namespace ft
 				iterator	first = rhs.begin();
 				iterator	end = rhs.end();
 				while (first != end)
-					insert(*first++);
+					this->insert(*first++);
 				return (*this);
 			}
 			~map() { clear(); };
@@ -177,6 +172,19 @@ namespace ft
 					return (findPointer(start->child[RIGHT], val));
 				else
 					return (iterator(start, this->_sentinel));
+			}
+
+			iterator	insert(iterator position, const value_type& val)
+			{
+				(void)position;
+				insert(val);
+			}
+
+			template <class InputIterator>
+			void	insert(InputIterator first, InputIterator last)
+			{
+				while (first != last)
+					insert(*first++);
 			}
 
 			ft::pair<iterator, bool> insert(ft::pair<Key, T> const &val)
