@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 14:43:47 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/30 16:24:07 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ namespace ft
 			_sentinel->color = SENTINEL;
 			_root = _sentinel;
 			_sentinel->parent = _root;
-			_sentinel->data = 1;
 		};
 
 		RBTreeSet(RBTreeSet const &src)
@@ -80,7 +79,6 @@ namespace ft
 			_sentinel->color = SENTINEL;
 			_root = _sentinel;
 			_sentinel->parent = _root;
-			_sentinel->data = 1;
 			_root = _sentinel;
 			_size = 0;
 			iterator	iter = src.begin();
@@ -97,7 +95,6 @@ namespace ft
 			_sentinel->color = SENTINEL;
 			_root = _sentinel;
 			_sentinel->parent = _root;
-			_sentinel->data = 1;
 			_root = _sentinel;
 			_size = 0;
 			iterator	iter = rhs.begin();
