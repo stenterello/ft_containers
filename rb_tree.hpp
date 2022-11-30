@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 16:24:07 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/30 17:08:29 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ namespace ft
 
 		~RBTreeSet()
 		{
-			this->clear();
 			_alloc.deallocate(_sentinel, 1);
 		};
 
@@ -132,76 +131,12 @@ namespace ft
 		reverse_iterator		rend() { return (reverse_iterator(begin())); }
 		const_reverse_iterator	rend() const { return (const_reverse_iterator(begin())); }
 
-		template <class InputIt>
-		void						insert(InputIt first, InputIt last)
-		{
-			while (first != last)
-				this->insert(*first++);
-		};
 
-		iterator	insert(iterator pos, const Key & val)
-		{
-			(void)pos;
-			return (this->insert(val).first);
-		}
-
-		ft::pair<iterator, bool> insert(Key const &val)
-		{
-			ft::pair<iterator, bool> ret;
-			pointer node = _alloc.allocate(1);
-
-			node->color = RED;
-			node->parent = _sentinel;
-			node->child[LEFT] = _sentinel;
-			node->child[RIGHT] = _sentinel;
-			node->data = val;
-
-			if (!_size)
-			{
-				_root = node;
-				_sentinel->parent = node;
-				node->color = BLACK;
-				_size++;
-				ret.first = iterator(node, _sentinel);
-				ret.second = true;
-				return (ret);
-			}
-			else
-			{
-				ret.first = iterator(node, _sentinel);
-				ret.second = false;
-				if (_c(val, _root->data) && _root->data != val)
-					return (insertNode(_root->child[LEFT], node, _root, 1));
-				else if (_c(_root->data, val) && _root->data != val)
-					return (insertNode(_root->child[RIGHT], node, _root, 1));
-				else
-				{
-					_alloc.deallocate(node, 1);
-					return (ret);
-				}
-			}
-		}
-
-		iterator	find(Key const & val) const
-		{
-			pointer	node = _root;
-
-			if (node && node != _sentinel)
-				return (findPointer(node, val));
-			return (iterator(_sentinel, _sentinel));
-		}
-
-		iterator	findPointer(pointer& start, Key const & val) const
-		{
-			if (!start || start->color == SENTINEL)
-				return (iterator(_sentinel, _sentinel));
-			if (_c(val, start->data) && start->data != val)
-				return (findPointer(start->child[LEFT], val));
-			else if (_c(start->data, val) && start->data != val)
-				return (findPointer(start->child[RIGHT], val));
-			else
-				return (iterator(start, _sentinel));
-		}
+		virtual iterator					find(Key const & val) const = 0;
+		virtual iterator					findPointer(pointer& start, Key const & val) const = 0;
+		virtual iterator					erase_deep(Key const & val) = 0;
+		virtual ft::pair<iterator, bool>	insert(Key const &val) = 0;
+		virtual ft::pair<iterator, bool>	insertNode(pointer &start, pointer &node, pointer& parent, int flag) = 0;
 
 		pointer	getPredecessor(pointer const & node) const
 		{
@@ -297,111 +232,11 @@ namespace ft
 			return (tmp);
 		}
 
-		iterator	erase(iterator pos)
-		{
-			iterator	ret = getSuccessor(pos.node);
-
-			this->erase_deep(*pos);
-			return (ret);
-		}
-
-		iterator	erase(iterator first, iterator last)
-		{
-			while (first != last)
-				this->erase_deep(*first++);
-			return (last.node);
-		}
-
-		size_type	erase(const Key& key)
-		{
-			if (this->erase_deep(key) != this->end())
-				return (1);
-			return (0);
-		}
-
-		iterator	erase_deep(Key const & val)
-		{
-			pointer		node = find(val).node;
-			pointer		tmp;
-			pointer		successor;
-			pointer		toHandle;
-			iterator	ret;
-			
-			if (!node)
-				return (iterator(_sentinel, _sentinel));
-			else if (node != _sentinel)
-				ret = this->find(getSuccessor(node)->data);
-			else
-				return (iterator(_sentinel, _sentinel));
-
-			if ((!node->child[LEFT] && !node->child[RIGHT]) || (node->child[LEFT] == _sentinel && node->child[RIGHT] == _sentinel))
-			{
-				tmp = node->parent;
-				if (node->color == BLACK && node != _root)
-					balanceDelete(node);
-				if (tmp != _sentinel)
-					unlink(tmp, node);
-				else
-				{
-					_root = _sentinel;
-					_sentinel->parent = _root;
-				}
-			}
-			else if (oneChild(node) != _sentinel)
-			{
-				if (node->color == BLACK && node != _root)
-					balanceDelete(node);
-				oneChild(node)->parent = node->parent;
-				if (node != _root)
-					link(node->parent, node, oneChild(node));
-				else
-				{
-					_root = oneChild(node);
-					_sentinel->parent = _root;
-				}
-			}
-			else
-			{
-				toHandle = NULL;
-				if (_c(node->data, _root->data))
-					successor = getSuccessor(node);
-				else
-					successor = getPredecessor(node);
-				balanceDelete(successor);
-				if (successor->child[RIGHT] != _sentinel)
-				{
-					toHandle = successor->child[RIGHT];
-					successor->child[RIGHT] = _sentinel;
-				}
-				unlink(successor->parent, successor);
-				link(node->parent, node, successor);
-				if (node->child[LEFT] != _sentinel)
-				{
-					node->child[LEFT]->parent = successor;
-					successor->child[LEFT] = node->child[LEFT];
-				}
-				if (node->child[RIGHT] != _sentinel)
-				{
-					if (successor->child[RIGHT] != _sentinel)
-						link(successor->parent, successor, successor->child[RIGHT]);
-					node->child[RIGHT]->parent = successor;
-					successor->child[RIGHT] = node->child[RIGHT];
-				}
-			}
-			_alloc.deallocate(node, 1);
-			node = NULL;
-			_size--;
-			return (ret);
-		}
-
-		void	clear()
-		{
-			iterator	iter = this->begin();
-			iterator	end = this->end();
-
-			while (iter != end)
-				erase(*iter++);
-		}
+		virtual iterator	erase(iterator pos) = 0;
+		virtual iterator	erase(iterator first, iterator last) = 0;
+		virtual size_type	erase(const Key& key) = 0;
+		
+		virtual void	clear() = 0;
 
 		iterator	lower_bound(Key const & k)
 		{
@@ -796,35 +631,6 @@ namespace ft
 			else if (node->parent->child[RIGHT] != _sentinel && node->parent->child[RIGHT] == node)
 				return (node->parent->child[LEFT]);
 			return (NULL);
-		}
-
-		ft::pair<iterator, bool> insertNode(pointer &start, pointer &node, pointer& parent, int flag)
-		{
-			ft::pair<iterator, bool>	ret;
-			
-			if (!start || start == _sentinel)
-			{
-				node->parent = parent;
-				if (_c(node->data, parent->data))
-					parent->child[LEFT] = node;
-				else
-					parent->child[RIGHT] = node;
-				start = node;
-				if (flag)
-					_size++;
-				balanceInsert(start);
-				ret.first = iterator(start, _sentinel);
-				ret.second = true;
-				return (ret);
-			}
-			if (_c(node->data, start->data))
-				return (insertNode(start->child[LEFT], node, start, flag));
-			else if (_c(start->data, node->data))
-				return (insertNode(start->child[RIGHT], node, start, flag));
-			ret.first = iterator(node, _sentinel);
-			delete node;
-			ret.second = false;
-			return (ret);
 		}
 
 		pointer&	oneChild(pointer& node)
