@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/29 17:31:54 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/30 19:16:36 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -364,7 +364,7 @@ namespace ft
 					return (false);
 				else if (!this->node && !rhs.node)
 					return (true);
-				return ((this->node != rhs.node) ? true : false);
+				return ((this->node == rhs.node) ? false : true);
 			}
 			
 			RBIterator&	operator++()
@@ -428,6 +428,9 @@ namespace ft
 			{
 				nodePointer*	tmp = &node;
 
+				if (!(*tmp) || !tmp)
+					return (NULL);
+
 				while (*tmp != sentinel && (*tmp)->child[0] != sentinel)
 					tmp = &((*tmp)->child[0]);
 				return (*tmp);
@@ -437,7 +440,7 @@ namespace ft
 			{
 				nodePointer*	node = &root;
 
-				if (!(*node) || (*node) == sentinel)
+				if (!node || !(*node) || (*node) == sentinel)
 					return (sentinel);
 
 				while ((*node)->child[1] && (*node)->child[1] != sentinel)
@@ -449,6 +452,9 @@ namespace ft
 			{
 				nodePointer*	tmp = &node;
 
+				if (!tmp || !(*tmp))
+					return (NULL);
+
 				while (*tmp != sentinel && (*tmp)->child[1] != sentinel)
 					tmp = &((*tmp)->child[1]);
 				return (*tmp);
@@ -458,7 +464,7 @@ namespace ft
 			{
 				nodePointer*	tmp = &this->node;
 				
-				if (!(*tmp))
+				if (!(*tmp) || !tmp)
 					return (NULL);
 
 				while ((*tmp)->color != 2)
