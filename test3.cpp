@@ -1,10 +1,10 @@
 #include <iostream>
 
-#include "set.hpp"
+#include "map.hpp"
 
 int	main()
 {
-	ft::set<int>	s;
+	ft::map<int, int>	s;
 	
 	return (0);
 }

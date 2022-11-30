@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:17:37 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 19:23:31 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/11/30 22:50:56 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,21 @@
 
 namespace ft
 {
-	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<const Key, T> > >
+	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<Key, T> > >
 	class map : public RBTreeSet<ft::pair<Key, T>, Node<ft::pair<Key, T> >, Compare, Allocator>
 	{
 		public:
 			typedef Key														key_type;
 			typedef	T														mapped_type;
 			typedef ft::pair<Key, T>										value_type;
-			typedef typename Allocator::template rebind<Node<ft::pair<Key, T> > >::other		allocator_type;
+			typedef typename Allocator::template rebind<Node<value_type> >::other		allocator_type;
 			typedef typename allocator_type::reference						reference;
 			typedef typename allocator_type::const_reference				const_reference;
 			typedef typename allocator_type::pointer						pointer;
 			typedef typename allocator_type::const_pointer					const_pointer;
 			typedef typename allocator_type::size_type						size_type;
-			typedef RBIterator<ft::pair<Key, T>, Compare, Node<ft::pair<Key, T> > >						iterator;
-			typedef RBIterator<const ft::pair<Key, T>, Compare, Node<ft::pair<Key, T> > >				const_iterator;
+			typedef RBIterator<value_type, Compare, Node<value_type> >						iterator;
+			typedef RBIterator<value_type, Compare, Node<value_type> >				const_iterator;
 
 			map() {};
 			explicit map(const Compare& comp, const Allocator& alloc = Allocator()) {};
@@ -260,10 +260,7 @@ namespace ft
 				iterator	end = this->end();
 
 				while (iter != end)
-				{
-					erase(*iter);
-					iter++;
-				}
+					erase(*iter++);
 			}
 	};
 }
