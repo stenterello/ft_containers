@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/11/30 17:08:47 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/01 01:04:27 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,6 +280,68 @@ namespace ft
 
 				while (iter != end)
 					erase(*iter++);
+			}
+
+			iterator	lower_bound(Key const & k)
+			{
+				iterator	ret = this->begin();
+
+				while (ret != this->end())
+				{
+					if (!_c(ret.node->data, k))
+						break ;
+					ret++;
+				}
+				return (ret);
+			}
+
+			const_iterator	lower_bound(Key const & k) const
+			{
+				const_iterator	ret = this->begin();
+
+				while (ret != this->end())
+				{
+					if (!_c(ret.node->data, k))
+						break ;
+					ret++;
+				}
+				return (ret);
+			}
+
+			iterator	upper_bound(Key const & k)
+			{
+				iterator	ret = this->begin();
+
+				while (ret != this->end())
+				{
+					if (_c(k, ret.node->data))
+						break ;
+					ret++;
+				}
+				return (ret);
+			}
+
+			const_iterator	upper_bound(Key const & k) const
+			{
+				const_iterator	ret = this->begin();
+
+				while (ret != this->end())
+				{
+					if (_c(k, ret.node->data))
+						break ;
+					ret++;
+				}
+				return (ret);
+			}
+
+			ft::pair<iterator, iterator>				equal_range(const Key& key)
+			{
+				return (ft::make_pair(this->lower_bound(key), this->upper_bound(key)));
+			}
+
+			ft::pair<const_iterator, const_iterator>	equal_range(const Key& key) const
+			{
+				return (ft::make_pair(this->lower_bound(key), this->upper_bound(key)));
 			}
 	};
 

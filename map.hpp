@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:17:37 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 00:23:50 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/01 01:06:06 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ namespace ft
 
 			iterator	erase_deep(ft::pair<const Key, T> const & val)
 			{
-				pointer		node = this->find(val).node;
+				pointer		node = this->find(val.first).node;
 				pointer		tmp;
 				pointer		successor;
 				pointer		toHandle;
@@ -88,7 +88,7 @@ namespace ft
 				if (!node)
 					return (iterator(this->_sentinel, this->_sentinel));
 				else if (node != this->_sentinel)
-					ret = this->find(this->getSuccessor(node)->data);
+					ret = this->find(this->getSuccessor(node)->data.first);
 				else
 					return (iterator(this->_sentinel, this->_sentinel));
 
@@ -152,14 +152,25 @@ namespace ft
 				return (ret);
 			}
 
-			iterator	find(ft::pair<const Key, T> const & val) const
+			iterator		find(const Key& key)
 			{
-				pointer	node = this->_root;
+				pointer							node = this->_root;
+				ft::pair<key_type, mapped_type>	ret(key, mapped_type());
 
-				if (node && node != this->_sentinel)
-					return (findPointer(node, val));
-				return (iterator(this->_sentinel, this->_sentinel));
-			}
+				if (!node || node == this->_sentinel)
+					return (iterator(this->_sentinel, this->_sentinel));
+				return (findPointer(node, ret));
+			};
+			
+			const_iterator	find(const Key& key) const
+			{
+				pointer							node = this->_root;
+				ft::pair<key_type, mapped_type>	ret(key, mapped_type());
+
+				if (!node || node == this->_sentinel)
+					return (iterator(this->_sentinel, this->_sentinel));
+				return (findPointer(node, ret));
+			};
 
 			iterator	findPointer(pointer& start, ft::pair<const Key, T> const & val) const
 			{
@@ -253,6 +264,15 @@ namespace ft
 				return (ret);
 			}
 
+			T&	at(const Key& key)
+			{
+				iterator	tmp = find(key);
+
+				if (tmp.node == this->_sentinel)
+					throw std::out_of_range("map: at");
+				return ((*tmp).second);
+			}
+
 			void	clear()
 			{
 				iterator	iter = this->begin();
@@ -260,6 +280,91 @@ namespace ft
 
 				while (iter != end)
 					erase((*iter++).first);
+			}
+
+			T&	operator[](const Key& key)
+			{
+				try
+				{
+					return at(key);
+				}
+				catch(const std::exception& e)
+				{
+					ft::pair<key_type, mapped_type>	ret(key, mapped_type());
+					insert(ret);
+					return (at(key));
+				}
+			}
+
+			size_type	count(const Key& key) const
+			{
+				iterator						tmp = find(key);
+
+				if (tmp.node == this->_sentinel)
+					return (0);
+				return (1);
+			}
+
+			iterator		lower_bound(const Key& key)
+			{
+				iterator	ret = this->begin();
+
+				while (ret != this->end())
+				{
+					if (!this->_c(ret.node->data.first, key))
+						break ;
+					ret++;
+				}
+				return (ret);
+			}
+
+			const_iterator	lower_bound(const Key& key) const
+			{
+				const_iterator	ret = this->begin();
+
+				while (ret != this->end())
+				{
+					if (!this->_c(ret.node->data.first, key))
+						break ;
+					ret++;
+				}
+				return (ret);
+			}
+
+			iterator		upper_bound(const Key& key)
+			{
+				iterator	ret = this->begin();
+
+				while (ret != this->end())
+				{
+					if (this->_c(key, ret.node->data.first))
+						break ;
+					ret++;
+				}
+				return (ret);
+			}
+
+			const_iterator	upper_bound(const Key& key) const
+			{
+				const_iterator	ret = this->begin();
+
+				while (ret != this->end())
+				{
+					if (this->_c(key, ret.node->data.first))
+						break ;
+					ret++;
+				}
+				return (ret);
+			}
+
+			ft::pair<iterator, iterator>				equal_range(const Key& key)
+			{
+				return (ft::make_pair(this->lower_bound(key), this->upper_bound(key)));
+			}
+
+			ft::pair<const_iterator, const_iterator>	equal_range(const Key& key) const
+			{
+				return (ft::make_pair(this->lower_bound(key), this->upper_bound(key)));
 			}
 	};
 }

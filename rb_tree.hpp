@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 00:05:04 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/01 01:07:37 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,13 +135,10 @@ namespace ft
 		const_reverse_iterator	rend() const { return (const_reverse_iterator(begin())); }
 
 
-		virtual iterator					find(Key const & val) const = 0;
 		virtual iterator					findPointer(pointer& start, Key const & val) const = 0;
 		virtual iterator					erase_deep(Key const & val) = 0;
 		virtual ft::pair<iterator, bool>	insert(Key const &val) = 0;
 		virtual ft::pair<iterator, bool>	insertNode(pointer &start, pointer &node, pointer& parent, int flag) = 0;
-		// virtual iterator					erase(iterator first, iterator last) = 0;
-		// virtual size_type					erase(const Key& key) = 0;
 		virtual void						clear() = 0;
 
 		pointer	getPredecessor(pointer const & node) const
@@ -236,68 +233,6 @@ namespace ft
 			while (tmp->child[RIGHT] != _sentinel)
 				tmp = tmp->child[RIGHT];
 			return (tmp);
-		}
-
-		iterator	lower_bound(Key const & k)
-		{
-			iterator	ret = this->begin();
-
-			while (ret != this->end())
-			{
-				if (!_c(ret.node->data, k))
-					break ;
-				ret++;
-			}
-			return (ret);
-		}
-
-		const_iterator	lower_bound(Key const & k) const
-		{
-			const_iterator	ret = this->begin();
-
-			while (ret != this->end())
-			{
-				if (!_c(ret.node->data, k))
-					break ;
-				ret++;
-			}
-			return (ret);
-		}
-
-		iterator	upper_bound(Key const & k)
-		{
-			iterator	ret = this->begin();
-
-			while (ret != this->end())
-			{
-				if (_c(k, ret.node->data))
-					break ;
-				ret++;
-			}
-			return (ret);
-		}
-
-		const_iterator	upper_bound(Key const & k) const
-		{
-			const_iterator	ret = this->begin();
-
-			while (ret != this->end())
-			{
-				if (_c(k, ret.node->data))
-					break ;
-				ret++;
-			}
-			return (ret);
-		}
-
-		ft::pair<iterator, iterator>				equal_range(const Key& key)
-		{
-			return (ft::make_pair(this->lower_bound(key), this->upper_bound(key)));
-		}
-
-		ft::pair<const_iterator, const_iterator>	equal_range(const Key& key) const
-		{
-			return (ft::make_pair(this->lower_bound(key), this->upper_bound(key)));
 		}
 
 		void			swap(RBTreeSet & rhs)

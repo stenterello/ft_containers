@@ -318,7 +318,367 @@ std::vector<int> comparator_test(_map<T, V> mp) {
     return v;
 }
 
+template <class T, class V>
+std::vector<int> at_test(std::map<T, V> mp) {
+    std::vector<int> v;
+    for (int i = 0, j = 10; i < 70 * _ratio; ++i, ++j)
+        mp.insert(std::make_pair(i, j));
+    g_start1 = timer();
+    try {
+        v.push_back(mp.at(40 * _ratio));
+        v.push_back(mp.at(40 * _ratio + 1));
+    } catch (std::exception &e) {
+        v.push_back(1);
+    }
+    g_end1 = timer();
+    return v;
+}
+
+template <class T, class V>
+std::vector<int> at_test(_map<T, V> mp) {
+    std::vector<int> v;
+    for (int i = 0, j = 10; i < 70 * _ratio; ++i, ++j)
+        mp.insert(_make_pair(i, j));
+    g_start2 = timer();
+    try {
+        v.push_back(mp.at(40 * _ratio));
+        v.push_back(mp.at(40 * _ratio + 1));
+    } catch (std::exception &e) {
+        v.push_back(1);
+    }
+    g_end2 = timer();
+    return v;
+}
+
+template <class T, class V>
+        std::vector<int> operator_sq_test(std::map<T, V> mp) {
+    std::vector<int> v;
+    mp.insert(std::make_pair(3, 3));
+    typename std::map<T, V>::iterator it = mp.begin();
+    g_start1 = timer();
+    v.push_back(it->first);
+    v.push_back(it->second);
+    mp[3] = 10;
+    v.push_back(it->first);
+    v.push_back(it->second);
+    mp[2] = 9;
+    it = mp.begin();
+    v.push_back(it->first);
+    v.push_back(it->second);
+    it++;
+    v.push_back(it->first);
+    v.push_back(it->second);
+    v.push_back(mp.size());
+    g_end1 = timer();
+    return v;
+}
+
+template <class T, class V>
+        std::vector<int> operator_sq_test(_map<T, V> mp) {
+    std::vector<int> v;
+    mp.insert(_make_pair(3, 3));
+    typename _map<T, V>::iterator it = mp.begin();
+    g_start2 = timer();
+    v.push_back(it->first);
+    v.push_back(it->second);
+    mp[3] = 10;
+    v.push_back(it->first);
+    v.push_back(it->second);
+    mp[2] = 9;
+    it = mp.begin();
+    v.push_back(it->first);
+    v.push_back(it->second);
+    it++;
+    v.push_back(it->first);
+    v.push_back(it->second);
+    v.push_back(mp.size());
+    g_end2 = timer();
+    return v;
+}
+
+template <class T, class V>
+std::vector<int> count_test(std::map<T, V> mp) {
+    std::vector<int> v;
+    g_start1 = g_end1 = timer();
+    v.push_back(mp.count(0));
+    mp.insert(std::make_pair(0, 0));
+    v.push_back(mp.count(0));
+    return v;
+}
+
+template <class T, class V>
+std::vector<int> count_test(_map<T, V> mp) {
+    std::vector<int> v;
+    g_start2 = g_end2 = timer();
+    v.push_back(mp.count(0));
+    mp.insert(_make_pair(0, 0));
+    v.push_back(mp.count(0));
+    return v;
+}
+
+template <class T, class V>
+std::vector<int> find_test(std::map<T, V> mp) {
+    std::vector<int> v;
+    for (int i = -75 * _ratio, j = 0; i < 75 * _ratio; ++i, ++j) {
+        mp.insert(std::make_pair(i, j));
+    }
+    g_start1 = timer();
+    typename std::map<T, V>::iterator it = mp.find(34 * _ratio);
+    g_end1 = timer();
+    v.push_back(it->first);
+    v.push_back(it->second);
+    it = mp.find(-34 * _ratio);
+    v.push_back(it->first);
+    v.push_back(it->second);
+    it = mp.find(-75 * _ratio);
+    if (it == mp.end())
+        v.push_back(1);
+    return v;
+}
+
+template <class T, class V>
+std::vector<int> find_test(_map<T, V> mp) {
+    std::vector<int> v;
+    for (int i = -75 * _ratio, j = 0; i < 75 * _ratio; ++i, ++j) {
+        mp.insert(_make_pair(i, j));
+    }
+    g_start2 = timer();
+    typename _map<T, V>::iterator it = mp.find(34 * _ratio);
+    g_end2 = timer();
+    v.push_back(it->first);
+    v.push_back(it->second);
+    it = mp.find(-34 * _ratio);
+    v.push_back(it->first);
+    v.push_back(it->second);
+    it = mp.find(-75 * _ratio);
+    if (it == mp.end())
+        v.push_back(1);
+    return v;
+}
+
+template <class T, class V>
+std::vector<int> lower_bound_test(std::map<T, V> mp) {
+    std::vector<int> v;
+    std::map<int, int, std::greater<int> > mp2;
+    mp.insert(std::make_pair(10, 10));
+    mp2.insert(std::make_pair(10, 10));
+    if (mp.lower_bound(11) == mp.end())
+        v.push_back(1);
+    if (mp2.lower_bound(1) == mp2.end())
+        v.push_back(1);
+    mp.insert(std::make_pair(20, 20));
+    mp.insert(std::make_pair(30, 30));
+    mp.insert(std::make_pair(40, 40));
+    mp.insert(std::make_pair(50, 50));
+    mp.insert(std::make_pair(60, 60));
+    mp2.insert(std::make_pair(20, 20));
+    mp2.insert(std::make_pair(30, 30));
+    mp2.insert(std::make_pair(40, 40));
+    mp2.insert(std::make_pair(50, 50));
+    mp2.insert(std::make_pair(60, 60));
+    std::map<int, int>::iterator it;
+    for (int i = 1; i < 60; i += 10) {
+        it = mp.lower_bound(i);
+        v.push_back(it->first);
+    }
+    for (int i = 11; i < 70; i += 10) {
+        it = mp2.lower_bound(i);
+        v.push_back(it->first);
+    }
+    std::map<int, int> mp3;
+    for (int i = 0, j = 0; i < 50 * _ratio; ++i, ++j) {
+        mp3.insert(std::make_pair(i, j));
+    }
+    g_start1 = timer();
+    mp3.lower_bound(49 * _ratio);
+    g_end1 = timer();
+    return v;
+}
+
+template <class T, class V>
+std::vector<int> lower_bound_test(_map<T, V> mp) {
+    std::vector<int> v;
+    _map<int, int, std::greater<int> > mp2;
+    mp.insert(_make_pair(10, 10));
+    mp2.insert(_make_pair(10, 10));
+    if (mp.lower_bound(11) == mp.end())
+        v.push_back(1);
+    if (mp2.lower_bound(1) == mp2.end())
+        v.push_back(1);
+    mp.insert(_make_pair(20, 20));
+    mp.insert(_make_pair(30, 30));
+    mp.insert(_make_pair(40, 40));
+    mp.insert(_make_pair(50, 50));
+    mp.insert(_make_pair(60, 60));
+    mp2.insert(_make_pair(20, 20));
+    mp2.insert(_make_pair(30, 30));
+    mp2.insert(_make_pair(40, 40));
+    mp2.insert(_make_pair(50, 50));
+    mp2.insert(_make_pair(60, 60));
+    _map<int, int>::iterator it;
+    for (int i = 1; i < 60; i += 10) {
+        it = mp.lower_bound(i);
+        v.push_back(it->first);
+    }
+    for (int i = 11; i < 70; i += 10) {
+        it = mp2.lower_bound(i);
+        v.push_back(it->first);
+    }
+    _map<int, int> mp3;
+    for (int i = 0, j = 0; i < 50 * _ratio; ++i, ++j) {
+        mp3.insert(_make_pair(i, j));
+    }
+    g_start2 = timer();
+    mp3.lower_bound(49 *_ratio);
+    g_end2 = timer();
+    return v;
+}
+
+template <class T, class V>
+        std::vector<int> upper_bound_test(std::map<T, V> mp) {
+    std::vector<int> v;
+    std::map<int, int, std::greater<int> > mp2;
+    mp.insert(std::make_pair(10, 10));
+    mp2.insert(std::make_pair(10, 10));
+    if (mp.upper_bound(11) == mp.end())
+        v.push_back(1);
+    if (mp2.upper_bound(1) == mp2.end())
+        v.push_back(1);
+    mp.insert(std::make_pair(20, 20));
+    mp.insert(std::make_pair(30, 30));
+    mp.insert(std::make_pair(40, 40));
+    mp.insert(std::make_pair(50, 50));
+    mp.insert(std::make_pair(60, 60));
+    mp2.insert(std::make_pair(20, 20));
+    mp2.insert(std::make_pair(30, 30));
+    mp2.insert(std::make_pair(40, 40));
+    mp2.insert(std::make_pair(50, 50));
+    mp2.insert(std::make_pair(60, 60));
+    std::map<int, int>::iterator it;
+    for (int i = 1; i < 60; i += 10) {
+        it = mp.upper_bound(i);
+        v.push_back(it->first);
+    }
+    for (int i = 11; i < 70; i += 10) {
+        it = mp2.upper_bound(i);
+        v.push_back(it->first);
+    }
+    std::map<int, int> mp3;
+    for (int i = 0, j = 0; i < 50 * _ratio; ++i, ++j) {
+        mp3.insert(std::make_pair(i, j));
+    }
+    std::map<int, int> mp4;
+    mp.insert(std::make_pair(-10, 10));
+    mp.insert(std::make_pair(-20, 20));
+    v.push_back((--mp.upper_bound(0))->first);
+    g_start1 = timer();
+    mp3.upper_bound(49 * _ratio);
+    g_end1 = timer();
+    return v;
+}
+
+template <class T, class V>
+        std::vector<int> upper_bound_test(_map<T, V> mp) {
+    std::vector<int> v;
+    _map<int, int, std::greater<int> > mp2;
+    mp.insert(_make_pair(10, 10));
+    mp2.insert(_make_pair(10, 10));
+    if (mp.upper_bound(11) == mp.end())
+        v.push_back(1);
+    if (mp2.upper_bound(1) == mp2.end())
+        v.push_back(1);
+    mp.insert(_make_pair(20, 20));
+    mp.insert(_make_pair(30, 30));
+    mp.insert(_make_pair(40, 40));
+    mp.insert(_make_pair(50, 50));
+    mp.insert(_make_pair(60, 60));
+    mp2.insert(_make_pair(20, 20));
+    mp2.insert(_make_pair(30, 30));
+    mp2.insert(_make_pair(40, 40));
+    mp2.insert(_make_pair(50, 50));
+    mp2.insert(_make_pair(60, 60));
+    _map<int, int>::iterator it;
+    for (int i = 1; i < 60; i += 10) {
+        it = mp.upper_bound(i);
+        v.push_back(it->first);
+    }
+    for (int i = 11; i < 70; i += 10) {
+        it = mp2.upper_bound(i);
+        v.push_back(it->first);
+    }
+    _map<int, int> mp3;
+    for (int i = 0, j = 0; i < 50 * _ratio; ++i, ++j) {
+        mp3.insert(_make_pair(i, j));
+    }
+    _map<int, int> mp4;
+    mp.insert(_make_pair(-10, 10));
+    mp.insert(_make_pair(-20, 20));
+    v.push_back((--mp.upper_bound(0))->first);
+    g_start2 = timer();
+    mp3.upper_bound(49 * _ratio);
+    g_end2 = timer();
+    return v;
+}
+
+template <class T, class V>
+std::vector<int> equal_range_test(std::map<T, V> mp) {
+    std::vector<int> v;
+    mp.insert(std::make_pair(10, 10));
+    mp.insert(std::make_pair(20, 20));
+    mp.insert(std::make_pair(30, 30));
+    mp.insert(std::make_pair(40, 40));
+    mp.insert(std::make_pair(50, 50));
+    mp.insert(std::make_pair(60, 60));
+    g_start1 = timer();
+    const std::pair<std::map<int, int>::const_iterator , std::map<int, int>::const_iterator>& pair = mp.equal_range(10);
+    const std::pair<std::map<int, int>::const_iterator , std::map<int, int>::const_iterator>& pair2 = mp.equal_range(11);
+    const std::pair<std::map<int, int>::const_iterator , std::map<int, int>::const_iterator>& pair3 = mp.equal_range(1);
+    g_end1 = timer();
+    v.push_back(pair.first->first);
+    v.push_back(pair.first->second);
+    v.push_back(pair.second->first);
+    v.push_back(pair.second->second);
+    v.push_back(pair2.first->first);
+    v.push_back(pair2.first->second);
+    v.push_back(pair2.second->first);
+    v.push_back(pair2.second->second);
+    v.push_back(pair3.first->first);
+    v.push_back(pair3.first->second);
+    v.push_back(pair3.second->first);
+    v.push_back(pair3.second->second);
+    return v;
+}
+
+template <class T, class V>
+std::vector<int> equal_range_test(_map<T, V> mp) {
+    std::vector<int> v;
+    mp.insert(_make_pair(10, 10));
+    mp.insert(_make_pair(20, 20));
+    mp.insert(_make_pair(30, 30));
+    mp.insert(_make_pair(40, 40));
+    mp.insert(_make_pair(50, 50));
+    mp.insert(_make_pair(60, 60));
+    g_start2 = timer();
+    const _pair<_map<int, int>::const_iterator , _map<int, int>::const_iterator>& pair = mp.equal_range(10);
+    const _pair<_map<int, int>::const_iterator , _map<int, int>::const_iterator>& pair2 = mp.equal_range(11);
+    const _pair<_map<int, int>::const_iterator , _map<int, int>::const_iterator>& pair3 = mp.equal_range(1);
+    g_end2 = timer();
+    v.push_back(pair.first->first);
+    v.push_back(pair.first->second);
+    v.push_back(pair.second->first);
+    v.push_back(pair.second->second);
+    v.push_back(pair2.first->first);
+    v.push_back(pair2.first->second);
+    v.push_back(pair2.second->first);
+    v.push_back(pair2.second->second);
+    v.push_back(pair3.first->first);
+    v.push_back(pair3.first->second);
+    v.push_back(pair3.second->first);
+    v.push_back(pair3.second->second);
+    return v;
+}
+
 int main() {
 
-    exit(run_map_unit_test<int, int>("compare class", comparator_test, comparator_test));
+    exit(run_map_unit_test<int, int>("equal_range()", equal_range_test, equal_range_test));
 }
