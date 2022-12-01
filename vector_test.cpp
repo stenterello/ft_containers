@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector_test.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:50:37 by gimartin          #+#    #+#             */
-/*   Updated: 2022/11/13 00:48:53 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/01 16:06:40 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -636,7 +636,7 @@ std::vector<int> swap_test(std::vector<T> vector) {
     std::vector<int> v;
     vector.assign(1100 * _ratio, 11);
     std::vector<int> tmp(500 * _ratio, 5), tmp2(1000 * _ratio, 10), tmp3(1500 * _ratio, 15), tmp4(3000 * _ratio, 30);
-    // g_start1 = timer();
+    g_start1 = timer();
     v.push_back(vector[2]);
     v.push_back(vector.size());
     v.push_back(vector.capacity());
@@ -657,7 +657,7 @@ std::vector<int> swap_test(std::vector<T> vector) {
     v.push_back(vector.size());
     v.push_back(vector.capacity());
     std::swap(vector, tmp4);
-    // g_end1 = timer();
+    g_end1 = timer();
     v.push_back(vector[2]);
     v.push_back(vector.size());
     v.push_back(vector.capacity());
@@ -669,7 +669,7 @@ std::vector<int> swap_test(_vector<T> vector) {
     std::vector<int> v;
     vector.assign(1100 * _ratio, 11);
     _vector<int> tmp(500 * _ratio, 5), tmp2(1000 * _ratio, 10), tmp3(1500 * _ratio, 15), tmp4(3000 * _ratio, 30);
-    // g_start2 = timer();
+    g_start2 = timer();
     v.push_back(vector[2]);
     v.push_back(vector.size());
     v.push_back(vector.capacity());
@@ -690,7 +690,7 @@ std::vector<int> swap_test(_vector<T> vector) {
     v.push_back(vector.size());
     v.push_back(vector.capacity());
     std::swap(vector, tmp4);
-    // g_end2 = timer();
+    g_end2 = timer();
     v.push_back(vector[2]);
     v.push_back(vector.size());
     v.push_back(vector.capacity());
@@ -745,5 +745,5 @@ std::vector<int> clear_test(_vector<T> vector) {
 
 int main() {
 
-    exit(run_vector_unit_test<int>("clear()", clear_test, clear_test));
+    exit(run_vector_unit_test<int>("swap()", swap_test, swap_test));
 }
