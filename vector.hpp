@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 16:13:04 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/01 17:07:10 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -497,6 +497,14 @@ namespace ft
 
 	template <class T, class Alloc>
 	void swap(vector<T, Alloc> &x, vector<T, Alloc> &y)
+	{
+		x.swap(y);
+	}
+}
+namespace std
+{
+	template <class T, class Alloc>
+	void	swap(ft::vector<T, Alloc>& x, ft::vector<T, Alloc>& y)
 	{
 		x.swap(y);
 	}

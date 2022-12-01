@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 00:21:48 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/01 17:56:54 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ namespace ft
 			bidirectional_iterator	operator++(int) { bidirectional_iterator tmp(*this); this->_pointed++; return (tmp); };
 			bidirectional_iterator&	operator--() { this->_pointed--; return *this; };
 			bidirectional_iterator	operator--(int) { bidirectional_iterator tmp(*this); this->_pointed--; return (tmp); };
+			template <class InputIt>
+			friend size_t			operator-(InputIt const & lhs, InputIt const & rhs);
 
 		private:
 			pointer	_pointed;
@@ -113,6 +115,7 @@ namespace ft
 			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::value_type		value_type;
 			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::pointer			pointer;
 			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::reference			reference;
+			typedef size_t																		size_type;
 			typedef T*																			iterator_type;
 			random_access_iterator() : _pointed(NULL), _value(value_type()) {};
 			random_access_iterator(pointer p) : _pointed(p), _value(value_type()) {};
@@ -257,8 +260,6 @@ namespace ft
 			reference			operator[](difference_type n) const { return (*(_base - n - 1)); };
 			difference_type 	operator+(reverse_iterator const &rhs) const { return (this->base() + rhs.base()); }
 			difference_type 	operator-(reverse_iterator const &rhs) const { return (rhs.base() - this->base()); }
-			// operator 			reverse_iterator<const InputIterator>() const { return (reverse_iterator<const InputIterator>()); }
-			// friend bool			operator==(reverse_iterator const & lhs, reverse_iterator const & rhs);
 		private:
 			iterator_type	_base;
 	};
@@ -474,7 +475,7 @@ namespace ft
 				return (*tmp);
 			}
 			
-			nodePointer	findRoot(nodePointer & node)
+			nodePointer	findRoot()
 			{
 				nodePointer*	tmp = &this->node;
 				while (*tmp != sentinel && (*tmp)->parent != sentinel)
@@ -538,7 +539,9 @@ namespace ft
 	template <class InputIt>
 	bool			operator==(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt> const & rhs) { return (lhs.base() == rhs.base()); }
 
-
+	template <class InputIt>
+	size_t			operator-(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt> const & rhs) { return (lhs.base() - rhs.base()); }
+	
 	// template <class InputIterator>
 	// bool	operator<(reverse_iterator<InputIterator> const lhs, reverse_iterator<InputIterator> const rhs)
 	// {
