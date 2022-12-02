@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/02 20:13:27 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/02 22:46:54 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,6 +305,7 @@ namespace ft
 		{
 			pointer		toHandle;
 			pointer*	tmp = &node;
+			pointer*	ret;
 
 			if ((*tmp)->child[RIGHT]->child[LEFT] != _sentinel)
 				toHandle = (*tmp)->child[RIGHT]->child[LEFT];
@@ -329,7 +330,8 @@ namespace ft
 			(*tmp)->child[RIGHT] = _sentinel;
 			if (toHandle)
 				insertNode((*tmp)->parent, toHandle, (*tmp)->parent, 0);
-			return (&node);
+			ret = &(*tmp)->child[LEFT];
+			return (ret);
 		}
 
 		pointer*	rotateRight(pointer & node)

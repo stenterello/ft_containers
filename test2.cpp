@@ -98,6 +98,7 @@ int		main(void)
 	ft_erase(st, --st.end());
 
 	ft_erase(st, st.begin(), ++(++(++st.begin())));
+	// printSize(st);
 	ft_erase(st, --(--(--st.end())), --st.end());
 
 	st.insert("Hello");

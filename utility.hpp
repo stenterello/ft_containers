@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:03:04 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 00:11:16 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/02 22:23:47 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ namespace ft
 	template <>
 	struct is_integral_type<wchar_t> : public is_integral_res<true, wchar_t> {};
 
-	template <>
-	struct is_integral_type<char16_t> : public is_integral_res<true, char16_t> {};
+	// template <>
+	// struct is_integral_type<char16_t> : public is_integral_res<true, char16_t> {};
 
 	template <>
 	struct is_integral_type<signed char> : public is_integral_res<true, signed char> {};
@@ -196,7 +196,8 @@ namespace ft
 		pair(first_type const & x, second_type const & y) : first(x), second(y) {}
 		template <class U1, class U2>
 		pair(pair<U1, U2> const & p) : first(p.first), second(p.second) {}
-		pair&	operator=(pair const & rhs)
+		template <class U1, class U2>
+		pair<U1, U2>&	operator=(pair<U1, U2> const & rhs)
 		{
 			if (this == &rhs)
 				return (*this);

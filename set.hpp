@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/02 19:57:49 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/02 22:57:10 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ namespace ft
 				pointer		node = this->find(val).node;
 				pointer		tmp;
 				pointer		successor;
-				pointer		toHandle;
 				iterator	ret;
 				
 				if (!node)
@@ -147,7 +146,6 @@ namespace ft
 				}
 				else
 				{
-					toHandle = NULL;
 					if (this->_c(node->data, this->_root->data))
 						successor = this->getSuccessor(node);
 					else
@@ -155,7 +153,6 @@ namespace ft
 					this->balanceDelete(successor);
 					if (successor->child[RIGHT] != this->_sentinel)
 					{
-						toHandle = successor->child[RIGHT];
 						successor->child[RIGHT] = this->_sentinel;
 					}
 					this->unlink(successor->parent, successor);
