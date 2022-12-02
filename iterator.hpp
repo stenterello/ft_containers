@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 17:56:54 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/02 19:15:16 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ namespace ft
 				if (this == &rhs)
 					return (*this);
 				this->_pointed = rhs._pointed;
-				this->_value = value_type();
+				// this->_value = value_type();
 				return (*this);	
 			}
 			virtual ~random_access_iterator(){};
@@ -133,6 +133,7 @@ namespace ft
 			pointer					operator->() { return &(this->operator*()); }
 			random_access_iterator	operator+(difference_type n) const { return (_pointed + n); }
 			random_access_iterator	operator-(difference_type n) const { return (_pointed - n); }
+			
 			random_access_iterator&	operator++()
 			{
 				_pointed++;
@@ -165,12 +166,12 @@ namespace ft
 				_pointed -= n;
 				return (*this);
 			}
-			bool					operator==(random_access_iterator const &rhs)
-			{
-				if (this->pointed() == rhs.pointed())
-					return true;
-				return false;
-			}
+			// bool					operator==(random_access_iterator const &rhs)
+			// {
+			// 	if (this->pointed() == rhs.pointed())
+			// 		return true;
+			// 	return false;
+			// }
 			bool					operator!=(random_access_iterator const &rhs)
 			{
 				if (this->pointed() == rhs.pointed())
@@ -211,6 +212,13 @@ namespace ft
 			typedef typename ft::iterator_traits<InputIterator>::iterator_category	iterator_category;
 			reverse_iterator() : _base(NULL) {};
 			explicit reverse_iterator(iterator_type iter) : _base(iter) {};
+			reverse_iterator&	operator=(reverse_iterator const & rhs)
+			{
+				if (this == &rhs)
+					return (*this);
+				this->_base = rhs.base();
+				return (*this);
+			}
 			template <class ReverseIterator>
 			reverse_iterator(reverse_iterator<ReverseIterator> const &rev_it) : _base(rev_it.base()){};
 			virtual ~reverse_iterator() {};
@@ -292,19 +300,19 @@ namespace ft
 			RBIterator(NodeType* start) : 
 				node(start),
 				sentinel(findSentinel()),
-				root(findRoot(start)),
-				c(Compare()),
+				root(findRoot()),
 				minNode(min(root)),
-				maxNode(max(root))
+				maxNode(max(root)),
+				c(Compare())
 			{};
 			
 			RBIterator(NodeType* start, NodeType* endPtr) :
 				node(start),
 				sentinel(endPtr),
-				root(findRoot(start)),
-				c(Compare()),
+				root(findRoot()),
 				minNode(min(root)),
-				maxNode(max(root))
+				maxNode(max(root)),
+				c(Compare())
 			{};
 			
 			RBIterator(RBIterator const & src) :
@@ -491,6 +499,8 @@ namespace ft
 					return (sentinel);
 				if (node == max(sentinel->parent))
 					return (sentinel);
+				if (node->parent == sentinel && node->child[0] == sentinel && node->child[1] == sentinel)
+					return (sentinel);
 				if ((*tmp)->child[1] != sentinel)
 					return (min((*tmp)->child[1]));
 				else
@@ -537,10 +547,88 @@ namespace ft
 	// Overloads
 
 	template <class InputIt>
-	bool			operator==(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt> const & rhs) { return (lhs.base() == rhs.base()); }
+	random_access_iterator<InputIt>	operator+(int n, random_access_iterator<InputIt> const & rhs) { return rhs.pointed() + n; };
 
 	template <class InputIt>
-	size_t			operator-(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt> const & rhs) { return (lhs.base() - rhs.base()); }
+	random_access_iterator<InputIt>	operator-(int n, random_access_iterator<InputIt> const & rhs) { return rhs.pointed() - n; };
+
+	template <class InputIt>
+	reverse_iterator<InputIt>	operator+(int n, reverse_iterator<InputIt> const & rhs) { return reverse_iterator<InputIt>(rhs.base() - n); };
+
+	template <class InputIt>
+	reverse_iterator<InputIt>	operator-(int n, reverse_iterator<InputIt> const & rhs) { return reverse_iterator<InputIt>(rhs.base() + n); };
+
+	template <class InputIt>
+	bool	operator==(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt> const & rhs) { return ((lhs.pointed() == rhs.pointed()) ? true : false); };
+
+	template <class InputIt, class InputIt2>
+	bool	operator==(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt2> const & rhs) { return ((lhs.pointed() == rhs.pointed()) ? true : false); };
+
+	template <class InputIt>
+	bool	operator!=(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt> const & rhs) { return ((lhs.pointed() == rhs.pointed()) ? false : true); };
+
+	template <class InputIt, class InputIt2>
+	bool	operator!=(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt2> const & rhs) { return ((lhs.pointed() == rhs.pointed()) ? false : true); };
+
+	template <class InputIt>
+	bool	operator<(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt> const & rhs) { return ((lhs.pointed() < rhs.pointed()) ? true : false); };
+
+	template <class InputIt, class InputIt2>
+	bool	operator<(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt2> const & rhs) { return ((lhs.pointed() < rhs.pointed()) ? true : false); };
+
+	template <class InputIt>
+	bool	operator<=(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt> const & rhs) { return ((lhs.pointed() <= rhs.pointed()) ? true : false); };
+
+	template <class InputIt, class InputIt2>
+	bool	operator<=(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt2> const & rhs) { return ((lhs.pointed() <= rhs.pointed()) ? true : false); };
+
+	template <class InputIt>
+	bool	operator>(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt> const & rhs) { return ((lhs.pointed() > rhs.pointed()) ? true : false); };
+
+	template <class InputIt, class InputIt2>
+	bool	operator>(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt2> const & rhs) { return ((lhs.pointed() > rhs.pointed()) ? true : false); };
+	
+	template <class InputIt>
+	bool	operator>=(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt> const & rhs) { return ((lhs.pointed() >= rhs.pointed()) ? true : false); };
+
+	template <class InputIt, class InputIt2>
+	bool	operator>=(random_access_iterator<InputIt> const & lhs, random_access_iterator<InputIt2> const & rhs) { return ((lhs.pointed() >= rhs.pointed()) ? true : false); };
+
+	template <class InputIt>
+	bool			operator==(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt> const & rhs) { return (lhs.base() == rhs.base()); }
+
+	template <class InputIt, class InputIt2>
+	bool			operator==(reverse_iterator<InputIt2> const & lhs, reverse_iterator<InputIt> const & rhs) { return (lhs.base() == rhs.base()); }
+
+	template <class InputIt>
+	bool			operator!=(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt> const & rhs) { return ((lhs.base() == rhs.base()) ? false : true); }
+
+	template <class InputIt, class InputIt2>
+	bool			operator!=(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt2> const & rhs) { return ((lhs.base() == rhs.base()) ? false : true); }
+
+	template <class InputIt>
+	bool	operator<(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt> const & rhs) { return ((lhs.base() > rhs.base()) ? true : false); };
+
+	template <class InputIt, class InputIt2>
+	bool	operator<(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt2> const & rhs) { return ((lhs.base() > rhs.base()) ? true : false); };
+
+	template <class InputIt>
+	bool	operator<=(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt> const & rhs) { return ((lhs.base() >= rhs.base()) ? true : false); };
+
+	template <class InputIt, class InputIt2>
+	bool	operator<=(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt2> const & rhs) { return ((lhs.base() >= rhs.base()) ? true : false); };
+
+	template <class InputIt>
+	bool	operator>(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt> const & rhs) { return ((lhs.base() < rhs.base()) ? true : false); };
+
+	template <class InputIt, class InputIt2>
+	bool	operator>(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt2> const & rhs) { return ((lhs.base() < rhs.base()) ? true : false); };
+	
+	template <class InputIt>
+	bool	operator>=(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt> const & rhs) { return ((lhs.base() <= rhs.base()) ? true : false); };
+
+	template <class InputIt, class InputIt2>
+	bool	operator>=(reverse_iterator<InputIt> const & lhs, reverse_iterator<InputIt2> const & rhs) { return ((lhs.base() <= rhs.base()) ? true : false); };
 	
 	// template <class InputIterator>
 	// bool	operator<(reverse_iterator<InputIterator> const lhs, reverse_iterator<InputIterator> const rhs)

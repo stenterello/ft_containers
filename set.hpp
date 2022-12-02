@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 01:04:27 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/02 19:57:49 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ namespace ft
 			typedef typename allocator_type::pointer						pointer;
 			typedef typename allocator_type::const_pointer					const_pointer;
 			typedef typename allocator_type::size_type						size_type;
-			typedef RBIterator<Key, Compare, Node<Key> >						iterator;
+			typedef RBIterator<Key, Compare, Node<Key> >					iterator;
 			typedef RBIterator<const Key, Compare, Node<Key> >				const_iterator;
 
 			explicit set(const Compare& comp = Compare(), const Alloc& alloc = Alloc())
@@ -41,6 +41,7 @@ namespace ft
 				this->_value_compare = comp;
 				this->_key_type = key_type();
 				this->_value_type = value_type();
+				(void)alloc;
 			};
 			template <class InputIt>
 			set(InputIt first, InputIt last, const Compare& comp = Compare(), const Alloc& alloc = Alloc())
@@ -50,6 +51,7 @@ namespace ft
 				this->_key_type = key_type();
 				this->_value_type = value_type();
 				this->insert(first, last);
+				(void)alloc;
 			};
 			set(const set& other)
 			{
@@ -128,7 +130,12 @@ namespace ft
 				else if (this->oneChild(node) != this->_sentinel)
 				{
 					if (node->color == BLACK && node != this->_root)
-						this->balanceDelete(node);
+					{
+						if (this->oneChild(node)->color != RED)
+							this->balanceDelete(node);
+						else
+							this->oneChild(node)->color = BLACK;
+					}
 					this->oneChild(node)->parent = node->parent;
 					if (node != this->_root)
 						this->link(node->parent, node, this->oneChild(node));
@@ -288,7 +295,7 @@ namespace ft
 
 				while (ret != this->end())
 				{
-					if (!_c(ret.node->data, k))
+					if (!this->_c(ret.node->data, k))
 						break ;
 					ret++;
 				}
@@ -301,7 +308,7 @@ namespace ft
 
 				while (ret != this->end())
 				{
-					if (!_c(ret.node->data, k))
+					if (!this->_c(ret.node->data, k))
 						break ;
 					ret++;
 				}
@@ -314,7 +321,7 @@ namespace ft
 
 				while (ret != this->end())
 				{
-					if (_c(k, ret.node->data))
+					if (this->_c(k, ret.node->data))
 						break ;
 					ret++;
 				}
@@ -327,7 +334,7 @@ namespace ft
 
 				while (ret != this->end())
 				{
-					if (_c(k, ret.node->data))
+					if (this->_c(k, ret.node->data))
 						break ;
 					ret++;
 				}

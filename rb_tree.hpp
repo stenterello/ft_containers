@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 01:07:37 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/02 20:13:27 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,28 @@ namespace ft
 		Node(ft::pair<U, V> const & val) : data(val) {};
 	};
 
+	template <class Pair>
+	struct NodeRB2 {
+		NodeRB2					*parent;
+		NodeRB2 					*left;
+		NodeRB2 					*right;
+		Pair					data; 
+		int 					color;
+	};
+
 	template <class Key, class NodeType, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
 	class RBTreeSet
 	{
 
 	public:
+		typedef typename Alloc::value_type								Pair;
+		typedef NodeRB2<Pair>											originalNode;
 		typedef Key														key_type;
 		typedef Key														value_type;
 		typedef Compare													key_compare;
 		typedef Compare													value_compare;
 		typedef typename Alloc::template rebind<NodeType>::other		allocator_type;
+		typedef typename Alloc::template rebind<originalNode>::other		allocator_type2;
 		typedef typename allocator_type::reference						reference;
 		typedef typename allocator_type::const_reference				const_reference;
 		typedef typename allocator_type::pointer						pointer;
@@ -115,7 +127,7 @@ namespace ft
 
 		bool empty() const { return ((!this->_size) ? true : false); }
 		size_type size() const { return this->_size; }
-		size_type max_size() const { return _alloc.max_size(); }
+		size_type max_size() const { return _alloc2.max_size(); }
 
 		size_type	count(Key const & k) const
 		{
@@ -271,6 +283,7 @@ namespace ft
 		pointer			_sentinel;
 		size_type		_size;
 		allocator_type	_alloc;
+		allocator_type2	_alloc2;
 		Compare			_c;
 
 		pointer	getOnlyChildWithoutChildren(pointer const & node)
@@ -368,7 +381,7 @@ namespace ft
 					{
 						(*tmp)->parent->color = RED;
 						sibling->color = BLACK;
-						rotateLeft((*tmp)->parent);
+						tmp = rotateLeft((*tmp)->parent);
 					}
 					else
 					{
@@ -381,7 +394,7 @@ namespace ft
 						{
 							leftNephew->color = BLACK;
 							sibling->color = RED;
-							rotateRight(sibling);
+							tmp = rotateRight(sibling);
 						}
 						else if (rightNephew && rightNephew->color == RED)
 						{
@@ -409,7 +422,7 @@ namespace ft
 					{
 						(*tmp)->parent->color = RED;
 						sibling->color = BLACK;
-						rotateRight((*tmp)->parent);
+						tmp = rotateRight((*tmp)->parent);
 					}
 					else
 					{
@@ -422,7 +435,7 @@ namespace ft
 						{
 							rightNephew->color = BLACK;
 							sibling->color = RED;
-							rotateLeft(sibling);
+							tmp = rotateLeft(sibling);
 						}
 						else if (leftNephew && leftNephew->color == RED)
 						{
@@ -579,7 +592,9 @@ namespace ft
 
 		void	link(pointer& parent, pointer& oldSon, pointer& node)
 		{
-			if (parent->child[LEFT] == oldSon)
+			if (parent == _sentinel)
+				parent->parent = node;
+			else if (parent->child[LEFT] == oldSon)
 				parent->child[LEFT] = node;
 			else
 				parent->child[RIGHT] = node;

@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/02 15:46:22 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/02 16:30:22 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,7 +242,6 @@ namespace ft
 
 		void insert(iterator position, size_type n, const value_type &val)
 		{
-			// Setting
 			size_type	dist = position - this->begin();
 			size_type	finalSize = this->size() + n;
 			if (finalSize > this->capacity())
@@ -252,32 +251,11 @@ namespace ft
 			size_type	toMove = ft::distance(position, this->end());
 			_end = _begin + finalSize;
 			_size = finalSize;
-
-			// Copia
 			int i = 1;
 			while (toMove--)
-			{
 				_alloc.construct(_end - i++, _begin[dist + toMove]);
-			}
 			while (n--)
 				_alloc.construct(_begin + dist++, val);
-
-
-
-
-
-
-			// size_type	dist2 = dist + n + 1;
-			// size_type	r = ft::distance(position + n, this->end());
-			// // Trasla
-			// while (r--)
-			// 	_alloc.construct(_begin + copy--, _begin[dist2--]);
-			// // Inserisci -1
-			// while (n--)
-			// {
-			// 	_alloc.construct(position.pointed(), val);
-			// 	position++;
-			// }
 		}
 
 		template <class InputIterator>
@@ -289,29 +267,28 @@ namespace ft
 				throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::type>();
 			
 			size_type	positionDist = position - this->begin();
-			_size = this->size() + ft::distance(first, last);
+			size_type	finalSize = this->size() + ft::distance(first, last);
 			size_type	new_cap = this->capacity();
-			if (_size > this->capacity())
+			if (finalSize > this->capacity())
 			{
 				if (!this->capacity())
 					new_cap = 1;
-				while (_size > new_cap)
+				while (finalSize > new_cap)
 					new_cap *= 2;
 				this->reserve(new_cap);
 			}
-			position = _begin + positionDist;
-			size_type	dist = ft::distance(first, last);
-			size_type	copy = positionDist + dist;
+			position = this->begin() + positionDist;
 			_end = _begin + _size;
-			size_type	positionDist2 = positionDist;
+			size_type	toMove = ft::distance(position, this->end());
+			_end = _begin + finalSize;
+			_size = finalSize;
+			size_type	dist = ft::distance(first, last);
 			try
 			{
-				while (copy < _size)
-				{
-					_alloc.construct(_begin + copy, _begin[positionDist2++]);
-					copy++;
-				}
-				while (first != last)
+				int i = 1;
+				while (toMove--)
+					_alloc.construct(_end - i++, _begin[positionDist + toMove]);
+				while (dist--)
 					_alloc.construct(_begin + positionDist++, *first++);
 			}
 			catch (...)
@@ -510,11 +487,11 @@ namespace ft
 		return (!(rhs > lhs));
 	}
 
-	template <class T, class Alloc>
-	void swap(vector<T, Alloc> &x, vector<T, Alloc> &y)
-	{
-		x.swap(y);
-	}
+	// template <class T, class Alloc>
+	// void swap(vector<T, Alloc> &x, vector<T, Alloc> &y)
+	// {
+	// 	x.swap(y);
+	// }
 }
 namespace std
 {

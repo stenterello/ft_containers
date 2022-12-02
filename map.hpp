@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:17:37 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 15:38:14 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/02 19:58:51 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,12 @@ namespace ft
 				else if (this->oneChild(node) != this->_sentinel)
 				{
 					if (node->color == BLACK && node != this->_root)
-						this->balanceDelete(node);
+					{
+						if (this->oneChild(node)->color != RED)
+							this->balanceDelete(node);
+						else
+							this->oneChild(node)->color = BLACK;
+					}
 					this->oneChild(node)->parent = node->parent;
 					if (node != this->_root)
 						this->link(node->parent, node, this->oneChild(node));
