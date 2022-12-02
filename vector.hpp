@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/01 17:07:10 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:46:22 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ namespace ft
 			if (!is_valid)
 				throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::type>();
 			this->clear();
-			size_type count = last - first;
+			size_type count = ft::distance(first, last);
 			if (count > this->capacity())
 				this->reserve(count);
 			this->insert(this->begin(), first, last);
@@ -222,7 +222,12 @@ namespace ft
 		{
 			size_type	dist = position - this->begin();
 			if (this->size() == this->capacity())
-				this->reserve(this->size() * 2);
+			{
+				if (!this->capacity())
+					this->reserve(1);
+				else
+					this->reserve(this->size() * 2);
+			}
 			_end++;
 			position = this->begin() + dist;
 			size_type	idx = _size + 1;
@@ -237,22 +242,42 @@ namespace ft
 
 		void insert(iterator position, size_type n, const value_type &val)
 		{
+			// Setting
 			size_type	dist = position - this->begin();
-			size_type	finalSize = this->size();
-			finalSize += n;
+			size_type	finalSize = this->size() + n;
 			if (finalSize > this->capacity())
 				this->reserve(finalSize);
-			_end = _begin + finalSize;
-			_size = _end - _begin;
-			size_type		idxEnd = _size - 1;
 			position = this->begin() + dist;
-			size_type	idxPosition = position - _begin;
-			dist = idxEnd - idxPosition;
-			while (dist--)
-				_begin[idxEnd--] = _begin[idxPosition++];
-			idxPosition = position - _begin;
+			_end = _begin + _size;
+			size_type	toMove = ft::distance(position, this->end());
+			_end = _begin + finalSize;
+			_size = finalSize;
+
+			// Copia
+			int i = 1;
+			while (toMove--)
+			{
+				_alloc.construct(_end - i++, _begin[dist + toMove]);
+			}
 			while (n--)
-				_begin[idxPosition++] = val;
+				_alloc.construct(_begin + dist++, val);
+
+
+
+
+
+
+			// size_type	dist2 = dist + n + 1;
+			// size_type	r = ft::distance(position + n, this->end());
+			// // Trasla
+			// while (r--)
+			// 	_alloc.construct(_begin + copy--, _begin[dist2--]);
+			// // Inserisci -1
+			// while (n--)
+			// {
+			// 	_alloc.construct(position.pointed(), val);
+			// 	position++;
+			// }
 		}
 
 		template <class InputIterator>
@@ -264,30 +289,30 @@ namespace ft
 				throw ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category>::type>();
 			
 			size_type	positionDist = position - this->begin();
-			size_type	finalSize = this->size() + (last - first);
+			_size = this->size() + ft::distance(first, last);
 			size_type	new_cap = this->capacity();
-			if (finalSize > this->capacity())
+			if (_size > this->capacity())
 			{
 				if (!this->capacity())
 					new_cap = 1;
-				while (finalSize > new_cap)
+				while (_size > new_cap)
 					new_cap *= 2;
 				this->reserve(new_cap);
 			}
-			position = this->begin() + positionDist;
-			_size = finalSize;
-			_end = _begin + finalSize;
-			size_type		idxEnd = _size;
-			size_type		idxPosition = position.pointed() - _begin;
-			size_type		dist = _size - idxEnd;
+			position = _begin + positionDist;
+			size_type	dist = ft::distance(first, last);
+			size_type	copy = positionDist + dist;
+			_end = _begin + _size;
+			size_type	positionDist2 = positionDist;
 			try
 			{
-				while (dist--)
-					_begin[idxEnd--] = _begin[idxPosition++];
-				dist = last - first;
-				idxPosition = position.pointed() - _begin;
-				while (dist--)
-					_begin[idxPosition++] = *first++;
+				while (copy < _size)
+				{
+					_alloc.construct(_begin + copy, _begin[positionDist2++]);
+					copy++;
+				}
+				while (first != last)
+					_alloc.construct(_begin + positionDist++, *first++);
 			}
 			catch (...)
 			{
@@ -303,7 +328,7 @@ namespace ft
 			{
 				_size = first - _begin;
 				_end = _begin + _size;
-				size_type	dist = last - first;
+				size_type	dist = ft::distance(first, last);
 				size_type	idx = _size;
 				while (dist--)
 				{
@@ -314,22 +339,12 @@ namespace ft
 			}
 			else
 			{
-				size_type	idxLast = last.pointed() - _begin;
-				size_type	idxFirst = first.pointed() - _begin;
-				size_type	dist = idxLast - idxFirst;
 				iterator	ret = first;
-				while (dist-- && _begin + idxLast != _end)
+				_size -= ft::distance(first, last);
+				while (last != this->end())
 				{
-					_alloc.construct(_begin + idxFirst, _begin[idxLast++]);
-					idxFirst++;
-				}
-				_size = idxFirst;
-				dist = _end - first.pointed();
-				idxFirst = first.pointed() - _begin;
-				while (dist--)
-				{
-					_alloc.destroy(_begin + idxFirst);
-					idxFirst++;
+					_alloc.construct(first.pointed(), *last++);
+					first++;
 				}
 				_end = _begin + _size;
 				return (ret);
