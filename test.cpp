@@ -86,29 +86,55 @@ void	ft_erase(SET &st, U param, V param2)
 	printSize(st);
 }
 
+TESTED_NAMESPACE::set<T1> st;
+TESTED_NAMESPACE::set<T1>::iterator it = st.end();
+
+void	ft_find(T1 const &k)
+{
+	TESTED_NAMESPACE::set<T1>::iterator ret = st.find(k);
+
+	if (ret != it)
+		printPair(ret);
+	else
+		std::cout << "set::find(" << k << ") returned end()" << std::endl;
+}
+
+void	ft_count(T1 const &k)
+{
+	std::cout << "set::count(" << k << ")\treturned [" << st.count(k) << "]" << std::endl;
+}
+
 int		main(void)
 {
-	std::list<T1> lst;
-	unsigned int lst_size = 6;
-	for (unsigned int i = 0; i < lst_size; ++i)
-		lst.push_back(i);
-	TESTED_NAMESPACE::set<T1> st(lst.begin(), lst.end());
+	st.insert(42);
+	st.insert(25);
+	st.insert(80);
+	st.insert(12);
+	st.insert(27);
+	st.insert(90);
 	printSize(st);
 
-	for (int i = 2; i < 4; ++i)
-		ft_erase(st, i);
+	std::cout << "\t-- FIND --" << std::endl;
+	ft_find(12);
+	ft_find(3);
+	ft_find(35);
+	ft_find(90);
+	ft_find(100);
 
-	ft_erase(st, *st.begin());
-	ft_erase(st, *(--st.end()));
+	std::cout << "\t-- COUNT --" << std::endl;
+	ft_count(-3);
+	ft_count(12);
+	ft_count(3);
+	ft_count(35);
+	ft_count(90);
+	ft_count(100);
 
-	st.insert(-1);
-	st.insert(10);
-	st.insert(10);
+	st.erase(st.find(27));
+
 	printSize(st);
 
-	ft_erase(st, 0);
-	ft_erase(st, 1);
-	printSize(st);
-
+	TESTED_NAMESPACE::set<T1> const c_set(st.begin(), st.end());
+	std::cout << "const set.find(" << 42 << ")->second: [" << *(c_set.find(42)) << "]" << std::endl;
+	std::cout << "const set.count(" << 80 << "): [" << c_set.count(80) << "]" << std::endl;
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 15:43:01 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 16:20:35 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,13 +129,7 @@ namespace ft
 		size_type size() const { return this->_size; }
 		size_type max_size() const { return _alloc2.max_size(); }
 
-		size_type	count(Key const & k) const
-		{
-			iterator	ret = this->find(k);
-			if (ret == iterator(_sentinel, _sentinel))
-				return (0);
-			return (1);
-		}
+		
 
 		iterator				begin() { return (iterator(min(), _sentinel)); }
 		const_iterator			begin() const { return (const_iterator(min(), _sentinel)); }
