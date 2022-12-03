@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 16:07:11 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 16:16:47 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -372,9 +372,9 @@ namespace ft
 			bool		operator!=(RBIterator const & rhs)
 			{
 				if ((this->node && !rhs.node) || (!this->node && rhs.node))
-					return (false);
-				else if (!this->node && !rhs.node)
 					return (true);
+				else if (!this->node && !rhs.node)
+					return (false);
 				return ((this->node == rhs.node) ? false : true);
 			}
 			
