@@ -1,7 +1,7 @@
 #include <list>
 #include <iostream>
 #include "set.hpp"
-#define T1 int
+#define T1 std::string
 
 #define TESTED_NAMESPACE ft
 
@@ -86,55 +86,51 @@ void	ft_erase(SET &st, U param, V param2)
 	printSize(st);
 }
 
-TESTED_NAMESPACE::set<T1> st;
-TESTED_NAMESPACE::set<T1>::iterator it = st.end();
+typedef TESTED_NAMESPACE::set<T1>::iterator iterator;
 
-void	ft_find(T1 const &k)
+
+template <typename SET, typename U>
+void	ft_insert(SET &st, U param)
 {
-	TESTED_NAMESPACE::set<T1>::iterator ret = st.find(k);
+	_pair<iterator, bool> tmp;
 
-	if (ret != it)
-		printPair(ret);
-	else
-		std::cout << "set::find(" << k << ") returned end()" << std::endl;
+	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	tmp = st.insert(param);
+	std::cout << "insert return: " << printPair(tmp.first);
+	std::cout << "Created new node: " << tmp.second << std::endl;
+	printSize(st);
 }
 
-void	ft_count(T1 const &k)
+template <typename SET, typename U, typename V>
+void	ft_insert(SET &st, U param, V param2)
 {
-	std::cout << "set::count(" << k << ")\treturned [" << st.count(k) << "]" << std::endl;
+	iterator tst;
+
+	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	tst = st.insert(param, param2);
+	std::cout << "insert return: " << printPair(tst);
+	printSize(st);
 }
 
 int		main(void)
 {
-	st.insert(42);
-	st.insert(25);
-	st.insert(80);
-	st.insert(12);
-	st.insert(27);
-	st.insert(90);
-	printSize(st);
+	TESTED_NAMESPACE::set<T1> st, st2;
 
-	std::cout << "\t-- FIND --" << std::endl;
-	ft_find(12);
-	ft_find(3);
-	ft_find(35);
-	ft_find(90);
-	ft_find(100);
+	ft_insert(st, "lol");
+	ft_insert(st, "mdr");
 
-	std::cout << "\t-- COUNT --" << std::endl;
-	ft_count(-3);
-	ft_count(12);
-	ft_count(3);
-	ft_count(35);
-	ft_count(90);
-	ft_count(100);
+	ft_insert(st, "mdr");
+	ft_insert(st, "funny");
 
-	st.erase(st.find(27));
+	ft_insert(st, "bunny");
+	ft_insert(st, "fizz");
+	ft_insert(st, "buzz");
 
-	printSize(st);
+	ft_insert(st, st.begin(), "fuzzy");
 
-	TESTED_NAMESPACE::set<T1> const c_set(st.begin(), st.end());
-	std::cout << "const set.find(" << 42 << ")->second: [" << *(c_set.find(42)) << "]" << std::endl;
-	std::cout << "const set.count(" << 80 << "): [" << c_set.count(80) << "]" << std::endl;
+	ft_insert(st2, st2.begin(), "beauty");
+	ft_insert(st2, st2.end(), "Hello");
+	ft_insert(st2, st2.end(), "World");
+
 	return (0);
 }

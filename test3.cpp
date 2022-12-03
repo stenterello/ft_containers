@@ -81,6 +81,9 @@ void	is_empty(T const &st)
 	std::cout << "is_empty: " << st.empty() << std::endl;
 }
 
+// typedef TESTED_NAMESPACE::set<T1>::iterator iterator;
+
+
 int		main(void)
 {
 	std::list<T1> lst;

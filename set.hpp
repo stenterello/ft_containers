@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 16:20:29 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 16:39:23 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,7 +298,7 @@ namespace ft
 				else if (this->_c(start->data, node->data))
 					return (insertNode(start->child[RIGHT], node, start, flag));
 				ret.first = iterator(node, this->_sentinel);
-				delete node;
+				this->_alloc.deallocate(node, 1);
 				ret.second = false;
 				return (ret);
 			}
