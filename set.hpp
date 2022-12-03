@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 16:46:19 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 18:24:42 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,19 +172,35 @@ namespace ft
 					}
 					else
 					{
+						pointer toHandle = NULL;
+						pointer	toHandle2 = NULL;
 						this->_root = successor;
 						this->_sentinel->parent = successor;
+						if (this->_root->parent->child[LEFT] == this->_root)
+							this->_root->parent->child[LEFT] = this->_sentinel;
+						else
+							this->_root->parent->child[RIGHT] = this->_sentinel;
 						this->_root->parent = this->_sentinel;
 						if (node->child[RIGHT] == successor)
 						{
+							if (node->child[RIGHT] != this->_sentinel)
+								toHandle = node->child[RIGHT];
 							this->_root->child[LEFT] = node->child[LEFT];
 							node->child[LEFT]->parent = this->_root;
+							this->_root->color = BLACK;
 						}
 						else
 						{
+							if (node->child[LEFT] != this->_sentinel)
+								toHandle2 = node->child[LEFT];
 							this->_root->child[RIGHT] = node->child[RIGHT];
 							node->child[RIGHT]->parent = this->_root;
+							this->_root->color = BLACK;
 						}
+						if (toHandle)
+							insertNode(this->_root, toHandle, this->_root, 0);
+						if (toHandle2)
+							insertNode(this->_root, toHandle2, this->_root, 0);
 					}
 					
 				}

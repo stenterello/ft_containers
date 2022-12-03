@@ -1,7 +1,46 @@
 #include <list>
 #include <iostream>
 #include "set.hpp"
-#define T1 std::string
+
+
+// --- Class foo
+template <typename T>
+class foo {
+	public:
+		typedef T	value_type;
+
+		foo(void) : value(), _verbose(false) { };
+		foo(value_type src, const bool verbose = false) : value(src), _verbose(verbose) { };
+		foo(foo const &src, const bool verbose = false) : value(src.value), _verbose(verbose) { };
+		~foo(void) { if (this->_verbose) std::cout << "~foo::foo()" << std::endl; };
+		void m(void) { std::cout << "foo::m called [" << this->value << "]" << std::endl; };
+		void m(void) const { std::cout << "foo::m const called [" << this->value << "]" << std::endl; };
+		foo &operator=(value_type src) { this->value = src; return *this; };
+		foo &operator=(foo const &src) {
+			if (this->_verbose || src._verbose)
+				std::cout << "foo::operator=(foo) CALLED" << std::endl;
+			this->value = src.value;
+			return *this;
+		};
+		value_type	getValue(void) const { return this->value; };
+		void		switchVerbose(void) { this->_verbose = !(this->_verbose); };
+
+		operator value_type(void) const {
+			return value_type(this->value);
+		}
+	private:
+		value_type	value;
+		bool		_verbose;
+};
+
+template <typename T>
+std::ostream	&operator<<(std::ostream &o, foo<T> const &bar) {
+	o << bar.getValue();
+	return o;
+}
+// --- End of class foo
+
+#define T1 int
 
 #define TESTED_NAMESPACE ft
 
@@ -114,23 +153,201 @@ void	ft_insert(SET &st, U param, V param2)
 
 int		main(void)
 {
-	TESTED_NAMESPACE::set<T1> st, st2;
+	TESTED_NAMESPACE::set<T1> st;
 
-	ft_insert(st, "lol");
-	ft_insert(st, "mdr");
+	st.insert(42);
 
-	ft_insert(st, "mdr");
-	ft_insert(st, "funny");
+	st.insert(50);
+	st.insert(25);
 
-	ft_insert(st, "bunny");
-	ft_insert(st, "fizz");
-	ft_insert(st, "buzz");
+	st.insert(46);
+	st.insert(21);
+	st.insert(30);
+	st.insert(55);
 
-	ft_insert(st, st.begin(), "fuzzy");
+	st.insert(18);
+	st.insert(23);
+	st.insert(28);
+	st.insert(35);
+	st.insert(44);
+	st.insert(48);
+	st.insert(53);
+	st.insert(80);
 
-	ft_insert(st2, st2.begin(), "beauty");
-	ft_insert(st2, st2.end(), "Hello");
-	ft_insert(st2, st2.end(), "World");
+	st.insert(12);
+	st.insert(20);
+	st.insert(22);
+	st.insert(24);
+	st.insert(27);
+	st.insert(29);
+	st.insert(33);
+	st.insert(38);
+
+	st.insert(43);
+	st.insert(45);
+	st.insert(47);
+	st.insert(49);
+	st.insert(51);
+	st.insert(54);
+	st.insert(60);
+	st.insert(90);
+
+	printSize(st);
+
+	/* A classic btree should give this:
+	 *                                      42
+	 *                     /                                            \
+	 *                    25                                            50
+	 *           /                 \                         /                       \
+	 *          21                 30                       46                       55
+	 *      /       \           /      \                /       \             /           \
+	 *     18       23        28        35            44         48         53             80
+	 *   /   \    /    \    /    \     /   \        /   \       /   \     /    \         /     \
+	 *  12   20  22    24  27    29  33    38     43    45    47    49   51    54       60      90
+	 *
+	 * */
+
+	ft_erase(st, 25); // right != NULL; left != NULL
+	ft_erase(st, 55); // right != NULL; left != NULL
+
+	/* After deleting 25 and 55, I would get:
+	 *                                      42
+	 *                     /                                            \
+	 *                    24                                            50
+	 *           /                 \                         /                      \
+	 *          21                 30                       46                      54
+	 *      /       \           /      \                /       \             /           \
+	 *     18       23        28        35            44         48         53             80
+	 *   /   \    /         /    \     /   \        /   \       /   \     /              /     \
+	 *  12   20  22        27    29  33    38     43    45    47    49   51             60      90
+	 *
+	 * */
+
+	ft_erase(st, 24); // right != NULL; left != NULL
+	ft_erase(st, 54); // right != NULL; left != NULL
+
+	/* After deleting 24 and 54, I would get:
+	 *                                      42
+	 *                     /                                            \
+	 *                    23                                            50
+	 *           /                 \                         /                      \
+	 *          21                 30                       46                      53
+	 *      /       \           /      \                /       \             /           \
+	 *     18       22        28        35            44         48         51             80
+	 *   /   \              /    \     /   \        /   \       /   \                    /     \
+	 *  12   20            27    29  33    38     43    45    47    49                  60      90
+	 *
+	 * */
+
+	ft_erase(st, 22); // right == NULL; left == NULL
+	ft_erase(st, 51); // right == NULL; left == NULL
+
+	ft_erase(st, 21); // right == NULL; left != NULL
+	ft_erase(st, 53); // right != NULL; left == NULL
+
+	/* After deleting 22, 51 and then 21, 53, I would get:
+	 *                                      42
+	 *                     /                                            \
+	 *                    23                                            50
+	 *           /                 \                         /                      \
+	 *          20                 30                       46                      80
+	 *      /                   /      \                /       \                /        \
+	 *     18                 28        35            44         48             60         90
+	 *   /                  /    \     /   \        /   \       /   \
+	 *  12                 27    29  33    38     43    45    47    49
+	 *
+	 * */
+
+	ft_erase(st, 20); // right == NULL; left != NULL
+
+	/* After deleting 20, I would get:
+	 *                                      42
+	 *                     /                                            \
+	 *                    23                                            50
+	 *           /                 \                         /                      \
+	 *          18                 30                       46                      80
+	 *      /                   /      \                /       \                /        \
+	 *     12                 28        35            44         48             60         90
+	 *                      /    \     /   \        /   \       /   \
+	 *                     27    29  33    38     43    45    47    49
+	 *
+	 * */
+
+	ft_erase(st, 23); // right != NULL; left != NULL
+
+	/* After deleting 23, I would get:
+	 *                                      42
+	 *                     /                                            \
+	 *                    18                                            50
+	 *           /                 \                         /                      \
+	 *          12                 30                       46                      80
+	 *                          /      \                /       \                /        \
+	 *                        28        35            44         48             60         90
+	 *                      /    \     /   \        /   \       /   \
+	 *                     27    29  33    38     43    45    47    49
+	 *
+	 * */
+
+	ft_erase(st, 42); // right != NULL; left != NULL; parent == NULL
+
+	/* After deleting 42, I would get:
+	 *                                      38
+	 *                     /                                            \
+	 *                    18                                            50
+	 *           /                 \                         /                      \
+	 *          12                 30                       46                      80
+	 *                          /      \                /       \                /        \
+	 *                        28        35            44         48             60         90
+	 *                      /    \     /            /   \       /   \
+	 *                     27    29  33           43    45    47    49
+	 *
+	 * */
+
+	ft_erase(st, 38); // right != NULL; left != NULL; parent == NULL
+
+	/* After deleting 38, I would get:
+	 *                                      35
+	 *                     /                                            \
+	 *                    18                                            50
+	 *           /                 \                         /                      \
+	 *          12                 30                       46                      80
+	 *                          /      \                /       \                /        \
+	 *                        28        33            44         48             60         90
+	 *                      /    \                  /   \       /   \
+	 *                     27    29               43    45    47    49
+	 *
+	 * */
+
+	ft_erase(st, 35); // right != NULL; left != NULL; parent == NULL
+
+	/* After deleting 35, I would get:
+	 *                                      33
+	 *                     /                                            \
+	 *                    18                                            50
+	 *           /                 \                         /                      \
+	 *          12                 30                       46                      80
+	 *                          /                       /       \                /        \
+	 *                        28                      44         48             60         90
+	 *                      /    \                  /   \       /   \
+	 *                     27    29               43    45    47    49
+	 *
+	 * */
+
+	ft_erase(st, 33); // right != NULL; left != NULL; parent == NULL
+
+	/* After deleting 33, I would get:
+	 *                                      30
+	 *                     /                                            \
+	 *                    18                                            50
+	 *           /                 \                         /                      \
+	 *          12                 28                       46                      80
+	 *                          /      \                /       \                /        \
+	 *                        27       29             44         48             60         90
+	 *                                              /   \       /   \
+	 *                                            43    45    47    49
+	 *
+	 * */
 
 	return (0);
 }
+

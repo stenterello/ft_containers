@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 16:16:47 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 17:42:34 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,7 @@ namespace ft
 			typedef typename ft::iterator_traits<InputIterator>::pointer			pointer;
 			typedef typename ft::iterator_traits<InputIterator>::reference			reference;
 			typedef typename ft::iterator_traits<InputIterator>::iterator_category	iterator_category;
-			reverse_iterator() : _base(NULL) {};
+			reverse_iterator() {};
 			explicit reverse_iterator(iterator_type iter) : _base(iter) {};
 			reverse_iterator&	operator=(reverse_iterator const & rhs)
 			{
@@ -277,8 +277,8 @@ namespace ft
 	{
 		public:
 			typedef T							value_type;
-			typedef T*							pointer;
-			typedef T&							reference;
+			typedef const T*							pointer;
+			typedef const T&							reference;
 			typedef NodeType*					nodePointer;
 			typedef std::ptrdiff_t				difference_type;
 			typedef bidirectional_iterator_tag	iterator_category;
@@ -322,8 +322,6 @@ namespace ft
 				minNode(src.minNode),
 				maxNode(src.maxNode)
 			{};
-
-			// typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type * = 0
 			
 			template <class InputIt>
 			RBIterator(InputIt const & src)
@@ -365,11 +363,11 @@ namespace ft
 			
 			// Overloads
 
-			reference	operator*() const { return (this->node->data); }
-			pointer		operator->() const { return &operator*(); }
-			bool		operator==(RBIterator const & rhs) { return ((this->node == rhs.node) ? true : false); }
+			reference			operator*() const { return (this->node->data); }
+			const pointer				operator->() const { return &(this->node->data); }
+			bool				operator==(RBIterator const & rhs) { return ((this->node == rhs.node) ? true : false); }
 			
-			bool		operator!=(RBIterator const & rhs)
+			bool				operator!=(RBIterator const & rhs)
 			{
 				if ((this->node && !rhs.node) || (!this->node && rhs.node))
 					return (true);
