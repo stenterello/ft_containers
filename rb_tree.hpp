@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 18:58:45 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 20:23:15 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,7 @@ namespace ft
 		}
 
 		key_compare		key_comp() const { return (this->_key_compare); }
-		value_compare	value_comp() const { return (this->_value_compare); }
+		// value_compare	value_comp() const { return (this->_value_compare); }
 
 	protected:
 		key_type		_key_type;

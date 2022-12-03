@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:17:37 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 19:02:36 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 20:23:22 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 namespace ft
 {
 	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<const Key, T> > >
-	class map : public RBTreeSet<ft::pair<const Key, T>, Node<ft::pair<const Key, T> >,  RBIterator<ft::pair<const Key, T>, Compare, Node<ft::pair<const Key, T> > >, RBIterator<ft::pair<const Key, T>, Compare, Node<ft::pair<const Key, T> > >, Compare, Allocator>
+	class map : public RBTreeSet<ft::pair<const Key, T>, Node<ft::pair<const Key, T> >,  RBIterator<ft::pair<const Key, T>, Compare, Node<ft::pair<const Key, T> > >, RBIteratorConst<ft::pair<const Key, T>, Compare, Node<ft::pair<const Key, T> > >, Compare, Allocator>
 	{
 		public:
 			typedef Key																	key_type;
@@ -31,7 +31,8 @@ namespace ft
 			typedef typename allocator_type::const_pointer								const_pointer;
 			typedef typename allocator_type::size_type									size_type;
 			typedef RBIterator<value_type, Compare, Node<value_type> >					iterator;
-			typedef RBIterator<value_type, Compare, Node<value_type> >					const_iterator;
+			typedef RBIteratorConst<value_type, Compare, Node<value_type> >				const_iterator;
+			typedef Compare																key_compare;
 
 			map() {};
 			explicit map(const Compare& comp, const Allocator& alloc = Allocator())
@@ -63,6 +64,18 @@ namespace ft
 			}
 			~map() { clear(); };
 
+			class value_compare : std::binary_function<value_type, value_type, bool>
+			{
+				friend class map<Key, T>;
+				private:
+					key_compare	_comp;
+				public:
+					value_compare(key_compare c) : _comp(c) {}
+					bool	operator() (const value_type& x, const value_type& y) const { return _comp(x.first, y.first); }
+			};
+
+			value_compare	value_comp() const { return (value_compare(this->key_comp())); }
+
 			void	erase(iterator pos)
 			{
 				this->erase_deep(*pos);
@@ -78,7 +91,7 @@ namespace ft
 			{
 				ft::pair<key_type, mapped_type>	tmp(key, mapped_type());
 				
-				if (erase_deep(tmp) != this->end())
+				if (erase_deep(tmp) != iterator(NULL, this->_sentinel))
 					return (1);
 				return (0);
 			}
@@ -88,15 +101,12 @@ namespace ft
 				pointer		node = this->find(val.first).node;
 				pointer		tmp;
 				pointer		successor;
-				pointer		toHandle;
 				iterator	ret;
 				
-				if (!node)
-					return (iterator(this->_sentinel, this->_sentinel));
-				else if (node != this->_sentinel)
+				if (node && node != this->_sentinel)
 					ret = this->find(this->getSuccessor(node)->data.first);
 				else
-					return (iterator(this->_sentinel, this->_sentinel));
+					return (iterator(NULL, this->_sentinel));
 
 				if ((!node->child[LEFT] && !node->child[RIGHT]) || (node->child[LEFT] == this->_sentinel && node->child[RIGHT] == this->_sentinel))
 				{
@@ -131,7 +141,6 @@ namespace ft
 				}
 				else
 				{
-					toHandle = NULL;
 					if (this->_c(node->data.first, this->_root->data.first))
 						successor = this->getSuccessor(node);
 					else
@@ -139,22 +148,56 @@ namespace ft
 					this->balanceDelete(successor);
 					if (successor->child[RIGHT] != this->_sentinel)
 					{
-						toHandle = successor->child[RIGHT];
 						successor->child[RIGHT] = this->_sentinel;
 					}
-					this->unlink(successor->parent, successor);
-					this->link(node->parent, node, successor);
-					if (node->child[LEFT] != this->_sentinel)
+					if (node != this->_root)
 					{
-						node->child[LEFT]->parent = successor;
-						successor->child[LEFT] = node->child[LEFT];
+						this->unlink(successor->parent, successor);
+						this->link(node->parent, node, successor);
+						if (node->child[LEFT] != this->_sentinel)
+						{
+							node->child[LEFT]->parent = successor;
+							successor->child[LEFT] = node->child[LEFT];
+						}
+						if (node->child[RIGHT] != this->_sentinel)
+						{
+							if (successor->child[RIGHT] != this->_sentinel)
+								this->link(successor->parent, successor, successor->child[RIGHT]);
+							node->child[RIGHT]->parent = successor;
+							successor->child[RIGHT] = node->child[RIGHT];
+						}
 					}
-					if (node->child[RIGHT] != this->_sentinel)
+					else
 					{
-						if (successor->child[RIGHT] != this->_sentinel)
-							this->link(successor->parent, successor, successor->child[RIGHT]);
-						node->child[RIGHT]->parent = successor;
-						successor->child[RIGHT] = node->child[RIGHT];
+						pointer toHandle = NULL;
+						pointer	toHandle2 = NULL;
+						this->_root = successor;
+						this->_sentinel->parent = successor;
+						if (this->_root->parent->child[LEFT] == this->_root)
+							this->_root->parent->child[LEFT] = this->_sentinel;
+						else
+							this->_root->parent->child[RIGHT] = this->_sentinel;
+						this->_root->parent = this->_sentinel;
+						if (node->child[RIGHT] == successor)
+						{
+							if (node->child[RIGHT] != this->_sentinel)
+								toHandle = node->child[RIGHT];
+							this->_root->child[LEFT] = node->child[LEFT];
+							node->child[LEFT]->parent = this->_root;
+							this->_root->color = BLACK;
+						}
+						else
+						{
+							if (node->child[LEFT] != this->_sentinel)
+								toHandle2 = node->child[LEFT];
+							this->_root->child[RIGHT] = node->child[RIGHT];
+							node->child[RIGHT]->parent = this->_root;
+							this->_root->color = BLACK;
+						}
+						if (toHandle)
+							insertNode(this->_root, toHandle, this->_root, 0);
+						if (toHandle2)
+							insertNode(this->_root, toHandle2, this->_root, 0);
 					}
 				}
 				this->_alloc.deallocate(node, 1);
@@ -238,7 +281,8 @@ namespace ft
 						return (insertNode(this->_root->child[RIGHT], node, this->_root, 1));
 					else
 					{
-						this->_alloc.deallocate(node, 1);
+						delete node;
+						ret.first = find(node->data.first);
 						return (ret);
 					}
 				}
@@ -259,7 +303,7 @@ namespace ft
 					if (flag)
 						this->_size++;
 					this->balanceInsert(start);
-					ret.first = iterator(start, this->_sentinel);
+					ret.first = iterator(node, this->_sentinel);
 					ret.second = true;
 					return (ret);
 				}
@@ -267,7 +311,7 @@ namespace ft
 					return (insertNode(start->child[LEFT], node, start, flag));
 				else if (this->_c(start->data.first, node->data.first))
 					return (insertNode(start->child[RIGHT], node, start, flag));
-				ret.first = iterator(node, this->_sentinel);
+				ret.first = find(node->data.first);
 				delete node;
 				ret.second = false;
 				return (ret);
