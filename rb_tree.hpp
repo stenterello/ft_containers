@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 20:23:15 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 20:36:49 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ namespace ft
 	};
 
 	template <class Key, class NodeType, class Iterator, class ConstIterator, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
-	class RBTreeSet
+	class RBTree
 	{
 
 	public:
@@ -77,7 +77,7 @@ namespace ft
 		typedef typename ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 		typedef typename ft::iterator_traits<iterator>::difference_type	difference_type;
 		
-		RBTreeSet() :	_root(NULL),
+		RBTree() :	_root(NULL),
 						_size(0),
 						_alloc(allocator_type())
 		{
@@ -87,7 +87,7 @@ namespace ft
 			_sentinel->parent = _root;
 		};
 
-		RBTreeSet(RBTreeSet const &src)
+		RBTree(RBTree const &src)
 		{
 			_alloc = allocator_type();
 			_sentinel = _alloc.allocate(1);
@@ -101,7 +101,7 @@ namespace ft
 				this->insert(*iter++);
 		};
 
-		RBTreeSet &operator=(RBTreeSet const &rhs)
+		RBTree &operator=(RBTree const &rhs)
 		{
 			if (this == &rhs)
 				return (*this);
@@ -112,13 +112,11 @@ namespace ft
 			_sentinel->parent = _root;
 			_root = _sentinel;
 			_size = 0;
-			iterator	iter = rhs.begin();
-			while (iter != rhs.end())
-				this->insert(*iter++);
+			this->insert(rhs.begin(), rhs.end());
 			return (*this);
 		};
 
-		~RBTreeSet()
+		~RBTree()
 		{
 			_alloc.deallocate(_sentinel, 1);
 		};
@@ -241,7 +239,7 @@ namespace ft
 			return (tmp);
 		}
 
-		void			swap(RBTreeSet & rhs)
+		void			swap(RBTree & rhs)
 		{
 			if (this == &rhs)
 				return ;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/02 16:30:22 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 21:54:27 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,7 +333,7 @@ namespace ft
 			iterator	ret = position;
 			size_type	idx = position - this->begin();
 			size_type	dist = this->end() - position;
-			while (dist--)
+			while (dist-- && idx + 1 < this->size())
 			{
 				_begin[idx] = _begin[idx + 1];
 				idx++;

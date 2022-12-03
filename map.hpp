@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:17:37 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 20:23:22 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 21:46:23 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 namespace ft
 {
 	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<const Key, T> > >
-	class map : public RBTreeSet<ft::pair<const Key, T>, Node<ft::pair<const Key, T> >,  RBIterator<ft::pair<const Key, T>, Compare, Node<ft::pair<const Key, T> > >, RBIteratorConst<ft::pair<const Key, T>, Compare, Node<ft::pair<const Key, T> > >, Compare, Allocator>
+	class map : public RBTree<ft::pair<const Key, T>, Node<ft::pair<const Key, T> >,  RBIterator<ft::pair<const Key, T>, Compare, Node<ft::pair<const Key, T> > >, RBIteratorConst<ft::pair<const Key, T>, Compare, Node<ft::pair<const Key, T> > >, Compare, Allocator>
 	{
 		public:
 			typedef Key																	key_type;
@@ -55,11 +55,8 @@ namespace ft
 			{
 				if (this == &rhs)
 					return (*this);
-				iterator	first = rhs.begin();
-				iterator	end = rhs.end();
 				clear();
-				while (first != end)
-					insert(*first++);
+				insert(rhs.begin(), rhs.end());
 				return (*this);
 			}
 			~map() { clear(); };
@@ -351,9 +348,7 @@ namespace ft
 
 			size_type	count(const Key& key) const
 			{
-				iterator						tmp = find(key);
-
-				if (tmp.node == this->_sentinel)
+				if (find(key).node == this->_sentinel)
 					return (0);
 				return (1);
 			}
@@ -421,24 +416,10 @@ namespace ft
 			}
 	};
 
-	template <class Key, class T, class Compare, class Alloc>
-	bool	operator==(const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs)
+	template <class T>
+	bool	operator==(const T& lhs, const T& rhs)
 	{
-		typename ft::map<Key, T, Compare, Alloc>::iterator	s = lhs.begin();
-		typename ft::map<Key, T, Compare, Alloc>::iterator	s2 = rhs.begin();
-		typename ft::map<Key, T, Compare, Alloc>::iterator	e = lhs.end();
-		typename ft::map<Key, T, Compare, Alloc>::iterator	e2 = rhs.end();
-
-		while (s != e)
-		{
-			if (s2 == e2)
-				return (false);
-			if (*s != *s2)
-				return (false);
-			s++;
-			s2++;
-		}
-		return (1);
+		return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 
 	template <class Key, class T, class Compare, class Alloc>
@@ -450,20 +431,7 @@ namespace ft
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator<(const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs)
 	{
-		typename ft::map<Key, T, Compare, Alloc>::iterator	s = lhs.begin();
-		typename ft::map<Key, T, Compare, Alloc>::iterator	s2 = rhs.begin();
-		typename ft::map<Key, T, Compare, Alloc>::iterator	e = lhs.end();
-		typename ft::map<Key, T, Compare, Alloc>::iterator	e2 = rhs.end();
-		
-		while (s != e)
-		{
-			if (s2 == e2)
-				return (false);
-			else if ((*s).first < (*s2).first || (*s).second < (*s2).second) return true;
-			s++;
-			s2++;
-		}
-		return (s2 != e2);
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
 	template <class Key, class T, class Compare, class Alloc>
@@ -475,21 +443,7 @@ namespace ft
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator>(const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs)
 	{
-		typename ft::map<Key, T, Compare, Alloc>::iterator	s = lhs.begin();
-		typename ft::map<Key, T, Compare, Alloc>::iterator	s2 = rhs.begin();
-		typename ft::map<Key, T, Compare, Alloc>::iterator	e = lhs.end();
-		typename ft::map<Key, T, Compare, Alloc>::iterator	e2 = rhs.end();
-		
-		while (s != e)
-		{
-			if (s2 == e2)
-				return (false);
-			else if ((*s).first > (*s2).first) return true;
-			else if ((*s).first == (*s2).first && (*s).second > (*s2).second) return true;
-			s++;
-			s2++;
-		}
-		return (s2 != e2);
+		return (rhs < lhs);
 	}
 
 	template <class Key, class T, class Compare, class Alloc>
