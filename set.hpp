@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 18:24:42 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 18:58:12 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 namespace ft
 {
 	template <class Key, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
-	class set : public RBTreeSet<Key, Node<Key>, Compare, Alloc>
+	class set : public RBTreeSet<Key, Node<Key>, RBIteratorConst<Key, Compare, Node<Key> >, RBIteratorConst<const Key, Compare, Node<Key> >, Compare, Alloc>
 	{
 		public:
 			typedef Key														key_type;
@@ -32,8 +32,8 @@ namespace ft
 			typedef typename allocator_type::pointer						pointer;
 			typedef typename allocator_type::const_pointer					const_pointer;
 			typedef typename allocator_type::size_type						size_type;
-			typedef RBIterator<Key, Compare, Node<Key> >					iterator;
-			typedef RBIterator<const Key, Compare, Node<Key> >				const_iterator;
+			typedef RBIteratorConst<Key, Compare, Node<Key> >				iterator;
+			typedef RBIteratorConst<const Key, Compare, Node<Key> >			const_iterator;
 
 			explicit set(const Compare& comp = Compare(), const Alloc& alloc = Alloc())
 			{

@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 16:20:35 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 18:58:45 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ namespace ft
 		int 					color;
 	};
 
-	template <class Key, class NodeType, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
+	template <class Key, class NodeType, class Iterator, class ConstIterator, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
 	class RBTreeSet
 	{
 
@@ -65,14 +65,14 @@ namespace ft
 		typedef Compare													key_compare;
 		typedef Compare													value_compare;
 		typedef typename Alloc::template rebind<NodeType>::other		allocator_type;
-		typedef typename Alloc::template rebind<originalNode>::other		allocator_type2;
+		typedef typename Alloc::template rebind<originalNode>::other	allocator_type2;
 		typedef typename allocator_type::reference						reference;
 		typedef typename allocator_type::const_reference				const_reference;
 		typedef typename allocator_type::pointer						pointer;
 		typedef typename allocator_type::const_pointer					const_pointer;
 		typedef typename allocator_type::size_type						size_type;
-		typedef RBIterator<Key, Compare, NodeType>						iterator;
-		typedef RBIterator<const Key, Compare, NodeType>				const_iterator;
+		typedef Iterator												iterator;
+		typedef ConstIterator											const_iterator;
 		typedef typename ft::reverse_iterator<iterator>					reverse_iterator;
 		typedef typename ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 		typedef typename ft::iterator_traits<iterator>::difference_type	difference_type;

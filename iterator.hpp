@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 17:42:34 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 18:55:22 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,8 +277,8 @@ namespace ft
 	{
 		public:
 			typedef T							value_type;
-			typedef const T*							pointer;
-			typedef const T&							reference;
+			typedef T*							pointer;
+			typedef T&							reference;
 			typedef NodeType*					nodePointer;
 			typedef std::ptrdiff_t				difference_type;
 			typedef bidirectional_iterator_tag	iterator_category;
@@ -364,7 +364,7 @@ namespace ft
 			// Overloads
 
 			reference			operator*() const { return (this->node->data); }
-			const pointer				operator->() const { return &(this->node->data); }
+			pointer				operator->() const { return &(this->node->data); }
 			bool				operator==(RBIterator const & rhs) { return ((this->node == rhs.node) ? true : false); }
 			
 			bool				operator!=(RBIterator const & rhs)
@@ -415,6 +415,276 @@ namespace ft
 			RBIterator	operator+(difference_type n) const
 			{
 				RBIterator	ret(*this);
+				for (int i = 0; i < n; i++)
+					ret++;
+				return (ret);
+			}
+
+		private:
+			nodePointer	min()
+			{
+				nodePointer*	node = &root;
+
+				if (!(*node) || (*node) == sentinel)
+					return (sentinel);
+
+				while ((*node)->child[0] && (*node)->child[0] != sentinel)
+					node = &(*node)->child[0];
+				return (*node);
+			}
+			
+			nodePointer	min(nodePointer& node)
+			{
+				nodePointer*	tmp = &node;
+
+				if (!(*tmp) || !tmp)
+					return (NULL);
+
+				while (*tmp != sentinel && (*tmp)->child[0] != sentinel)
+					tmp = &((*tmp)->child[0]);
+				return (*tmp);
+			}
+			
+			nodePointer	max()
+			{
+				nodePointer*	node = &root;
+
+				if (!node || !(*node) || (*node) == sentinel)
+					return (sentinel);
+
+				while ((*node)->child[1] && (*node)->child[1] != sentinel)
+					node = &(*node)->child[1];
+				return (*node);
+			}
+			
+			nodePointer	max(nodePointer& node)
+			{
+				nodePointer*	tmp = &node;
+
+				if (!tmp || !(*tmp))
+					return (NULL);
+
+				while (*tmp != sentinel && (*tmp)->child[1] != sentinel)
+					tmp = &((*tmp)->child[1]);
+				return (*tmp);
+			}
+			
+			nodePointer	findSentinel()
+			{
+				nodePointer*	tmp = &this->node;
+				
+				if (!(*tmp) || !tmp)
+					return (NULL);
+
+				while (tmp && (*tmp)->color != 2)
+					tmp = &((*tmp)->child[0]);
+				return (*tmp);
+			}
+			
+			nodePointer	findRoot()
+			{
+				nodePointer*	tmp = &this->node;
+				while (tmp && *tmp && *tmp != sentinel && (*tmp)->parent != sentinel)
+					tmp = &((*tmp)->parent);
+				return (*tmp);
+			}
+
+			nodePointer	getSuccessor(nodePointer & node)
+			{
+				nodePointer*	tmp = &node;
+			
+				if (node == sentinel)
+					return (sentinel);
+				if (node == max(sentinel->parent))
+					return (sentinel);
+				if (node->parent == sentinel && node->child[0] == sentinel && node->child[1] == sentinel)
+					return (sentinel);
+				if ((*tmp)->child[1] != sentinel)
+					return (min((*tmp)->child[1]));
+				else
+				{
+					while ((*tmp)->parent != sentinel)
+					{
+						if ((*tmp)->parent->child[0] == *tmp)
+						{
+							tmp = &(*tmp)->parent;
+							break ;
+						}
+						tmp = &(*tmp)->parent;
+					}
+					return (*tmp);
+				}
+			}
+
+			nodePointer	getPredecessor(nodePointer & node)
+			{
+				nodePointer*	tmp = &node;
+				
+				if (node == sentinel)
+					return (max(node->parent));
+				if (node == min(sentinel->parent))
+					return (sentinel);
+				if ((*tmp)->child[0] != sentinel)
+					return (max((*tmp)->child[0]));
+				else
+				{
+					while ((*tmp)->parent != sentinel)
+					{
+						if ((*tmp)->parent->child[1] == *tmp)
+						{
+							tmp = &(*tmp)->parent;
+							break ;
+						}
+						tmp = &(*tmp)->parent;
+					}
+					return (*tmp);
+				}
+			}
+	};
+
+	template <typename T, class Compare, class NodeType>
+	class RBIteratorConst
+	{
+		public:
+			typedef T							value_type;
+			typedef const T*					pointer;
+			typedef const T&					reference;
+			typedef NodeType*					nodePointer;
+			typedef std::ptrdiff_t				difference_type;
+			typedef bidirectional_iterator_tag	iterator_category;
+
+			nodePointer	node;
+			nodePointer	sentinel;
+			nodePointer	root;
+			nodePointer	minNode;
+			nodePointer	maxNode;
+			Compare		c;
+
+			RBIteratorConst()
+			{
+				node = NULL;
+				sentinel = NULL;
+				c = Compare();
+			};
+			
+			RBIteratorConst(NodeType* start) : 
+				node(start),
+				sentinel(findSentinel()),
+				root(findRoot()),
+				minNode(min(root)),
+				maxNode(max(root)),
+				c(Compare())
+			{};
+			
+			RBIteratorConst(NodeType* start, NodeType* endPtr) :
+				node(start),
+				sentinel(endPtr),
+				root(findRoot()),
+				minNode(min(root)),
+				maxNode(max(root)),
+				c(Compare())
+			{};
+			
+			RBIteratorConst(RBIteratorConst const & src) :
+				node(src.node),
+				sentinel(src.sentinel),
+				root(src.root),
+				minNode(src.minNode),
+				maxNode(src.maxNode)
+			{};
+			
+			template <class InputIt>
+			RBIteratorConst(InputIt const & src)
+			{
+				if (src.node == NULL)
+					return ;
+				node = src.node;
+				sentinel = src.sentinel;
+				root = src.root;
+				minNode = src.minNode;
+				maxNode = src.maxNode;
+			};
+			
+			RBIteratorConst&	operator=(RBIteratorConst const & rhs)
+			{
+				if (this == &rhs)
+					return (*this);
+				this->node = rhs.node;
+				this->sentinel = rhs.sentinel;
+				this->root = rhs.root;
+				this->minNode = rhs.minNode;
+				this->maxNode = rhs.maxNode;
+				return (*this);
+			}
+			
+			template <class InputIt>
+			RBIteratorConst&	operator=(InputIt const & rhs)
+			{
+				this->node = rhs.node;
+				this->sentinel = rhs.sentinel;
+				this->root = rhs.root;
+				this->minNode = rhs.minNode;
+				this->maxNode = rhs.maxNode;
+				return (*this);
+			}
+			
+			~RBIteratorConst() {};
+
+			
+			// Overloads
+
+			reference			operator*() const { return (this->node->data); }
+			pointer				operator->() const { return &(this->node->data); }
+			bool				operator==(RBIteratorConst const & rhs) { return ((this->node == rhs.node) ? true : false); }
+			
+			bool				operator!=(RBIteratorConst const & rhs)
+			{
+				if ((this->node && !rhs.node) || (!this->node && rhs.node))
+					return (true);
+				else if (!this->node && !rhs.node)
+					return (false);
+				return ((this->node == rhs.node) ? false : true);
+			}
+			
+			RBIteratorConst&	operator++()
+			{
+				this->node = getSuccessor(this->node);
+				return (*this);
+			};
+			
+			RBIteratorConst	operator++(int)
+			{
+				RBIteratorConst	ret(*this);
+
+				++(*this);
+				return (ret);
+			};
+			
+			RBIteratorConst&	operator--()
+			{
+				this->node = getPredecessor(this->node);
+				return (*this);
+			};
+			
+			RBIteratorConst	operator--(int)
+			{
+				RBIteratorConst	ret(*this);
+
+				--(*this);
+				return (ret);
+			};
+
+			RBIteratorConst	operator-(difference_type n) const
+			{
+				RBIteratorConst	ret(*this);
+				for (int i = 0; i < n; i++)
+					ret--;
+				return (ret);
+			}
+			
+			RBIteratorConst	operator+(difference_type n) const
+			{
+				RBIteratorConst	ret(*this);
 				for (int i = 0; i < n; i++)
 					ret++;
 				return (ret);
