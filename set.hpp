@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 16:39:23 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 16:46:19 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@ namespace ft
 					if (flag)
 						this->_size++;
 					this->balanceInsert(start);
-					ret.first = iterator(start, this->_sentinel);
+					ret.first = iterator(node, this->_sentinel);
 					ret.second = true;
 					return (ret);
 				}
