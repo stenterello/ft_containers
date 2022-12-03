@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/02 22:46:54 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 15:43:01 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -414,8 +414,12 @@ namespace ft
 						else if (sibling && sibling->color == BLACK && (*tmp)->color == BLACK)
 						{
 							sibling->color = RED;
+							(*tmp)->parent->color = BLACK;
 							tmp = &(*tmp)->parent;
+							break ;
 						}
+						else
+							tmp = &(*tmp)->parent;
 					}
 				}
 				else
@@ -455,8 +459,12 @@ namespace ft
 						else if (sibling && sibling->color == BLACK && (*tmp)->color == BLACK)
 						{
 							sibling->color = RED;
+							(*tmp)->parent->color = BLACK;
 							tmp = &(*tmp)->parent;
+							break ;
 						}
+						else
+							tmp = &(*tmp)->parent;
 					}
 				}
 			}

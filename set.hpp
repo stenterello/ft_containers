@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/02 22:57:10 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 15:33:41 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,7 @@ namespace ft
 				pointer		successor;
 				iterator	ret;
 				
-				if (!node)
-					return (iterator(this->_sentinel, this->_sentinel));
-				else if (node != this->_sentinel)
+				if (node && node != this->_sentinel)
 					ret = this->find(this->getSuccessor(node)->data);
 				else
 					return (iterator(this->_sentinel, this->_sentinel));
@@ -155,20 +153,40 @@ namespace ft
 					{
 						successor->child[RIGHT] = this->_sentinel;
 					}
-					this->unlink(successor->parent, successor);
-					this->link(node->parent, node, successor);
-					if (node->child[LEFT] != this->_sentinel)
+					if (node != this->_root)
 					{
-						node->child[LEFT]->parent = successor;
-						successor->child[LEFT] = node->child[LEFT];
+						this->unlink(successor->parent, successor);
+						this->link(node->parent, node, successor);
+						if (node->child[LEFT] != this->_sentinel)
+						{
+							node->child[LEFT]->parent = successor;
+							successor->child[LEFT] = node->child[LEFT];
+						}
+						if (node->child[RIGHT] != this->_sentinel)
+						{
+							if (successor->child[RIGHT] != this->_sentinel)
+								this->link(successor->parent, successor, successor->child[RIGHT]);
+							node->child[RIGHT]->parent = successor;
+							successor->child[RIGHT] = node->child[RIGHT];
+						}
 					}
-					if (node->child[RIGHT] != this->_sentinel)
+					else
 					{
-						if (successor->child[RIGHT] != this->_sentinel)
-							this->link(successor->parent, successor, successor->child[RIGHT]);
-						node->child[RIGHT]->parent = successor;
-						successor->child[RIGHT] = node->child[RIGHT];
+						this->_root = successor;
+						this->_sentinel->parent = successor;
+						this->_root->parent = this->_sentinel;
+						if (node->child[RIGHT] == successor)
+						{
+							this->_root->child[LEFT] = node->child[LEFT];
+							node->child[LEFT]->parent = this->_root;
+						}
+						else
+						{
+							this->_root->child[RIGHT] = node->child[RIGHT];
+							node->child[RIGHT]->parent = this->_root;
+						}
 					}
+					
 				}
 				this->_alloc.deallocate(node, 1);
 				node = NULL;

@@ -1,7 +1,7 @@
 #include <list>
 #include <iostream>
 #include "set.hpp"
-#define T1 std::string
+#define T1 int
 
 #define TESTED_NAMESPACE ft
 
@@ -89,32 +89,26 @@ void	ft_erase(SET &st, U param, V param2)
 int		main(void)
 {
 	std::list<T1> lst;
-	unsigned int lst_size = 10;
+	unsigned int lst_size = 6;
 	for (unsigned int i = 0; i < lst_size; ++i)
-		lst.push_back(std::string((lst_size - i), i + 65));
+		lst.push_back(i);
 	TESTED_NAMESPACE::set<T1> st(lst.begin(), lst.end());
 	printSize(st);
 
-	ft_erase(st, ++st.begin());
+	for (int i = 2; i < 4; ++i)
+		ft_erase(st, i);
 
-	ft_erase(st, st.begin());
-	ft_erase(st, --st.end());
+	ft_erase(st, *st.begin());
+	ft_erase(st, *(--st.end()));
 
-	ft_erase(st, st.begin(), ++(++(++st.begin())));
-	// printSize(st);
-	ft_erase(st, --(--(--st.end())), --st.end());
-
-	st.insert("Hello");
-	st.insert("Hi there");
+	st.insert(-1);
+	st.insert(10);
+	st.insert(10);
 	printSize(st);
-	ft_erase(st, --(--(--st.end())), st.end());
 
-	st.insert("ONE");
-	st.insert("TWO");
-	st.insert("THREE");
-	st.insert("FOUR");
+	ft_erase(st, 0);
+	ft_erase(st, 1);
 	printSize(st);
-	ft_erase(st, st.begin(), st.end());
 
 	return (0);
 }
