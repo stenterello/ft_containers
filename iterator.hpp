@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/02 19:15:16 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 16:07:11 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -478,7 +478,7 @@ namespace ft
 				if (!(*tmp) || !tmp)
 					return (NULL);
 
-				while ((*tmp)->color != 2)
+				while (tmp && (*tmp)->color != 2)
 					tmp = &((*tmp)->child[0]);
 				return (*tmp);
 			}
@@ -486,7 +486,7 @@ namespace ft
 			nodePointer	findRoot()
 			{
 				nodePointer*	tmp = &this->node;
-				while (*tmp != sentinel && (*tmp)->parent != sentinel)
+				while (tmp && *tmp && *tmp != sentinel && (*tmp)->parent != sentinel)
 					tmp = &((*tmp)->parent);
 				return (*tmp);
 			}

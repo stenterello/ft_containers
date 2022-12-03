@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 15:33:41 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/03 16:06:06 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ namespace ft
 
 			size_type	erase(const Key& key)
 			{
-				if (erase_deep(key) != this->end())
+				if (erase_deep(key) != iterator(NULL, this->_sentinel))
 					return (1);
 				return (0);
 			}
@@ -109,7 +109,7 @@ namespace ft
 				if (node && node != this->_sentinel)
 					ret = this->find(this->getSuccessor(node)->data);
 				else
-					return (iterator(this->_sentinel, this->_sentinel));
+					return (iterator(NULL, this->_sentinel));
 
 				if ((!node->child[LEFT] && !node->child[RIGHT]) || (node->child[LEFT] == this->_sentinel && node->child[RIGHT] == this->_sentinel))
 				{
