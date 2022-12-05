@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:17:37 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 21:46:23 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/05 16:46:37 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+#include <algorithm>
 #include "utility.hpp"
 #include "rb_tree.hpp"
 #include "iterator.hpp"
@@ -24,7 +25,11 @@ namespace ft
 			typedef Key																	key_type;
 			typedef	T																	mapped_type;
 			typedef ft::pair<const Key, T>												value_type;
+			typedef typename ft::pair<const Key, T>										Pair;
+			typedef typename ft::NodeRB2<Pair>											originalNode;
 			typedef typename Allocator::template rebind<Node<value_type> >::other		allocator_type;
+			// typedef typename Allocator::template rebind<Key>::other						allocator_type2;
+			// typedef typename Allocator::template rebind<T>::other						allocator_type3;
 			typedef typename allocator_type::reference									reference;
 			typedef typename allocator_type::const_reference							const_reference;
 			typedef typename allocator_type::pointer									pointer;
@@ -72,6 +77,11 @@ namespace ft
 			};
 
 			value_compare	value_comp() const { return (value_compare(this->key_comp())); }
+
+			// size_type max_size() const
+			// {
+			// 	return (std::min((allocator_type2().max_size() / 10), allocator_type3().max_size() / 10));
+			// }
 
 			void	erase(iterator pos)
 			{

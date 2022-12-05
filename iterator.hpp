@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 14:49:56 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 20:19:12 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:24:47 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,18 +322,6 @@ namespace ft
 				minNode(src.minNode),
 				maxNode(src.maxNode)
 			{};
-			
-			// template <class InputIt>
-			// RBIterator(InputIt const & src)
-			// {
-			// 	if (src.node == NULL)
-			// 		return ;
-			// 	node = src.node;
-			// 	sentinel = src.sentinel;
-			// 	root = src.root;
-			// 	minNode = src.minNode;
-			// 	maxNode = src.maxNode;
-			// };
 			
 			RBIterator&	operator=(RBIterator const & rhs)
 			{

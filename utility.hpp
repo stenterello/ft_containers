@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:03:04 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 21:49:45 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/05 16:58:09 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ namespace ft
 	template <>
 	struct is_integral_type<wchar_t> : public is_integral_res<true, wchar_t> {};
 
-	// template <>
-	// struct is_integral_type<char16_t> : public is_integral_res<true, char16_t> {};
+	template <>
+	struct is_integral_type<char16_t> : public is_integral_res<true, char16_t> {};
 
 	template <>
 	struct is_integral_type<signed char> : public is_integral_res<true, signed char> {};
@@ -215,7 +215,7 @@ namespace ft
 			second = rhs.second;
 			return (*this);
 		}
-		virtual ~pair() {};
+		~pair() {};
 	};
 
 	template <class T1, class T2>

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 10:54:03 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 20:36:46 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/05 13:55:10 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ namespace ft
 			typedef Key														key_type;
 			typedef Key														value_type;
 			typedef Compare													key_compare;
-			typedef Compare													value_compare;
 			typedef typename Alloc::template rebind<Node<Key> >::other		allocator_type;
 			typedef typename allocator_type::reference						reference;
 			typedef typename allocator_type::const_reference				const_reference;
@@ -38,7 +37,6 @@ namespace ft
 			explicit set(const Compare& comp = Compare(), const Alloc& alloc = Alloc())
 			{
 				this->_key_compare = comp;
-				this->_value_compare = comp;
 				this->_key_type = key_type();
 				this->_value_type = value_type();
 				(void)alloc;
@@ -47,7 +45,6 @@ namespace ft
 			set(InputIt first, InputIt last, const Compare& comp = Compare(), const Alloc& alloc = Alloc())
 			{
 				this->_key_compare = comp;
-				this->_value_compare = comp;
 				this->_key_type = key_type();
 				this->_value_type = value_type();
 				this->insert(first, last);
@@ -58,7 +55,6 @@ namespace ft
 				this->_key_type = other._key_type;
 				this->_value_type = other._value_type;
 				this->_key_compare = other._key_compare;
-				this->_value_compare = other._value_compare;
 				if (other.begin() != other.end())
 					this->insert(other.begin(), other.end());
 			};
@@ -69,13 +65,25 @@ namespace ft
 				this->_key_type = rhs._key_type;
 				this->_value_type = rhs._value_type;
 				this->_key_compare = rhs._key_compare;
-				this->_value_compare = rhs._value_compare;
 				this->_alloc = rhs._alloc;
 				this->clear();
 				this->insert(rhs.begin(), rhs.end());
 				return (*this);
 			};
 			virtual ~set() { clear(); }
+
+			class value_compare : std::binary_function<value_type, value_type, bool> {
+				friend class set<Key>;
+					protected:
+						key_compare comp;
+					public:
+						value_compare(key_compare c) : comp(c) {};
+						typedef bool result_type;
+						typedef value_type	first_argument_type;
+						bool operator() (const value_type& x, const value_type& y) const { return comp(x, y); }
+			};
+
+			value_compare	value_comp() const { return (value_compare(this->key_comp())); }
 
 			iterator	erase(iterator pos)
 			{

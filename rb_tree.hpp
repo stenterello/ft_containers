@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 20:36:49 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/05 16:55:08 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <memory>
 #include <utility>
 #include <iostream>
+#include <limits.h>
 #include "utility.hpp"
 #include "iterator.hpp"
 
@@ -47,10 +48,10 @@ namespace ft
 	template <class Pair>
 	struct NodeRB2 {
 		NodeRB2					*parent;
-		NodeRB2 					*left;
-		NodeRB2 					*right;
-		Pair					data; 
-		int 					color;
+		NodeRB2 				*left;
+		NodeRB2 				*right;
+		Pair					data;
+		int						color;
 	};
 
 	template <class Key, class NodeType, class Iterator, class ConstIterator, class Compare = std::less<Key>, class Alloc = std::allocator<Key> >
@@ -58,8 +59,7 @@ namespace ft
 	{
 
 	public:
-		typedef typename Alloc::value_type								Pair;
-		typedef NodeRB2<Pair>											originalNode;
+		typedef NodeRB2<Key>											originalNode;
 		typedef Key														key_type;
 		typedef Key														value_type;
 		typedef Compare													key_compare;
@@ -116,10 +116,7 @@ namespace ft
 			return (*this);
 		};
 
-		~RBTree()
-		{
-			_alloc.deallocate(_sentinel, 1);
-		};
+		~RBTree() { _alloc.deallocate(_sentinel, 1); };
 
 		allocator_type	get_allocator() const { return (this->_alloc); }
 
@@ -131,8 +128,8 @@ namespace ft
 
 		iterator				begin() { return (iterator(min(), _sentinel)); }
 		const_iterator			begin() const { return (const_iterator(min(), _sentinel)); }
-		iterator				end() { return (_sentinel); }
-		const_iterator			end() const { return (_sentinel); }
+		iterator				end() { return iterator(_sentinel, _sentinel); }
+		const_iterator			end() const { return const_iterator(_sentinel, _sentinel); }
 		reverse_iterator		rbegin() { return (reverse_iterator(end())); }
 		const_reverse_iterator	rbegin() const { return (const_iterator(end())); }
 		reverse_iterator		rend() { return (reverse_iterator(begin())); }
@@ -264,7 +261,6 @@ namespace ft
 		}
 
 		key_compare		key_comp() const { return (this->_key_compare); }
-		// value_compare	value_comp() const { return (this->_value_compare); }
 
 	protected:
 		key_type		_key_type;
@@ -552,21 +548,22 @@ namespace ft
 
 		void	getRelatives2(pointer & node, pointer & sibling, pointer & leftNephew, pointer & rightNephew)
 		{
-			if (node->parent->child[LEFT] != _sentinel && node->parent->child[LEFT] == node)
+			if (node->parent->child[LEFT] != _sentinel && node->parent->color != SENTINEL && node->parent->child[LEFT] == node && node->parent->child[RIGHT] && node->parent->child[RIGHT] != _sentinel)
 				sibling = node->parent->child[RIGHT];
-			else if (node->parent->child[RIGHT] != _sentinel)
+			else if (node->parent->child[RIGHT] != _sentinel && node->parent->color != SENTINEL && node->parent->child[LEFT] && node->parent->child[LEFT] != _sentinel)
 				sibling = node->parent->child[LEFT];
 			else
 			{
 				sibling = NULL;
 				leftNephew = NULL;
 				rightNephew = NULL;
+				return ;
 			}
-			if (sibling && sibling->child[LEFT] != _sentinel)
+			if (sibling && sibling->child[LEFT] && sibling->child[LEFT] != _sentinel)
 				leftNephew = sibling->child[LEFT];
 			else
 				leftNephew = NULL;
-			if (sibling && sibling->child[RIGHT] != _sentinel)
+			if (sibling && sibling->child[RIGHT] && sibling->child[RIGHT] != _sentinel)
 				rightNephew = sibling->child[RIGHT];
 			else
 				rightNephew = NULL;
