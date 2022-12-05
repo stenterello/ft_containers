@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 13:53:02 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/05 16:55:08 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/05 18:23:00 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -604,9 +604,23 @@ namespace ft
 		void	unlink(pointer& parent, pointer& node)
 		{
 			if (parent->child[LEFT] == node)
+			{
 				parent->child[LEFT] = _sentinel;
+				if (node->child[LEFT] != _sentinel && node->child[RIGHT] == _sentinel)
+				{
+					parent->child[LEFT] = node->child[LEFT];
+					node->child[LEFT]->parent = parent;
+				}
+			}
 			else
+			{
 				parent->child[RIGHT] = _sentinel;
+				if (node->child[RIGHT] != _sentinel && node->child[LEFT] == _sentinel)
+				{
+					parent->child[RIGHT] = node->child[RIGHT];
+					node->child[RIGHT]->parent = parent;
+				}
+			}
 			node->parent = _sentinel;
 		}
 	};
