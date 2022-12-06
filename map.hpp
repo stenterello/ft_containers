@@ -6,7 +6,7 @@
 /*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:17:37 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/05 17:52:18 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/06 14:29:22 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,13 +328,8 @@ namespace ft
 
 			void	clear()
 			{
-				iterator	iter = this->begin();
-				iterator	end = this->end();
-
-				while (iter != end)
-					erase(iter++);
-
-				std::cout << std::endl;
+				while (this->size())
+					erase(this->min());
 			}
 
 			T&	operator[](const Key& key)

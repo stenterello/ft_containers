@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddelladi <ddelladi@student.42roma.it>      +#+  +:+       +#+        */
+/*   By: ddelladi <ddelladi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 19:28:01 by ddelladi          #+#    #+#             */
-/*   Updated: 2022/12/03 21:54:27 by ddelladi         ###   ########.fr       */
+/*   Updated: 2022/12/06 17:49:50 by ddelladi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ namespace ft
 
 		~vector()
 		{
+			clear();
 			if (this->_begin != NULL || _capacity != 0)
 				_alloc.deallocate(_begin, _capacity);
 		}
@@ -287,9 +288,9 @@ namespace ft
 			{
 				int i = 1;
 				while (toMove--)
-					_alloc.construct(_end - i++, _begin[positionDist + toMove]);
+					_begin[_size - i++] = _begin[positionDist + toMove];
 				while (dist--)
-					_alloc.construct(_begin + positionDist++, *first++);
+					_begin[positionDist++] = *first++;
 			}
 			catch (...)
 			{
